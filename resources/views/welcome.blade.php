@@ -3,8 +3,8 @@
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
-
-        <title>Laravel</title>
+        <meta name="description" content="Bio-energy frequency therapy for a better life. Developed over 25 years of clinical practice by Dr. Éric Rosati.">
+        <title inertia>Vitality Inside</title>
 
         <!-- Fonts -->
         <link rel="preconnect" href="https://fonts.bunny.net">

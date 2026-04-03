@@ -1,0 +1,158 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500&family=Inter:wght@300;400;500;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+        background-color: #03142A;
+        color: #F5F3EE;
+        font-family: 'Inter', 'DM Sans', sans-serif;
+        -webkit-font-smoothing: antialiased;
+    }
+}
+
+@layer components {
+    /* Grid overlay */
+    .grid-overlay {
+        background-image:
+            linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+        background-size: 60px 60px;
+    }
+
+    /* Halo glow */
+    .halo-glow {
+        background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(17,199,201,0.15) 0%, transparent 70%);
+    }
+
+    /* Glass card */
+    .glass-card {
+        background: rgba(10, 39, 69, 0.4);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255,255,255,0.07);
+    }
+
+    /* Premium button cyan */
+    .btn-cyan {
+        background-color: #11C7C9;
+        color: #03142A;
+        font-weight: 600;
+        padding: 0.75rem 1.5rem;
+        border-radius: 9999px;
+        transition: all 0.3s ease;
+        border: none;
+        cursor: pointer;
+    }
+    .btn-cyan:hover {
+        box-shadow: 0 10px 25px rgba(17,199,201,0.3);
+        transform: scale(1.05);
+    }
+
+    /* Premium button gold outline */
+    .btn-gold {
+        border: 1px solid #D5B67A;
+        color: #D5B67A;
+        font-weight: 500;
+        padding: 0.75rem 1.5rem;
+        border-radius: 9999px;
+        transition: all 0.3s ease;
+        background: transparent;
+        cursor: pointer;
+    }
+    .btn-gold:hover {
+        background-color: rgba(213,182,122,0.1);
+        transform: scale(1.05);
+    }
+
+    /* Premium button outline */
+    .btn-outline {
+        border: 1px solid rgba(255,255,255,0.2);
+        color: rgba(255,255,255,0.8);
+        font-weight: 500;
+        padding: 0.75rem 1.5rem;
+        border-radius: 9999px;
+        transition: all 0.3s ease;
+        background: transparent;
+        cursor: pointer;
+    }
+    .btn-outline:hover {
+        border-color: rgba(255,255,255,0.4);
+        background-color: rgba(255,255,255,0.05);
+    }
+
+    /* Section title */
+    .section-title {
+        font-family: 'Cormorant Garamond', 'Playfair Display', Georgia, serif;
+        font-size: 1.875rem;
+        font-weight: 300;
+        letter-spacing: 0.05em;
+    }
+    @media (min-width: 768px) {
+        .section-title { font-size: 2.25rem; }
+    }
+    @media (min-width: 1024px) {
+        .section-title { font-size: 3rem; }
+    }
+
+    /* Concentric circles */
+    .concentric-rings::before,
+    .concentric-rings::after {
+        content: '';
+        position: absolute;
+        border-radius: 50%;
+        border: 1px solid rgba(17,199,201,0.08);
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar { width: 6px; }
+    ::-webkit-scrollbar-track { background: #03142A; }
+    ::-webkit-scrollbar-thumb { background: rgba(17,199,201,0.3); border-radius: 3px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(17,199,201,0.5); }
+}
+
+@layer utilities {
+    .text-gradient-cyan {
+        background: linear-gradient(135deg, #11C7C9, #1AB8B9);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .text-gradient-gold {
+        background: linear-gradient(135deg, #D5B67A, #f0d4a0);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .bg-vitality-dark {
+        background: linear-gradient(180deg, #03142A 0%, #041B33 50%, #071F3D 100%);
+    }
+
+    .glow-cyan {
+        box-shadow: 0 0 20px rgba(17,199,201,0.3), 0 0 40px rgba(17,199,201,0.1);
+    }
+
+    .glow-gold {
+        box-shadow: 0 0 20px rgba(213,182,122,0.3);
+    }
+
+    .border-glow {
+        border: 1px solid rgba(17,199,201,0.2);
+    }
+
+    .card-hover {
+        transition: all 0.3s ease;
+    }
+
+    .card-hover:hover {
+        transform: translateY(-4px);
+        border-color: rgba(17,199,201,0.3);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.3), 0 0 20px rgba(17,199,201,0.1);
+    }
+}
