@@ -18,17 +18,28 @@ class ProController extends Controller
 
     public function dashboard()
     {
-        $user    = auth()->user();
-        $pro     = $user->proProfile;
+        $user = auth()->user();
+
+        // Auto-create proProfile if user is pro but profile missing
+        $pro = $user->proProfile ?? ProUser::firstOrCreate(
+            ['user_id' => $user->id],
+            ['commission_rate' => 20, 'total_commissions' => 0, 'status' => 'active']
+        );
+
+        // Mark user as pro if not already
+        if (!$user->is_pro) {
+            $user->update(['is_pro' => true]);
+        }
+
         $patients = Patient::with('protocols.program')
             ->where('pro_user_id', $pro->id)->latest()->get();
         $programs = Program::with('category')->where('is_active', true)->get();
 
         $stats = [
-            'patients_count'    => $patients->count(),
-            'protocols_active'  => PatientProtocol::whereIn('patient_id', $patients->pluck('id'))->where('status','assigned')->count(),
-            'commission_total'  => $pro->total_commissions,
-            'commission_rate'   => $pro->commission_rate,
+            'patients_count'   => $patients->count(),
+            'protocols_active' => PatientProtocol::whereIn('patient_id', $patients->pluck('id'))->where('status','assigned')->count(),
+            'commission_total' => number_format($pro->total_commissions ?? 0, 2),
+            'commission_rate'  => $pro->commission_rate ?? 20,
         ];
 
         return Inertia::render('Pro/Dashboard', compact('patients','programs','stats','pro'));

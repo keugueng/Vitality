@@ -37,6 +37,7 @@ class CheckoutController extends Controller
         $request->validate([
             'name'  => 'required|string|max:255',
             'email' => 'required|email',
+            'phone' => 'nullable|string|max:30',
         ]);
 
         $cart = session('cart', []);

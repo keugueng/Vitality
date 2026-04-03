@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\ProUser;
 use App\Models\User;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
@@ -39,6 +40,16 @@ class RolesAndAdminSeeder extends Seeder
             ]
         );
         $proUser->assignRole('pro');
+
+        ProUser::firstOrCreate(
+            ['user_id' => $proUser->id],
+            [
+                'specialty'         => 'Ostéopathie',
+                'commission_rate'   => 20,
+                'total_commissions' => 0,
+                'status'            => 'active',
+            ]
+        );
 
         $demoUser = User::firstOrCreate(
             ['email' => 'demo@vitalityinside.com'],

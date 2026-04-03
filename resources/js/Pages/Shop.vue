@@ -1,11 +1,33 @@
 <template>
   <AppLayout>
     <!-- Hero -->
-    <section class="pt-32 pb-12 px-4 text-center relative">
+    <section class="pt-32 pb-12 px-4 text-center relative overflow-hidden">
       <div class="absolute inset-0 halo-glow pointer-events-none"></div>
-      <p class="text-vitality-cyan text-sm tracking-widest uppercase mb-3">60+ Programs</p>
-      <h1 class="section-title text-white mb-4">The full <em class="text-gradient-gold not-italic">Vitality library</em></h1>
-      <p class="text-vitality-text text-base max-w-xl mx-auto">Bio-energy frequency protocols organized by health challenge. Each program is a 21–30 day cure, 25 min/session.</p>
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[300px] rounded-full opacity-5 blur-3xl pointer-events-none"
+        style="background: radial-gradient(ellipse, #11C7C9, transparent);"></div>
+      <div class="inline-flex items-center gap-2 glass-card border-glow rounded-full px-4 py-2 mb-5 text-xs font-medium text-vitality-cyan tracking-widest uppercase">
+        <span class="w-1.5 h-1.5 rounded-full bg-vitality-cyan animate-pulse"></span>
+        60+ Programmes
+      </div>
+      <h1 class="section-title text-white mb-4">La bibliothèque <em class="text-gradient-gold not-italic">Vitality complète</em></h1>
+      <p class="text-vitality-text text-base max-w-xl mx-auto">Protocoles de fréquences bio-énergétiques organisés par problématique de santé. Chaque programme est une cure de 21–30 jours, 25 min/session.</p>
+      <!-- Stats -->
+      <div class="flex items-center justify-center gap-8 mt-8 text-center">
+        <div>
+          <p class="font-serif text-2xl font-light text-vitality-cyan">60+</p>
+          <p class="text-vitality-text text-xs">Programmes</p>
+        </div>
+        <div class="w-px h-8 bg-white/10"></div>
+        <div>
+          <p class="font-serif text-2xl font-light text-vitality-cyan">21k+</p>
+          <p class="text-vitality-text text-xs">Utilisateurs</p>
+        </div>
+        <div class="w-px h-8 bg-white/10"></div>
+        <div>
+          <p class="font-serif text-2xl font-light text-vitality-cyan">25 min</p>
+          <p class="text-vitality-text text-xs">Par session</p>
+        </div>
+      </div>
     </section>
 
     <!-- Filters -->
