@@ -88,4 +88,46 @@ class ProController extends Controller
         $protocol->update($request->only('status','sessions_done','progress_percent','notes'));
         return back()->with('success', 'Protocole mis à jour.');
     }
+
+    public function patients()
+    {
+        $user = auth()->user();
+        $pro  = $user->proProfile ?? ProUser::firstOrCreate(
+            ['user_id' => $user->id],
+            ['commission_rate' => 20, 'total_commissions' => 0, 'status' => 'active']
+        );
+
+        $patients = Patient::with('protocols.program')
+            ->where('pro_user_id', $pro->id)->latest()->get();
+        $programs = Program::with('category')->where('is_active', true)->get();
+
+        return Inertia::render('Pro/Patients', compact('patients', 'programs', 'pro'));
+    }
+
+    public function protocols()
+    {
+        $user = auth()->user();
+        $pro  = $user->proProfile ?? ProUser::firstOrCreate(
+            ['user_id' => $user->id],
+            ['commission_rate' => 20, 'total_commissions' => 0, 'status' => 'active']
+        );
+
+        $patients  = Patient::with('protocols.program')
+            ->where('pro_user_id', $pro->id)->latest()->get();
+        $programs  = Program::with('category')->where('is_active', true)->get();
+        $protocols = PatientProtocol::with(['patient', 'program'])
+            ->whereIn('patient_id', $patients->pluck('id'))
+            ->latest()->get();
+
+        return Inertia::render('Pro/Protocols', compact('patients', 'programs', 'protocols', 'pro'));
+    }
+
+    public function destroyPatient(Patient $patient)
+    {
+        $pro = auth()->user()->proProfile;
+        if ($patient->pro_user_id === $pro?->id) {
+            $patient->delete();
+        }
+        return back()->with('success', 'Patient supprimé.');
+    }
 }

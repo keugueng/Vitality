@@ -63,9 +63,12 @@ Route::middleware('auth')->prefix('dashboard')->name('dashboard')->group(functio
 Route::get('/pro', [ProController::class, 'index'])->name('pro');
 Route::middleware(['auth'])->prefix('pro')->name('pro.')->group(function () {
     Route::get('/dashboard', [ProController::class, 'dashboard'])->name('dashboard');
+    Route::get('/patients', [ProController::class, 'patients'])->name('patients');
+    Route::get('/protocols', [ProController::class, 'protocols'])->name('protocols');
     Route::post('/patients', [ProController::class, 'storePatient'])->name('patients.store');
     Route::post('/protocols', [ProController::class, 'assignProtocol'])->name('protocols.assign');
     Route::put('/protocols/{protocol}', [ProController::class, 'updateProtocol'])->name('protocols.update');
+    Route::delete('/patients/{patient}', [ProController::class, 'destroyPatient'])->name('patients.destroy');
 });
 
 /* ─── Admin Panel ─── */

@@ -150,29 +150,35 @@
       </div>
     </section>
 
-    <!-- ═══ UNLIMITED ACCESS — card verte exactement comme live ═══ -->
+    <!-- ═══ UNLIMITED ACCESS — card avec ligne dorée exactement comme image 4 ═══ -->
     <section class="py-6 px-6 pb-24">
       <div class="max-w-6xl mx-auto">
-        <div class="rounded-2xl p-10 md:p-14 flex flex-col md:flex-row items-center md:items-start justify-between gap-10"
-          style="background: linear-gradient(135deg, #071F3D 0%, #0A2745 50%, #071F3D 100%); border: 1px solid rgba(213,182,122,0.15);">
-          <div class="flex-1">
-            <p class="text-[#11C7C9] text-[11px] font-semibold tracking-[0.2em] uppercase mb-4">Unlimited Access</p>
-            <h2 class="font-serif font-light text-white mb-4" style="font-size: clamp(1.6rem, 3vw, 2.4rem); line-height: 1.2;">
-              Access every program.<br>Every month. One price.
-            </h2>
-            <p class="text-[#9DAAC0] text-sm leading-relaxed max-w-md">
-              Subscribe for unlimited access to the full Vitality Inside library — 60+ programs, new protocols monthly, and priority support. Cancel anytime.
-            </p>
-          </div>
-          <div class="flex flex-col items-center md:items-end gap-5 flex-shrink-0">
-            <div class="text-right">
-              <p class="font-serif font-light" style="color: #D5B67A; font-size: 2.8rem; line-height: 1;">€29.90</p>
-              <p class="text-[#9DAAC0] text-xs tracking-wide">per month · cancel anytime</p>
+        <!-- Wrapper avec la ligne gradient dorée en haut -->
+        <div class="rounded-2xl overflow-hidden" style="border: 1px solid rgba(213,182,122,0.2);">
+          <!-- Ligne gradient dorée en haut (trait distinctif du live) -->
+          <div style="height: 2px; background: linear-gradient(90deg, transparent 0%, #D5B67A 30%, #11C7C9 70%, transparent 100%);"></div>
+          <!-- Contenu -->
+          <div class="p-10 md:p-14 flex flex-col md:flex-row items-center md:items-start justify-between gap-10"
+            style="background: linear-gradient(135deg, #051A2E 0%, #072233 40%, #051A2E 100%);">
+            <div class="flex-1">
+              <p class="text-[11px] font-semibold tracking-[0.2em] uppercase mb-5" style="color: #11C7C9;">Unlimited Access</p>
+              <h2 class="font-bold text-white mb-4" style="font-size: clamp(1.6rem, 3vw, 2.2rem); line-height: 1.15; font-family: inherit;">
+                Access every program.<br>Every month. One price.
+              </h2>
+              <p class="text-sm leading-relaxed max-w-md" style="color: #9DAAC0;">
+                Subscribe for unlimited access to the full Vitality Inside library — 60+ programs, new protocols monthly, and priority support. Cancel anytime.
+              </p>
             </div>
-            <Link :href="route('shop')"
-              class="bg-[#11C7C9] hover:bg-[#0db5b7] text-[#03142A] font-bold text-sm tracking-wide uppercase px-7 py-3.5 rounded transition-all whitespace-nowrap">
-              Start Unlimited Access
-            </Link>
+            <div class="flex flex-col items-center md:items-end gap-5 flex-shrink-0">
+              <div class="text-right">
+                <p class="font-serif font-light" style="color: #D5B67A; font-size: 3rem; line-height: 1;">€29.90</p>
+                <p class="text-xs tracking-wide mt-1" style="color: #9DAAC0;">per month · cancel anytime</p>
+              </div>
+              <Link :href="route('shop')"
+                class="bg-[#11C7C9] hover:bg-[#0db5b7] text-[#03142A] font-bold text-sm tracking-wide uppercase px-7 py-3.5 rounded transition-all whitespace-nowrap">
+                Start Unlimited Access
+              </Link>
+            </div>
           </div>
         </div>
       </div>
