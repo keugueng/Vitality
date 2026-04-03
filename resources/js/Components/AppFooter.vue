@@ -27,7 +27,7 @@
 
         <!-- Programs -->
         <div>
-          <h4 class="text-white text-[11px] font-semibold tracking-[0.15em] uppercase mb-5">Programs</h4>
+          <h4 class="text-[11px] font-semibold tracking-[0.15em] uppercase mb-5" style="color: #11C7C9;">Programs</h4>
           <ul class="space-y-3">
             <li v-for="p in programLinks" :key="p.label">
               <Link :href="route('shop')"
@@ -38,22 +38,20 @@
 
         <!-- Company -->
         <div>
-          <h4 class="text-white text-[11px] font-semibold tracking-[0.15em] uppercase mb-5">Company</h4>
+          <h4 class="text-[11px] font-semibold tracking-[0.15em] uppercase mb-5" style="color: #11C7C9;">Company</h4>
           <ul class="space-y-3">
             <li><Link :href="route('about')" class="text-[#9DAAC0] text-sm hover:text-white transition-colors">About</Link></li>
             <li><Link :href="route('consultation')" class="text-[#9DAAC0] text-sm hover:text-white transition-colors">Consultation</Link></li>
             <li><Link :href="route('my-program')" class="text-[#9DAAC0] text-sm hover:text-white transition-colors">My Program</Link></li>
             <li><Link :href="route('blog')" class="text-[#9DAAC0] text-sm hover:text-white transition-colors">Blog</Link></li>
-            <li><Link :href="route('pro')" class="text-[#9DAAC0] text-sm hover:text-white transition-colors">PRO Space</Link></li>
           </ul>
         </div>
 
         <!-- Account -->
         <div>
-          <h4 class="text-white text-[11px] font-semibold tracking-[0.15em] uppercase mb-5">Account</h4>
+          <h4 class="text-[11px] font-semibold tracking-[0.15em] uppercase mb-5" style="color: #11C7C9;">Account</h4>
           <ul class="space-y-3">
             <li><Link :href="route('login')" class="text-[#9DAAC0] text-sm hover:text-white transition-colors">Login</Link></li>
-            <li><Link :href="route('register')" class="text-[#9DAAC0] text-sm hover:text-white transition-colors">Register</Link></li>
             <li><Link :href="route('shop')" class="text-[#9DAAC0] text-sm hover:text-white transition-colors">Subscribe</Link></li>
             <li><Link :href="route('legal-notice')" class="text-[#9DAAC0] text-sm hover:text-white transition-colors">Legal Notice</Link></li>
           </ul>

@@ -17,18 +17,20 @@
             v-for="item in navItems" :key="item.route"
             :href="route(item.route)"
             class="text-[11px] font-semibold tracking-[0.12em] uppercase transition-colors duration-200 hover:text-white"
-            :class="isActive(item.route) ? 'text-white' : 'text-white/60'"
+            :style="isActive(item.route) ? 'color: #D5B67A;' : ''"
+            :class="isActive(item.route) ? '' : 'text-white/60'"
           >{{ item.label }}</Link>
         </nav>
 
         <!-- Right actions -->
         <div class="hidden lg:flex items-center gap-3.5">
 
-          <!-- Langue: "GB EN ▾" pill avec flag -->
-          <button class="flex items-center gap-1.5 border border-white/25 rounded-full px-3 py-1.5 text-[11px] font-semibold text-white/70 hover:text-white hover:border-white/50 transition-all tracking-wider">
-            <span class="text-[13px] leading-none">🇬🇧</span>
+          <!-- Langue: "GB EN ▾" pill exactement comme live -->
+          <button class="flex items-center gap-1 border rounded-full px-3 py-1.5 text-[11px] font-semibold hover:text-white hover:border-white/40 transition-all"
+            style="border-color: rgba(255,255,255,0.25); color: rgba(255,255,255,0.7); letter-spacing: 0.05em;">
+            <span class="font-bold text-[10px] tracking-widest">GB</span>
             <span>EN</span>
-            <svg class="w-2.5 h-2.5 opacity-60" viewBox="0 0 10 6" fill="currentColor">
+            <svg class="w-2 h-2 opacity-50 ml-0.5" viewBox="0 0 10 6" fill="currentColor">
               <path d="M0 0l5 6 5-6z"/>
             </svg>
           </button>
@@ -96,7 +98,8 @@
             :href="route(item.route)"
             @click="mobileOpen = false"
             class="block py-3 text-[11px] font-semibold tracking-[0.12em] uppercase transition-colors border-b border-white/5"
-            :class="isActive(item.route) ? 'text-white' : 'text-white/50'"
+            :style="isActive(item.route) ? 'color: #D5B67A;' : ''"
+            :class="isActive(item.route) ? '' : 'text-white/50'"
           >{{ item.label }}</Link>
           <div class="pt-5 flex flex-col gap-3">
             <Link :href="route('pro')" @click="mobileOpen = false"
