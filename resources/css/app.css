@@ -13,6 +13,22 @@
         font-family: 'Inter', 'DM Sans', sans-serif;
         -webkit-font-smoothing: antialiased;
     }
+    /* Reset liens — pas de soulignement/couleur par défaut */
+    a { color: inherit; text-decoration: none; }
+    /* Reset boutons — pas de style navigateur */
+    button { background: none; border: none; color: inherit; cursor: pointer; font: inherit; padding: 0; }
+    /* Reset formulaires — fond sombre, texte clair */
+    input, textarea, select {
+        background-color: transparent;
+        color: inherit;
+        font: inherit;
+    }
+    select option {
+        background-color: #03142A;
+        color: #F5F3EE;
+    }
+    /* Reset images */
+    img, svg { display: inline-block; vertical-align: middle; }
 }
 
 @layer components {

@@ -8,7 +8,7 @@ export default {
         './resources/js/**/*.js',
     ],
     corePlugins: {
-        preflight: false,
+        preflight: true,
     },
     theme: {
         extend: {
