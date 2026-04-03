@@ -23,16 +23,16 @@
         <div class="flex flex-col items-center gap-4 mb-10">
           <div class="grid grid-cols-3 gap-4 w-full max-w-2xl">
             <div v-for="stat in statsTop" :key="stat.label"
-              class="rounded-xl border border-white/10 py-6 px-4 text-center"
-              style="background: rgba(10,39,69,0.7);">
-              <p class="font-serif font-light mb-1" style="color: #D5B67A; font-size: 1.8rem;">{{ stat.value }}</p>
-              <p class="text-[10px] font-semibold tracking-[0.15em] uppercase" style="color: #9DAAC0;">{{ stat.label }}</p>
+              class="rounded-xl py-7 px-4 text-center"
+              style="background: rgba(10,39,69,0.7); border: 1px solid rgba(255,255,255,0.08);">
+              <p class="font-serif italic font-light mb-1.5" style="color: #D5B67A; font-size: 2.4rem; line-height: 1;">{{ stat.value }}</p>
+              <p class="text-[10px] font-semibold tracking-[0.18em] uppercase" style="color: #9DAAC0;">{{ stat.label }}</p>
             </div>
           </div>
-          <div class="rounded-xl border border-white/10 py-6 px-12 text-center"
-            style="background: rgba(10,39,69,0.7);">
-            <p class="font-serif font-light mb-1" style="color: #D5B67A; font-size: 1.8rem;">&lt; 8h</p>
-            <p class="text-[10px] font-semibold tracking-[0.15em] uppercase" style="color: #9DAAC0;">Protocol Delivery</p>
+          <div class="rounded-xl py-7 px-16 text-center"
+            style="background: rgba(10,39,69,0.7); border: 1px solid rgba(255,255,255,0.08);">
+            <p class="font-serif italic font-light mb-1.5" style="color: #D5B67A; font-size: 2.4rem; line-height: 1;">&lt; 8h</p>
+            <p class="text-[10px] font-semibold tracking-[0.18em] uppercase" style="color: #9DAAC0;">Protocol Delivery</p>
           </div>
         </div>
 
