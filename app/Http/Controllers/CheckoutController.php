@@ -124,6 +124,8 @@ class CheckoutController extends Controller
                     'package_type'   => $c['package_type'],
                     'sessions_count' => $c['sessions'],
                     'amount'         => $c['price'],
+                    'symptoms'       => 'Consultation via panier',
+                    'medical_history'=> null,
                     'status'         => 'pending',
                     'payment_status' => 'paid',
                     'payment_intent' => 'order-' . $order->order_number,

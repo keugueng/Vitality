@@ -168,6 +168,9 @@ const isActive = (r) => { try { return route().current(r) } catch { return false
 
 function switchLocale(lang) {
   langOpen.value = false
+  // Try both session and URL parameter approaches
+  const currentUrl = new URL(window.location.href)
+  currentUrl.searchParams.set('locale', lang)
   window.location.href = route('locale.switch', lang)
 }
 

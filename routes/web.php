@@ -18,6 +18,9 @@ Route::get('/set-locale/{locale}', function ($locale) {
     if (in_array($locale, ['en', 'fr'])) {
         session(['locale' => $locale]);
         app()->setLocale($locale);
+        session()->save(); // Force save session
+        // Also set as cookie as fallback
+        cookie()->queue('locale', $locale, 525600); // 1 year
     }
     return redirect()->back();
 })->name('locale.switch');
