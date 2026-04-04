@@ -231,7 +231,7 @@ const displayTestimonials = computed(() => {
 })
 
 function goToProgram(p) {
-  if (p.slug) router.visit(route('programs.show', p.slug))
+  if (p.slug) router.visit(route('shop.show', p.slug))
 }
 
 const howSteps = [
@@ -415,9 +415,9 @@ const fallbackTestimonials = [
   font-size: .7rem; background: rgba(13,115,119,.15); border: 1px solid rgba(13,115,119,.2);
   color: #14a8a0; padding: 3px 10px; border-radius: 100px;
 }
-.prog-footer { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
-.prog-price { color: #c8a96e; font-size: 1.1rem; font-weight: 500; flex-shrink: 0; }
-.prog-actions { display: flex; gap: 8px; }
+.prog-footer { display: flex; flex-direction: column; gap: 10px; padding-top: 14px; border-top: 1px solid rgba(200,169,110,.1); }
+.prog-price { color: #c8a96e; font-size: 1.1rem; font-weight: 500; }
+.prog-actions { display: flex; gap: 6px; flex-wrap: wrap; }
 .prog-details {
   background: transparent; border: 1px solid rgba(255,255,255,.15); color: rgba(255,255,255,.6);
   font-size: .72rem; padding: 6px 12px; border-radius: 6px; cursor: pointer; transition: all .2s;
