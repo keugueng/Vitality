@@ -10,6 +10,7 @@ use App\Models\Setting;
 use App\Models\Subscription;
 use App\Models\UserProgram;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
 
@@ -64,13 +65,20 @@ class CheckoutController extends Controller
 
     public function process(Request $request)
     {
-        $request->validate([
+        $cart = session('cart', []);
+
+        $hasConsultation = collect($cart)->keys()->contains(fn($k) => str_starts_with($k, 'consult_'));
+
+        $rules = [
             'name'  => 'required|string|max:255',
             'email' => 'required|email',
             'phone' => 'nullable|string|max:30',
-        ]);
-
-        $cart = session('cart', []);
+        ];
+        if ($hasConsultation) {
+            $rules['symptoms'] = 'required|string|min:10';
+            $rules['medical_history'] = 'nullable|string';
+        }
+        $request->validate($rules);
         if (empty($cart)) {
             return redirect()->route('shop');
         }
@@ -116,7 +124,7 @@ class CheckoutController extends Controller
                     'price'         => $c['price'],
                     'quantity'      => 1,
                 ]);
-                Consultation::create([
+                $consultation = Consultation::create([
                     'user_id'         => auth()->id(),
                     'name'            => $request->name,
                     'email'           => $request->email,
@@ -127,9 +135,22 @@ class CheckoutController extends Controller
                     'status'          => 'pending',
                     'payment_status'  => 'paid',
                     'payment_intent'  => 'order-' . $order->order_number,
-                    'symptoms'        => '',
-                    'medical_history' => '',
+                    'symptoms'        => $request->symptoms ?? '',
+                    'medical_history' => $request->medical_history ?? '',
                 ]);
+                // Notify admin about new consultation
+                $adminEmail = Setting::get('admin_email', config('mail.from.address', 'admin@vitalityinside.com'));
+                try {
+                    Mail::send('mail.consultation-ordered', [
+                        'consultation' => $consultation,
+                        'order'        => $order,
+                    ], function ($msg) use ($adminEmail, $consultation) {
+                        $msg->to($adminEmail)
+                            ->subject('Nouvelle consultation #' . $consultation->id . ' — ' . $consultation->name);
+                    });
+                } catch (\Throwable $e) {
+                    \Log::warning('Admin consultation email failed: ' . $e->getMessage());
+                }
                 continue;
             }
             if ($cartItem['type'] === 'subscription') {

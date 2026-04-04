@@ -2,9 +2,9 @@
   <AppLayout>
     <section class="sub-hero">
       <div class="sub-hero-inner">
-        <p class="sub-label">Accès Illimité</p>
-        <h1 class="sub-title">Choisissez votre <em class="gold-em">abonnement</em></h1>
-        <p class="sub-sub">Accédez à 37+ protocoles audio conçus par le Dr. Éric Rosati. Sans engagement mensuel.</p>
+        <p class="sub-label">{{ t('subscribe.label') }}</p>
+        <h1 class="sub-title">{{ t('subscribe.title') }} <em class="gold-em">{{ t('subscribe.title_em') }}</em></h1>
+        <p class="sub-sub">{{ t('subscribe.sub') }}</p>
       </div>
     </section>
 
@@ -13,15 +13,15 @@
       <div class="sub-active-inner">
         <div class="sub-active-icon">✓</div>
         <div>
-          <p class="sub-active-title">Abonnement {{ activeSubscription.type === 'monthly' ? 'Mensuel' : 'Annuel' }} actif</p>
+          <p class="sub-active-title">{{ activeSubscription.type === 'monthly' ? t('subscribe.active_monthly') : t('subscribe.active_annual') }} {{ t('subscribe.active_suffix') }}</p>
           <p class="sub-active-sub">
-            Expire le {{ formatDate(activeSubscription.ends_at) }} ·
-            <Link :href="route('pro')" class="sub-active-link">Accéder à mon espace →</Link>
+            {{ t('subscribe.expires') }} {{ formatDate(activeSubscription.ends_at) }} ·
+            <Link :href="route('pro')" class="sub-active-link">{{ t('subscribe.access_space') }}</Link>
           </p>
         </div>
         <form @submit.prevent="cancelForm.post(route('subscribe.cancel'))">
           <button type="submit" class="sub-cancel-btn" :disabled="cancelForm.processing">
-            {{ cancelForm.processing ? 'Annulation…' : 'Annuler l\'abonnement' }}
+            {{ cancelForm.processing ? t('subscribe.cancelling') : t('subscribe.cancel_btn') }}
           </button>
         </form>
       </div>
@@ -34,7 +34,7 @@
           <div v-for="plan in plans" :key="plan.id"
             class="plan-card" :class="{ 'plan-card--highlight': plan.highlight, 'plan-card--selected': selectedPlan === plan.id }"
             @click="selectedPlan = plan.id">
-            <div v-if="plan.highlight" class="plan-badge">⭐ Meilleur choix</div>
+            <div v-if="plan.highlight" class="plan-badge">{{ t('subscribe.best_choice') }}</div>
             <div class="plan-header">
               <h3 class="plan-name">{{ plan.label }}</h3>
               <div class="plan-price-row">
@@ -52,14 +52,14 @@
               <div class="plan-radio" :class="{ active: selectedPlan === plan.id }">
                 <div v-if="selectedPlan === plan.id" class="plan-radio-dot"></div>
               </div>
-              <span>{{ selectedPlan === plan.id ? 'Sélectionné' : 'Choisir ce plan' }}</span>
+              <span>{{ selectedPlan === plan.id ? t('subscribe.selected') : t('subscribe.choose_plan') }}</span>
             </div>
           </div>
         </div>
 
         <!-- Payment method -->
         <div class="sub-payment-box">
-          <h3 class="sub-payment-title">Méthode de paiement</h3>
+          <h3 class="sub-payment-title">{{ t('subscribe.payment_title') }}</h3>
           <div class="payment-options">
             <label v-if="paymentConfig?.stripe_enabled"
               class="payment-option" :class="{ active: form.payment_method === 'stripe' }">
@@ -90,7 +90,7 @@
           <!-- Card fields (Stripe) -->
           <div v-if="form.payment_method === 'stripe'" class="card-fields">
             <div class="card-field-group">
-              <label class="card-label">Numéro de carte</label>
+              <label class="card-label">{{ t('checkout.card_number') }}</label>
               <input v-model="form.card_number" type="text" maxlength="19"
                 @input="formatCard"
                 class="card-input" placeholder="1234 5678 9012 3456" />
@@ -98,18 +98,18 @@
             </div>
             <div class="card-row">
               <div class="card-field-group">
-                <label class="card-label">Expiration</label>
+                <label class="card-label">{{ t('checkout.expiry') }}</label>
                 <input v-model="form.card_expiry" type="text" maxlength="5"
                   @input="formatExpiry"
                   class="card-input" placeholder="MM/AA" />
               </div>
               <div class="card-field-group">
-                <label class="card-label">CVV</label>
+                <label class="card-label">{{ t('checkout.cvv') }}</label>
                 <input v-model="form.card_cvv" type="text" maxlength="4"
                   class="card-input" placeholder="123" />
               </div>
             </div>
-            <p class="card-secure">🔒 SSL 256-bit — Vos données ne sont jamais stockées.</p>
+            <p class="card-secure">🔒 {{ t('checkout.ssl_note') }}</p>
           </div>
         </div>
 
@@ -123,8 +123,8 @@
           </template>
           <template v-else>
             <button class="sub-btn-primary" @click="subscribe" :disabled="form.processing || !selectedPlan">
-              <span v-if="form.processing">⌛ Activation en cours…</span>
-              <span v-else>🔒 S'abonner — €{{ selectedPlanData?.price }}/{{ selectedPlan === 'monthly' ? 'mois' : 'an' }}</span>
+              <span v-if="form.processing">⌛ {{ t('subscribe.subscribing') }}</span>
+              <span v-else>🔒 {{ t('subscribe.subscribe_btn') }} — €{{ selectedPlanData?.price }}/{{ selectedPlan === 'monthly' ? t('cart.monthly') : t('cart.annual') }}</span>
             </button>
             <p class="sub-cta-note">Sans engagement · Annulation en un clic · Accès immédiat</p>
           </template>
@@ -146,6 +146,7 @@
 import { ref, computed } from 'vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { Link, useForm, usePage } from '@inertiajs/vue3'
+import { useI18n } from '@/composables/useI18n'
 
 const props = defineProps({
   plans: Array,
@@ -153,6 +154,7 @@ const props = defineProps({
   paymentConfig: { type: Object, default: () => ({ stripe_enabled: true, paypal_enabled: false }) },
 })
 
+const { t } = useI18n()
 const page = usePage()
 const auth = computed(() => page.props.auth)
 

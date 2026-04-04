@@ -38,7 +38,7 @@
       </div>
 
       <div class="scroll-hint">
-        <span>Discover</span>
+        <span>{{ t('common.discover') }}</span>
         <div class="scroll-arrow"></div>
       </div>
     </section>

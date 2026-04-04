@@ -2,12 +2,12 @@
   <AppLayout>
     <section class="cart-section">
       <div class="cart-inner">
-        <h1 class="cart-title">Mon <em>Panier</em></h1>
+        <h1 class="cart-title">{{ t('cart.title') }} <em>{{ t('cart.title_em') }}</em></h1>
 
         <div v-if="items.length === 0" class="cart-empty">
           <div class="cart-empty-icon">🛒</div>
-          <p class="cart-empty-text">Votre panier est vide.</p>
-          <Link :href="route('shop')" class="cart-btn-primary">Explorer les programmes</Link>
+          <p class="cart-empty-text">{{ t('cart.empty') }}</p>
+          <Link :href="route('shop')" class="cart-btn-primary">{{ t('cart.explore') }}</Link>
         </div>
 
         <div v-else class="cart-list">
@@ -27,14 +27,14 @@
               </h3>
               <p class="cart-item-sub">
                 <template v-if="item.type === 'consultation'">
-                  {{ item.consult.sessions }} séance{{ item.consult.sessions > 1 ? 's' : '' }} · Protocole livré sous 8h
+                  {{ item.consult.sessions }} {{ item.consult.sessions > 1 ? t('cart.sessions') : t('cart.session') }} · {{ t('cart.protocol_8h') }}
                 </template>
                 <template v-else-if="item.type === 'subscription'">
-                  Accès illimité · {{ item.sub.period === 'month' ? 'mensuel' : 'annuel' }}
+                  {{ t('cart.unlimited_access') }} · {{ item.sub.period === 'month' ? t('cart.monthly') : t('cart.annual') }}
                 </template>
                 <template v-else>
-                  {{ item.program.session_duration ? item.program.session_duration + ' min/séance' : '' }}
-                  {{ item.program.cure_duration ? '· ' + item.program.cure_duration + '-jours de cure' : '' }}
+                  {{ item.program.session_duration ? item.program.session_duration + ' ' + t('cart.min_per_session') : '' }}
+                  {{ item.program.cure_duration ? '· ' + item.program.cure_duration + ' ' + t('cart.days_cure') : '' }}
                 </template>
               </p>
             </div>
@@ -51,11 +51,11 @@
           <!-- Summary -->
           <div class="cart-summary">
             <div class="cart-summary-row">
-              <span>Total</span>
+              <span>{{ t('cart.total') }}</span>
               <span class="cart-total">€{{ total }}</span>
             </div>
-            <Link :href="route('checkout')" class="cart-btn-primary">Procéder au paiement</Link>
-            <Link :href="route('shop')" class="cart-btn-outline">Continuer mes achats</Link>
+            <Link :href="route('checkout')" class="cart-btn-primary">{{ t('cart.proceed') }}</Link>
+            <Link :href="route('shop')" class="cart-btn-outline">{{ t('cart.continue') }}</Link>
           </div>
         </div>
       </div>
@@ -66,7 +66,9 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { Link } from '@inertiajs/vue3'
+import { useI18n } from '@/composables/useI18n'
 defineProps({ items: Array, total: [Number, String] })
+const { t } = useI18n()
 </script>
 
 <style scoped>

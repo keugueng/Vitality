@@ -6,26 +6,26 @@
         <div class="text-center mb-12">
           <div class="inline-flex items-center gap-2 glass-card border-glow rounded-full px-4 py-2 mb-5 text-xs font-medium text-vitality-cyan tracking-widest uppercase">
             <span class="w-1.5 h-1.5 rounded-full bg-vitality-cyan animate-pulse"></span>
-            Commande sécurisée
+            {{ t('checkout.badge') }}
           </div>
-          <h1 class="section-title text-white">Checkout <em class="text-gradient-cyan not-italic">sécurisé</em></h1>
+          <h1 class="section-title text-white">{{ t('checkout.title') }} <em class="text-gradient-cyan not-italic">{{ t('checkout.title_em') }}</em></h1>
         </div>
 
         <!-- Progress bar -->
         <div class="flex items-center justify-center gap-3 mb-12">
           <div class="flex items-center gap-2">
             <div class="w-6 h-6 rounded-full bg-vitality-cyan flex items-center justify-center text-vitality-bg text-xs font-bold">1</div>
-            <span class="text-vitality-cyan text-xs font-medium">Informations</span>
+            <span class="text-vitality-cyan text-xs font-medium">{{ t('checkout.step_info') }}</span>
           </div>
           <div class="w-16 h-px bg-white/10"></div>
           <div class="flex items-center gap-2">
             <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-vitality-text text-xs">2</div>
-            <span class="text-vitality-text text-xs">Paiement</span>
+            <span class="text-vitality-text text-xs">{{ t('checkout.step_payment') }}</span>
           </div>
           <div class="w-16 h-px bg-white/10"></div>
           <div class="flex items-center gap-2">
             <div class="w-6 h-6 rounded-full bg-white/10 flex items-center justify-center text-vitality-text text-xs">✓</div>
-            <span class="text-vitality-text text-xs">Confirmation</span>
+            <span class="text-vitality-text text-xs">{{ t('checkout.step_confirm') }}</span>
           </div>
         </div>
 
@@ -37,29 +37,50 @@
               <div class="glass-card rounded-2xl p-6 space-y-4 mb-5">
                 <h2 class="text-white font-semibold text-sm flex items-center gap-2">
                   <span class="w-5 h-5 rounded-full bg-vitality-cyan/20 flex items-center justify-center text-vitality-cyan text-xs">1</span>
-                  Vos informations
+                  {{ t('checkout.your_info') }}
                 </h2>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                   <div>
-                    <label class="text-vitality-text text-xs mb-1.5 block">Prénom et nom *</label>
+                    <label class="text-vitality-text text-xs mb-1.5 block">{{ t('checkout.full_name') }}</label>
                     <input v-model="form.name" type="text" required
                       class="w-full bg-[#071F3D] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-vitality-cyan/50 placeholder-vitality-text/40"
-                      placeholder="Votre nom complet" />
+                      :placeholder="t('checkout.name_placeholder')" />
                     <p v-if="form.errors.name" class="text-red-400 text-xs mt-1">{{ form.errors.name }}</p>
                   </div>
                   <div>
-                    <label class="text-vitality-text text-xs mb-1.5 block">Email *</label>
+                    <label class="text-vitality-text text-xs mb-1.5 block">{{ t('checkout.email') }}</label>
                     <input v-model="form.email" type="email" required
                       class="w-full bg-[#071F3D] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-vitality-cyan/50 placeholder-vitality-text/40"
-                      placeholder="votre@email.com" />
+                      :placeholder="t('checkout.email_placeholder')" />
                     <p v-if="form.errors.email" class="text-red-400 text-xs mt-1">{{ form.errors.email }}</p>
                   </div>
                 </div>
                 <div>
-                  <label class="text-vitality-text text-xs mb-1.5 block">Téléphone (optionnel)</label>
+                  <label class="text-vitality-text text-xs mb-1.5 block">{{ t('checkout.phone') }}</label>
                   <input v-model="form.phone" type="tel"
                     class="w-full bg-[#071F3D] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-vitality-cyan/50 placeholder-vitality-text/40"
-                    placeholder="+33 6 00 00 00 00" />
+                    :placeholder="t('checkout.phone_placeholder')" />
+                </div>
+              </div>
+
+              <!-- Symptoms block — shown only when a consultation is in the cart -->
+              <div v-if="hasConsultation" class="glass-card rounded-2xl p-6 space-y-4 mb-5 border border-vitality-cyan/20">
+                <h2 class="text-white font-semibold text-sm flex items-center gap-2">
+                  <span class="w-5 h-5 rounded-full bg-vitality-cyan/20 flex items-center justify-center text-vitality-cyan text-xs">🩺</span>
+                  {{ t('checkout.symptoms_title') }}
+                </h2>
+                <div>
+                  <label class="text-vitality-text text-xs mb-1.5 block">{{ t('checkout.symptoms_label') }}</label>
+                  <textarea v-model="form.symptoms" rows="4" required
+                    class="w-full bg-[#071F3D] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-vitality-cyan/50 placeholder-vitality-text/40 resize-none"
+                    :placeholder="t('checkout.symptoms_placeholder')"></textarea>
+                  <p v-if="form.errors.symptoms" class="text-red-400 text-xs mt-1">{{ form.errors.symptoms }}</p>
+                </div>
+                <div>
+                  <label class="text-vitality-text text-xs mb-1.5 block">{{ t('checkout.medical_history_label') }}</label>
+                  <textarea v-model="form.medical_history" rows="2"
+                    class="w-full bg-[#071F3D] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-vitality-cyan/50 placeholder-vitality-text/40 resize-none"
+                    :placeholder="t('checkout.medical_history_placeholder')"></textarea>
                 </div>
               </div>
 
@@ -67,13 +88,13 @@
               <div class="glass-card rounded-2xl p-6 space-y-4 mb-5">
                 <h2 class="text-white font-semibold text-sm flex items-center gap-2">
                   <span class="w-5 h-5 rounded-full bg-vitality-cyan/20 flex items-center justify-center text-vitality-cyan text-xs">2</span>
-                  Méthode de paiement
+                  {{ t('checkout.payment_method') }}
                 </h2>
 
                 <!-- No payment methods warning -->
                 <div v-if="!paymentConfig?.stripe_enabled && !paymentConfig?.paypal_enabled"
                   class="p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-sm">
-                  ⚠️ Aucun mode de paiement configuré. Contactez l'administrateur.
+                  ⚠️ {{ t('checkout.no_payment') }}
                 </div>
 
                 <!-- Payment options -->
@@ -112,27 +133,27 @@
                 <!-- PayPal redirect notice -->
                 <div v-if="form.payment_method === 'paypal' && paymentConfig?.paypal_enabled"
                   class="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs flex items-center gap-2">
-                  ℹ️ Vous serez redirigé vers PayPal pour finaliser votre paiement de façon sécurisée.
+                  ℹ️ {{ t('checkout.paypal_notice') }}
                 </div>
 
                 <!-- Card fields (shown when Stripe selected) -->
                 <div v-if="form.payment_method === 'stripe'" class="space-y-3 pt-2">
                   <div>
-                    <label class="text-vitality-text text-xs mb-1.5 block">Numéro de carte</label>
+                    <label class="text-vitality-text text-xs mb-1.5 block">{{ t('checkout.card_number') }}</label>
                     <input v-model="form.card_number" type="text" maxlength="19"
                       @input="formatCard"
                       class="w-full bg-[#071F3D] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-vitality-cyan/50 placeholder-vitality-text/40"
-                      placeholder="1234 5678 9012 3456" />
+                      :placeholder="t('checkout.card_placeholder')" />
                   </div>
                   <div class="grid grid-cols-2 gap-3">
                     <div>
-                      <label class="text-vitality-text text-xs mb-1.5 block">Expiration</label>
+                      <label class="text-vitality-text text-xs mb-1.5 block">{{ t('checkout.expiry') }}</label>
                       <input v-model="form.card_expiry" type="text" maxlength="5"
                         class="w-full bg-[#071F3D] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-vitality-cyan/50 placeholder-vitality-text/40"
-                        placeholder="MM/AA" />
+                        :placeholder="t('checkout.expiry_placeholder')" />
                     </div>
                     <div>
-                      <label class="text-vitality-text text-xs mb-1.5 block">CVV</label>
+                      <label class="text-vitality-text text-xs mb-1.5 block">{{ t('checkout.cvv') }}</label>
                       <input v-model="form.card_cvv" type="text" maxlength="4"
                         class="w-full bg-[#071F3D] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-vitality-cyan/50 placeholder-vitality-text/40"
                         placeholder="123" />
@@ -141,7 +162,7 @@
                 </div>
 
                 <p class="text-vitality-text/50 text-xs flex items-center gap-2">
-                  <span>🔒</span> SSL 256-bit chiffré · Vos données ne sont jamais stockées sur nos serveurs.
+                  <span>🔒</span> {{ t('checkout.ssl_note') }}
                 </p>
               </div>
 
@@ -149,14 +170,14 @@
               <button type="submit" :disabled="form.processing"
                 class="btn-cyan w-full text-base py-4 disabled:opacity-50 relative overflow-hidden">
                 <span v-if="!form.processing" class="flex items-center justify-center gap-2">
-                  🔒 Payer €{{ total }} en toute sécurité
+                  🔒 {{ t('checkout.pay_btn') }} €{{ total }}
                 </span>
                 <span v-else class="flex items-center justify-center gap-2">
                   <svg class="animate-spin w-4 h-4" viewBox="0 0 24 24" fill="none">
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                   </svg>
-                  Traitement en cours…
+                  {{ t('checkout.processing') }}
                 </span>
               </button>
             </form>
@@ -166,7 +187,7 @@
           <div class="lg:col-span-2">
             <div class="glass-card rounded-2xl p-6 sticky top-24">
               <h2 class="text-white font-semibold text-sm mb-5 flex items-center gap-2">
-                <span>📦</span> Récapitulatif de commande
+                <span>📦</span> {{ t('checkout.order_summary') }}
               </h2>
 
               <!-- Items -->
@@ -184,8 +205,8 @@
                       <template v-else>{{ item.program.title }}</template>
                     </p>
                     <p class="text-vitality-text text-xs mt-0.5">
-                      <template v-if="item.type === 'consultation'">{{ item.consult.sessions }} séance{{ item.consult.sessions > 1 ? 's' : '' }}</template>
-                      <template v-else-if="item.type === 'subscription'">Accès illimité · {{ item.sub.period === 'month' ? 'mensuel' : 'annuel' }}</template>
+                      <template v-if="item.type === 'consultation'">{{ item.consult.sessions }} {{ item.consult.sessions > 1 ? t('cart.sessions') : t('cart.session') }}</template>
+                      <template v-else-if="item.type === 'subscription'">{{ t('cart.unlimited_access') }} · {{ item.sub.period === 'month' ? t('cart.monthly') : t('cart.annual') }}</template>
                       <template v-else>{{ item.program.session_duration }} · {{ item.program.cure_duration }}</template>
                     </p>
                   </div>
@@ -198,25 +219,25 @@
               <!-- Total -->
               <div class="border-t border-white/10 pt-4 space-y-2 mb-5">
                 <div class="flex items-center justify-between text-sm">
-                  <span class="text-vitality-text">Sous-total</span>
+                  <span class="text-vitality-text">{{ t('checkout.subtotal') }}</span>
                   <span class="text-white">€{{ total }}</span>
                 </div>
                 <div class="flex items-center justify-between text-sm">
-                  <span class="text-vitality-text">Livraison</span>
-                  <span class="text-vitality-cyan font-medium">Gratuite</span>
+                  <span class="text-vitality-text">{{ t('checkout.free_delivery') }}</span>
+                  <span class="text-vitality-cyan font-medium">✓</span>
                 </div>
                 <div class="flex items-center justify-between font-bold text-base pt-2 border-t border-white/10">
-                  <span class="text-white">Total</span>
+                  <span class="text-white">{{ t('checkout.total_due') }}</span>
                   <span class="text-vitality-gold text-xl">€{{ total }}</span>
                 </div>
               </div>
 
               <!-- Guarantees -->
               <div class="space-y-2 text-xs text-vitality-text/70">
-                <div class="flex items-center gap-2"><span class="text-vitality-cyan">✓</span> Livraison instantanée par email</div>
-                <div class="flex items-center gap-2"><span class="text-vitality-cyan">✓</span> Accès à vie à vos programmes</div>
-                <div class="flex items-center gap-2"><span class="text-vitality-cyan">✓</span> Garantie 7 jours satisfait ou remboursé</div>
-                <div class="flex items-center gap-2"><span class="text-vitality-cyan">✓</span> Support Dr. Rosati inclus</div>
+                <div class="flex items-center gap-2"><span class="text-vitality-cyan">✓</span> {{ t('checkout.delivery_instant') }}</div>
+                <div class="flex items-center gap-2"><span class="text-vitality-cyan">✓</span> {{ t('checkout.lifetime_access') }}</div>
+                <div class="flex items-center gap-2"><span class="text-vitality-cyan">✓</span> {{ t('checkout.guarantee') }}</div>
+                <div class="flex items-center gap-2"><span class="text-vitality-cyan">✓</span> {{ t('checkout.support') }}</div>
               </div>
 
               <!-- Trust badges -->
@@ -237,14 +258,17 @@
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { useForm, usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'
+import { useI18n } from '@/composables/useI18n'
 
 const props = defineProps({
   items: Array,
   total: [Number, String],
   paymentConfig: { type: Object, default: () => ({ stripe_enabled: true, paypal_enabled: false }) },
 })
+const { t } = useI18n()
 const page = usePage()
 const user = computed(() => page.props.auth?.user)
+const hasConsultation = computed(() => props.items?.some(i => i.type === 'consultation'))
 
 const defaultMethod = computed(() => {
   if (props.paymentConfig?.stripe_enabled) return 'stripe'
@@ -260,6 +284,8 @@ const form = useForm({
   card_number: '',
   card_expiry: '',
   card_cvv: '',
+  symptoms: '',
+  medical_history: '',
 })
 
 const formatCard = (e) => {

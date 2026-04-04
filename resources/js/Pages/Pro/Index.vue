@@ -306,37 +306,42 @@
         <!-- ══ CONSULTATIONS ══ -->
         <div v-else-if="tab === 'consultations'" class="tab-content">
           <div class="tab-header">
-            <h2 class="tab-h2">Consultations</h2>
-            <Link :href="route('consultation')" class="btn-teal-sm">+ Réserver</Link>
+            <h2 class="tab-h2">{{ t('pro.consultation_tab') }}</h2>
+            <Link :href="route('consultation')" class="btn-teal-sm">{{ t('pro.book_btn') }}</Link>
           </div>
           <div v-if="myConsultations.length" class="consult-list">
             <div v-for="c in myConsultations" :key="c.id" class="consult-card">
               <div class="cc-head">
                 <div class="cc-avatar">Dr</div>
                 <div>
-                  <p class="cc-title">Consultation Dr. Éric Rosati · #{{ c.id }}</p>
+                  <p class="cc-title">{{ t('pro.consultation_title') }} · #{{ c.id }}</p>
                   <p class="cc-date">{{ fmtDate(c.created_at) }}</p>
                 </div>
                 <span class="cc-status" :class="c.status === 'delivered' ? 'ok' : c.status === 'in_progress' ? 'active' : 'pending'">
-                  {{ c.status === 'delivered' ? 'Livré' : c.status === 'in_progress' ? 'En cours' : 'En attente' }}
+                  {{ c.status === 'delivered' ? t('pro.status_delivered') : c.status === 'in_progress' ? t('pro.status_in_progress') : c.status === 'completed' ? t('pro.status_completed') : t('pro.status_pending') }}
                 </span>
               </div>
               <div class="cc-body">
-                <div class="cc-meta"><span>Formule</span><strong>{{ c.package_type === 'single' ? 'Essentiel' : c.package_type === 'progress' ? 'Évolution' : 'Transformation' }}</strong></div>
-                <div class="cc-meta"><span>Séances</span><strong>{{ c.sessions_count ?? 1 }}</strong></div>
-                <div class="cc-meta"><span>Montant</span><strong>€{{ c.amount }}</strong></div>
+                <div class="cc-meta"><span>{{ t('pro.formula_label') }}</span><strong>{{ c.package_type === 'single' ? t('pro.pkg_single') : c.package_type === 'progress' ? t('pro.pkg_progress') : t('pro.pkg_transform') }}</strong></div>
+                <div class="cc-meta"><span>{{ t('pro.sessions_label') }}</span><strong>{{ c.sessions_count ?? 1 }}</strong></div>
+                <div class="cc-meta"><span>{{ t('pro.amount_label') }}</span><strong>€{{ c.amount }}</strong></div>
               </div>
               <div v-if="c.protocol_notes" class="cc-notes">
-                <p class="cc-notes-label">Notes du Dr. Rosati :</p>
+                <p class="cc-notes-label">{{ t('pro.protocol_notes_label') }}</p>
                 <p class="cc-notes-text">{{ c.protocol_notes }}</p>
+              </div>
+              <div v-if="c.protocol_url" class="cc-notes" style="margin-top:8px;">
+                <a :href="c.protocol_url" target="_blank" rel="noopener" class="cc-protocol-link">
+                  📂 {{ t('pro.protocol_link') }}
+                </a>
               </div>
             </div>
           </div>
           <div v-else class="empty-box">
             <div class="empty-icon">🩺</div>
-            <h3>Aucune consultation</h3>
-            <p>Réservez une consultation personnalisée avec le Dr. Éric Rosati pour un protocole sur mesure.</p>
-            <Link :href="route('consultation')" class="btn-teal">Réserver — €58</Link>
+            <h3>{{ t('pro.empty_title') }}</h3>
+            <p>{{ t('pro.empty_text') }}</p>
+            <Link :href="route('consultation')" class="btn-teal">{{ t('pro.book_link') }}</Link>
           </div>
         </div>
 
@@ -485,15 +490,17 @@
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { Link, useForm, usePage } from '@inertiajs/vue3'
 import { ref, computed } from 'vue'
+import { useI18n } from '@/composables/useI18n'
 
 const page = usePage()
 const user = computed(() => page.props.auth?.user)
 const userInitial = computed(() => user.value?.name?.charAt(0).toUpperCase() || '?')
 const firstName = computed(() => user.value?.name?.split(' ')[0] || 'Utilisateur')
 
+const { t } = useI18n()
 const tab = ref('dashboard')
 const mobileMenuOpen = ref(false)
-function setTab(t) { tab.value = t; mobileMenuOpen.value = false }
+function setTab(v) { tab.value = v; mobileMenuOpen.value = false }
 
 const tabTitles = {
   dashboard:     'Tableau de bord',
@@ -771,7 +778,7 @@ const proFeatures = [
 .sac-cancel-btn { padding:8px 18px; border-radius:8px; font-size:.78rem; border:1px solid rgba(239,68,68,.25); color:rgba(239,68,68,.65); background:rgba(239,68,68,.07); cursor:pointer; transition:all .2s; }
 .sac-cancel-btn:hover { background:rgba(239,68,68,.15); color:#ef4444; }
 
-.sub-upsell { }
+.sub-upsell { min-height:0; }
 .supsell-hero { text-align:center; padding:40px 20px 32px; }
 .supsell-label { font-size:.7rem; text-transform:uppercase; letter-spacing:.18em; color:#c8a96e; margin-bottom:10px; }
 .supsell-title { font-family:'Cormorant Garamond',serif; font-size:2.2rem; font-weight:300; color:#fff; margin-bottom:12px; }
