@@ -86,6 +86,31 @@
               ⚠️ Aucun mode de paiement disponible. Contactez l'administrateur.
             </div>
           </div>
+
+          <!-- Card fields (Stripe) -->
+          <div v-if="form.payment_method === 'stripe'" class="card-fields">
+            <div class="card-field-group">
+              <label class="card-label">Numéro de carte</label>
+              <input v-model="form.card_number" type="text" maxlength="19"
+                @input="formatCard"
+                class="card-input" placeholder="1234 5678 9012 3456" />
+              <p v-if="form.errors.card_number" class="card-error">{{ form.errors.card_number }}</p>
+            </div>
+            <div class="card-row">
+              <div class="card-field-group">
+                <label class="card-label">Expiration</label>
+                <input v-model="form.card_expiry" type="text" maxlength="5"
+                  @input="formatExpiry"
+                  class="card-input" placeholder="MM/AA" />
+              </div>
+              <div class="card-field-group">
+                <label class="card-label">CVV</label>
+                <input v-model="form.card_cvv" type="text" maxlength="4"
+                  class="card-input" placeholder="123" />
+              </div>
+            </div>
+            <p class="card-secure">🔒 SSL 256-bit — Vos données ne sont jamais stockées.</p>
+          </div>
         </div>
 
         <!-- CTA -->
@@ -137,7 +162,20 @@ const selectedPlanData = computed(() => props.plans?.find(p => p.id === selected
 const form = useForm({
   plan: selectedPlan,
   payment_method: props.paymentConfig?.stripe_enabled ? 'stripe' : 'paypal',
+  card_number: '',
+  card_expiry: '',
+  card_cvv: '',
 })
+
+function formatCard(e) {
+  const val = e.target.value.replace(/\D/g, '').substring(0, 16)
+  form.card_number = val.match(/.{1,4}/g)?.join(' ') || val
+}
+function formatExpiry(e) {
+  let val = e.target.value.replace(/\D/g, '').substring(0, 4)
+  if (val.length >= 3) val = val.substring(0,2) + '/' + val.substring(2)
+  form.card_expiry = val
+}
 
 const cancelForm = useForm({})
 
@@ -262,4 +300,17 @@ function formatDate(date) {
   .sub-trust { grid-template-columns: repeat(2, 1fr); }
   .sub-active-inner { flex-wrap: wrap; }
 }
+.card-fields { margin-top: 16px; display: flex; flex-direction: column; gap: 12px; }
+.card-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.card-field-group { display: flex; flex-direction: column; gap: 5px; }
+.card-label { font-size: .72rem; color: rgba(200,220,255,.55); letter-spacing: .04em; }
+.card-input {
+  background: rgba(7,31,61,.8); border: 1px solid rgba(255,255,255,.1); border-radius: 10px;
+  padding: 11px 14px; color: #fff; font-size: .85rem; width: 100%;
+  transition: border-color .2s; outline: none;
+}
+.card-input:focus { border-color: rgba(20,168,160,.5); }
+.card-input::placeholder { color: rgba(200,220,255,.25); }
+.card-error { color: #f87171; font-size: .72rem; }
+.card-secure { font-size: .72rem; color: rgba(200,220,255,.4); margin-top: 4px; }
 </style>

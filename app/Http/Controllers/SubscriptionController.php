@@ -63,6 +63,13 @@ class SubscriptionController extends Controller
         $request->validate([
             'plan'           => 'required|in:monthly,annual',
             'payment_method' => 'required|in:stripe,paypal',
+            'card_number'    => 'required_if:payment_method,stripe|nullable|string',
+            'card_expiry'    => 'required_if:payment_method,stripe|nullable|string',
+            'card_cvv'       => 'required_if:payment_method,stripe|nullable|string',
+        ], [
+            'card_number.required_if' => 'Le numéro de carte est requis.',
+            'card_expiry.required_if' => 'La date d\'expiration est requise.',
+            'card_cvv.required_if'    => 'Le CVV est requis.',
         ]);
 
         $prices = ['monthly' => Setting::get('sub_monthly_price', '29'), 'annual' => Setting::get('sub_annual_price', '199')];

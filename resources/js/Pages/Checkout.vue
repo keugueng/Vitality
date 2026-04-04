@@ -171,15 +171,24 @@
 
               <!-- Items -->
               <div class="space-y-4 mb-5">
-                <div v-for="item in items" :key="item.program.id"
+                <div v-for="(item, idx) in items" :key="idx"
                   class="flex items-start gap-3 pb-4 border-b border-white/5 last:border-0 last:pb-0">
                   <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
-                    style="background: rgba(17,199,201,0.1);">{{ item.program.emoji || '✨' }}</div>
-                  <div class="flex-1 min-w-0">
-                    <p class="text-white text-sm font-medium leading-snug">{{ item.program.title }}</p>
-                    <p class="text-vitality-text text-xs mt-0.5">{{ item.program.session_duration }} · {{ item.program.cure_duration }}</p>
+                    style="background: rgba(17,199,201,0.1);">
+                    {{ item.type === 'consultation' ? '🩺' : (item.program?.emoji || '✨') }}
                   </div>
-                  <span class="text-vitality-gold text-sm font-bold flex-shrink-0">€{{ item.program.price }}</span>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-white text-sm font-medium leading-snug">
+                      {{ item.type === 'consultation' ? item.consult.name : item.program.title }}
+                    </p>
+                    <p class="text-vitality-text text-xs mt-0.5">
+                      <template v-if="item.type === 'consultation'">{{ item.consult.sessions }} séance{{ item.consult.sessions > 1 ? 's' : '' }}</template>
+                      <template v-else>{{ item.program.session_duration }} · {{ item.program.cure_duration }}</template>
+                    </p>
+                  </div>
+                  <span class="text-vitality-gold text-sm font-bold flex-shrink-0">
+                    €{{ item.type === 'consultation' ? item.consult.price : item.program.price }}
+                  </span>
                 </div>
               </div>
 

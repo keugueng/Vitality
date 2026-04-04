@@ -37,14 +37,14 @@
         </button>
         <div v-if="langOpen" data-lang
           style="position:absolute; top:calc(100% + 8px); right:0; background:rgba(13,32,64,.97); border:1px solid rgba(200,169,110,.25); border-radius:10px; min-width:140px; z-index:9999; padding:6px; box-shadow:0 8px 32px rgba(0,0,0,.5);">
-          <a :href="route('locale.switch', 'en')" data-lang
-            style="display:flex; align-items:center; gap:8px; padding:8px 12px; font-size:.8rem; border-radius:6px; width:100%; text-align:left; text-decoration:none; cursor:pointer;"
+          <button data-lang
+            style="display:flex; align-items:center; gap:8px; padding:8px 12px; font-size:.8rem; border-radius:6px; width:100%; text-align:left; text-decoration:none; cursor:pointer; background:none; border:none;"
             :style="locale !== 'fr' ? 'color:#c8a96e; background:rgba(200,169,110,.15);' : 'color:rgba(255,255,255,.8);'"
-            @click="langOpen=false">🇬🇧 English</a>
-          <a :href="route('locale.switch', 'fr')" data-lang
-            style="display:flex; align-items:center; gap:8px; padding:8px 12px; font-size:.8rem; border-radius:6px; width:100%; text-align:left; text-decoration:none; cursor:pointer;"
+            @click="switchLocale('en')">🇬🇧 English</button>
+          <button data-lang
+            style="display:flex; align-items:center; gap:8px; padding:8px 12px; font-size:.8rem; border-radius:6px; width:100%; text-align:left; text-decoration:none; cursor:pointer; background:none; border:none;"
             :style="locale === 'fr' ? 'color:#c8a96e; background:rgba(200,169,110,.15);' : 'color:rgba(255,255,255,.8);'"
-            @click="langOpen=false">🇫🇷 Français</a>
+            @click="switchLocale('fr')">🇫🇷 Français</button>
         </div>
       </div>
 
@@ -165,6 +165,11 @@ const navItems = computed(() => [
 ])
 
 const isActive = (r) => { try { return route().current(r) } catch { return false } }
+
+function switchLocale(lang) {
+  langOpen.value = false
+  window.location.href = route('locale.switch', lang)
+}
 
 const onScroll = () => { scrolled.value = window.scrollY > 30 }
 const onClickOut = (e) => { if (langOpen.value && !e.target.closest('[data-lang]')) langOpen.value = false }

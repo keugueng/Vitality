@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Consultation;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Program;
@@ -23,9 +24,19 @@ class CheckoutController extends Controller
         $items = [];
         $total = 0;
         foreach ($cart as $id => $item) {
+            if (str_starts_with($id, 'consult_')) {
+                $items[] = [
+                    'type'    => 'consultation',
+                    'key'     => $id,
+                    'consult' => $item,
+                    'quantity' => 1,
+                ];
+                $total += $item['price'];
+                continue;
+            }
             $program = Program::find($id);
             if ($program) {
-                $items[] = ['program' => $program, 'quantity' => $item['quantity']];
+                $items[] = ['type' => 'program', 'program' => $program, 'quantity' => $item['quantity']];
                 $total += $program->price * $item['quantity'];
             }
         }
@@ -56,9 +67,14 @@ class CheckoutController extends Controller
         $subtotal = 0;
         $cartItems = [];
         foreach ($cart as $id => $item) {
+            if (str_starts_with($id, 'consult_')) {
+                $cartItems[] = ['type' => 'consultation', 'key' => $id, 'consult' => $item];
+                $subtotal += $item['price'];
+                continue;
+            }
             $program = Program::find($id);
             if ($program) {
-                $cartItems[] = ['program' => $program, 'quantity' => $item['quantity']];
+                $cartItems[] = ['type' => 'program', 'program' => $program, 'quantity' => $item['quantity']];
                 $subtotal += $program->price * $item['quantity'];
             }
         }
@@ -75,6 +91,29 @@ class CheckoutController extends Controller
         ]);
 
         foreach ($cartItems as $cartItem) {
+            if ($cartItem['type'] === 'consultation') {
+                $c = $cartItem['consult'];
+                OrderItem::create([
+                    'order_id'      => $order->id,
+                    'program_id'    => null,
+                    'program_title' => $c['name'],
+                    'price'         => $c['price'],
+                    'quantity'      => 1,
+                ]);
+                Consultation::create([
+                    'user_id'        => auth()->id(),
+                    'name'           => $request->name,
+                    'email'          => $request->email,
+                    'phone'          => $request->phone ?? '',
+                    'package_type'   => $c['package_type'],
+                    'sessions_count' => $c['sessions'],
+                    'amount'         => $c['price'],
+                    'status'         => 'pending',
+                    'payment_status' => 'paid',
+                    'payment_intent' => 'order-' . $order->order_number,
+                ]);
+                continue;
+            }
             OrderItem::create([
                 'order_id'      => $order->id,
                 'program_id'    => $cartItem['program']->id,
@@ -82,7 +121,6 @@ class CheckoutController extends Controller
                 'price'         => $cartItem['program']->price,
                 'quantity'      => $cartItem['quantity'],
             ]);
-
             if (auth()->check()) {
                 UserProgram::firstOrCreate([
                     'user_id'    => auth()->id(),
