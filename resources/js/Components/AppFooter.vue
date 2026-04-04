@@ -35,7 +35,7 @@
             <li><Link :href="route('about')"        class="footer-link">About Dr. Rosati</Link></li>
             <li><Link :href="route('consultation')" class="footer-link">Consultation</Link></li>
             <li><Link :href="route('blog')"         class="footer-link">Blog</Link></li>
-            <li><Link :href="route('legal')"        class="footer-link">Legal Notice</Link></li>
+            <li><Link :href="route('legal-notice')" class="footer-link">Legal Notice</Link></li>
           </ul>
         </div>
 
@@ -43,10 +43,10 @@
         <div>
           <h5 class="footer-col-title">Account</h5>
           <ul class="footer-links">
-            <li><Link :href="route('dashboard')"   class="footer-link">My Account</Link></li>
-            <li><Link :href="route('my-program')"  class="footer-link">My Programs</Link></li>
-            <li><Link :href="route('pro')"         class="footer-link">PRO Space</Link></li>
-            <li><Link :href="route('login')"       class="footer-link">Login</Link></li>
+            <li v-if="auth.user"><Link :href="route('dashboard')" class="footer-link">My Account</Link></li>
+            <li v-if="auth.user && auth.user.has_program"><Link :href="route('my-program')" class="footer-link">My Programs</Link></li>
+            <li><Link :href="route('pro')" class="footer-link">PRO Space</Link></li>
+            <li v-if="!auth.user"><Link :href="route('login')" class="footer-link">Login</Link></li>
           </ul>
         </div>
       </div>
@@ -55,7 +55,7 @@
       <div class="footer-bottom">
         <p class="footer-copy">© {{ year }} Vitality Inside — All rights reserved.</p>
         <div class="footer-legal">
-          <Link :href="route('legal')" class="footer-legal-link">Legal Notice</Link>
+          <Link :href="route('legal-notice')" class="footer-legal-link">Legal Notice</Link>
           <span class="footer-sep">·</span>
           <a href="#" class="footer-legal-link">Privacy Policy</a>
           <span class="footer-sep">·</span>
@@ -67,9 +67,12 @@
 </template>
 
 <script setup>
-import { Link } from '@inertiajs/vue3'
+import { Link, usePage } from '@inertiajs/vue3'
+import { computed } from 'vue'
 
 const year = new Date().getFullYear()
+const page = usePage()
+const auth = computed(() => page.props.auth)
 
 const socials = [
   {

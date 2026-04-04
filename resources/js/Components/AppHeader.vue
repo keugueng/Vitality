@@ -29,16 +29,22 @@
     <div class="hidden lg:flex items-center" style="gap:16px;">
 
       <!-- Lang switcher -->
-      <div class="relative" style="display:inline-flex; align-items:center;">
-        <button @click="langOpen = !langOpen"
+      <div class="relative" data-lang style="display:inline-flex; align-items:center;">
+        <button @click.stop="langOpen = !langOpen"
           style="background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.25); color:#fff; padding:5px 11px; border-radius:20px; cursor:pointer; font-size:.75rem; letter-spacing:.06em; display:flex; align-items:center; gap:5px; transition:all .2s; font-family:inherit;"
           class="hover:border-white/50">
-          🇬🇧 EN ▾
+          {{ locale === 'fr' ? '�🇷 FR' : '�🇬🇧 EN' }} ▾
         </button>
-        <div v-if="langOpen"
+        <div v-if="langOpen" data-lang
           style="position:absolute; top:calc(100% + 8px); right:0; background:rgba(13,32,64,.97); border:1px solid rgba(200,169,110,.25); border-radius:10px; min-width:140px; z-index:9999; padding:6px; box-shadow:0 8px 32px rgba(0,0,0,.5);">
-          <button @click="langOpen=false" style="display:flex; align-items:center; gap:8px; padding:8px 12px; color:#c8a96e; font-size:.8rem; border-radius:6px; width:100%; text-align:left; background:rgba(200,169,110,.15);">🇬🇧 English</button>
-          <button @click="langOpen=false" style="display:flex; align-items:center; gap:8px; padding:8px 12px; color:rgba(255,255,255,.8); font-size:.8rem; border-radius:6px; width:100%; text-align:left;">🇫🇷 Français</button>
+          <a :href="route('locale.switch', 'en')" data-lang
+            style="display:flex; align-items:center; gap:8px; padding:8px 12px; font-size:.8rem; border-radius:6px; width:100%; text-align:left; text-decoration:none; cursor:pointer;"
+            :style="locale !== 'fr' ? 'color:#c8a96e; background:rgba(200,169,110,.15);' : 'color:rgba(255,255,255,.8);'"
+            @click="langOpen=false">🇬🇧 English</a>
+          <a :href="route('locale.switch', 'fr')" data-lang
+            style="display:flex; align-items:center; gap:8px; padding:8px 12px; font-size:.8rem; border-radius:6px; width:100%; text-align:left; text-decoration:none; cursor:pointer;"
+            :style="locale === 'fr' ? 'color:#c8a96e; background:rgba(200,169,110,.15);' : 'color:rgba(255,255,255,.8);'"
+            @click="langOpen=false">🇫🇷 Français</a>
         </div>
       </div>
 
@@ -138,6 +144,7 @@ import { Link, usePage } from '@inertiajs/vue3'
 const page      = usePage()
 const auth      = computed(() => page.props.auth)
 const cartCount = computed(() => page.props.cart_count || 0)
+const locale    = computed(() => page.props.locale || 'en')
 
 const scrolled   = ref(false)
 const mobileOpen = ref(false)
@@ -154,7 +161,7 @@ const navItems = [
 const isActive = (r) => { try { return route().current(r) } catch { return false } }
 
 const onScroll = () => { scrolled.value = window.scrollY > 30 }
-const onClickOut = (e) => { if (!e.target.closest('[data-lang]')) langOpen.value = false }
+const onClickOut = (e) => { if (langOpen.value && !e.target.closest('[data-lang]')) langOpen.value = false }
 
 onMounted(() => {
   window.addEventListener('scroll', onScroll)

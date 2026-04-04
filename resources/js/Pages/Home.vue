@@ -167,7 +167,7 @@
     <section class="doctor-section">
       <div class="doctor-grid">
         <div class="doctor-avatar">
-          <img src="/images/dr-rosati.jpg" alt="Dr. Éric Rosati" onerror="this.style.display='none'">
+          <img src="/images/dr-rosati.jpeg" alt="Dr. Éric Rosati" onerror="this.style.display='none'">
         </div>
         <div>
           <h3 class="doctor-name">Dr. Éric Rosati</h3>

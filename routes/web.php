@@ -11,6 +11,15 @@ use App\Http\Controllers\ProController;
 use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
 
+/* ─── Locale Switch ─── */
+Route::get('/set-locale/{locale}', function ($locale) {
+    if (in_array($locale, ['en', 'fr'])) {
+        session(['locale' => $locale]);
+        app()->setLocale($locale);
+    }
+    return redirect()->back();
+})->name('locale.switch');
+
 /* ─── Public Pages ─── */
 Route::get('/', [PageController::class, 'home'])->name('home');
 Route::get('/about', [PageController::class, 'about'])->name('about');
