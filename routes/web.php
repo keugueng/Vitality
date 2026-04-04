@@ -4,6 +4,7 @@ use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
+use App\Http\Controllers\PaymentController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\SubscriptionController;
@@ -49,6 +50,12 @@ Route::prefix('cart')->name('cart.')->group(function () {
     Route::post('/update', [CartController::class, 'update'])->name('update');
     Route::post('/clear', [CartController::class, 'clear'])->name('clear');
 });
+
+/* ─── Payment ─── */
+Route::get('/payment/stripe/public-key', [PaymentController::class, 'stripePublicKey'])->name('payment.stripe.pubkey');
+Route::post('/payment/stripe/intent', [PaymentController::class, 'stripeIntent'])->name('payment.stripe.intent');
+Route::post('/payment/paypal/create-order', [PaymentController::class, 'paypalCreateOrder'])->name('payment.paypal.create');
+Route::post('/payment/paypal/capture-order', [PaymentController::class, 'paypalCaptureOrder'])->name('payment.paypal.capture');
 
 /* ─── Checkout ─── */
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');

@@ -136,29 +136,19 @@
                   ℹ️ {{ t('checkout.paypal_notice') }}
                 </div>
 
-                <!-- Card fields (shown when Stripe selected) -->
+                <!-- Stripe Card Element (injected by Stripe.js) -->
                 <div v-if="form.payment_method === 'stripe'" class="space-y-3 pt-2">
                   <div>
                     <label class="text-vitality-text text-xs mb-1.5 block">{{ t('checkout.card_number') }}</label>
-                    <input v-model="form.card_number" type="text" maxlength="19"
-                      @input="formatCard"
-                      class="w-full bg-[#071F3D] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-vitality-cyan/50 placeholder-vitality-text/40"
-                      :placeholder="t('checkout.card_placeholder')" />
+                    <div id="stripe-card-element" class="w-full bg-[#071F3D] border border-white/10 rounded-xl px-4 py-3 text-white text-sm min-h-[46px]"></div>
                   </div>
-                  <div class="grid grid-cols-2 gap-3">
-                    <div>
-                      <label class="text-vitality-text text-xs mb-1.5 block">{{ t('checkout.expiry') }}</label>
-                      <input v-model="form.card_expiry" type="text" maxlength="5"
-                        class="w-full bg-[#071F3D] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-vitality-cyan/50 placeholder-vitality-text/40"
-                        :placeholder="t('checkout.expiry_placeholder')" />
-                    </div>
-                    <div>
-                      <label class="text-vitality-text text-xs mb-1.5 block">{{ t('checkout.cvv') }}</label>
-                      <input v-model="form.card_cvv" type="text" maxlength="4"
-                        class="w-full bg-[#071F3D] border border-white/10 rounded-xl px-4 py-3 text-white text-sm focus:outline-none focus:border-vitality-cyan/50 placeholder-vitality-text/40"
-                        placeholder="123" />
-                    </div>
-                  </div>
+                  <p v-if="stripeError" class="text-red-400 text-xs">{{ stripeError }}</p>
+                </div>
+
+              <!-- PayPal Button (injected by PayPal SDK) -->
+                <div v-if="form.payment_method === 'paypal'" class="pt-2">
+                  <div id="paypal-button-container" class="min-h-[48px]"></div>
+                  <p v-if="paypalError" class="text-red-400 text-xs mt-2">{{ paypalError }}</p>
                 </div>
 
                 <p class="text-vitality-text/50 text-xs flex items-center gap-2">
@@ -166,10 +156,13 @@
                 </p>
               </div>
 
-              <!-- Submit -->
-              <button type="submit" :disabled="form.processing"
+              <!-- Payment error -->
+              <p v-if="form.errors.payment" class="text-red-400 text-xs -mt-2 mb-2">{{ form.errors.payment }}</p>
+
+              <!-- Submit (Stripe only — PayPal uses its own button) -->
+              <button v-if="form.payment_method !== 'paypal'" type="submit" :disabled="form.processing || stripeLoading"
                 class="btn-cyan w-full text-base py-4 disabled:opacity-50 relative overflow-hidden">
-                <span v-if="!form.processing" class="flex items-center justify-center gap-2">
+                <span v-if="!form.processing && !stripeLoading" class="flex items-center justify-center gap-2">
                   🔒 {{ t('checkout.pay_btn') }} €{{ total }}
                 </span>
                 <span v-else class="flex items-center justify-center gap-2">
@@ -177,7 +170,7 @@
                     <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"/>
                     <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z"/>
                   </svg>
-                  {{ t('checkout.processing') }}
+                  {{ stripeLoading ? 'Chargement Stripe…' : t('checkout.processing') }}
                 </span>
               </button>
             </form>
@@ -256,8 +249,8 @@
 
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue'
-import { useForm, usePage } from '@inertiajs/vue3'
-import { computed } from 'vue'
+import { useForm, usePage, router } from '@inertiajs/vue3'
+import { computed, ref, watch, onMounted, nextTick } from 'vue'
 import { useI18n } from '@/composables/useI18n'
 
 const props = defineProps({
@@ -281,17 +274,157 @@ const form = useForm({
   email: user.value?.email || '',
   phone: '',
   payment_method: defaultMethod.value,
-  card_number: '',
-  card_expiry: '',
-  card_cvv: '',
   symptoms: '',
   medical_history: '',
+  payment_intent_id: '',
+  paypal_order_id: '',
 })
 
-const formatCard = (e) => {
-  let val = e.target.value.replace(/\D/g, '').substring(0, 16)
-  form.card_number = val.match(/.{1,4}/g)?.join(' ') || val
+// ── Stripe ──────────────────────────────────────────────────────────────
+const stripeInstance = ref(null)
+const stripeCardEl   = ref(null)
+const stripeError    = ref('')
+const stripeLoading  = ref(false)
+
+function getCsrf() {
+  return document.querySelector('meta[name="csrf-token"]')?.content || ''
 }
 
-const submit = () => form.post(route('checkout.process'))
+async function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${src}"]`)) { resolve(); return }
+    const s = document.createElement('script')
+    s.src = src; s.onload = resolve; s.onerror = reject
+    document.head.appendChild(s)
+  })
+}
+
+async function initStripe() {
+  if (!props.paymentConfig?.stripe_enabled) return
+  stripeLoading.value = true
+  try {
+    await loadScript('https://js.stripe.com/v3/')
+    const res = await fetch('/payment/stripe/public-key')
+    const { public_key } = await res.json()
+    if (!public_key) { stripeLoading.value = false; return }
+    stripeInstance.value = window.Stripe(public_key)
+    await nextTick()
+    mountStripeCard()
+  } catch (e) {
+    stripeError.value = 'Stripe indisponible. Veuillez réessayer.'
+  } finally {
+    stripeLoading.value = false
+  }
+}
+
+function mountStripeCard() {
+  if (!stripeInstance.value) return
+  const el = document.getElementById('stripe-card-element')
+  if (!el || stripeCardEl.value) return
+  const elements = stripeInstance.value.elements()
+  stripeCardEl.value = elements.create('card', {
+    style: {
+      base: { color: '#ffffff', fontSize: '14px', fontFamily: 'inherit', '::placeholder': { color: 'rgba(200,220,255,0.4)' } },
+      invalid: { color: '#f87171' },
+    },
+  })
+  stripeCardEl.value.mount('#stripe-card-element')
+}
+
+// ── PayPal ───────────────────────────────────────────────────────────────
+const paypalError = ref('')
+let paypalButtonsRendered = false
+
+async function initPaypal() {
+  if (!props.paymentConfig?.paypal_enabled) return
+  const clientId = props.paymentConfig?.paypal_client_id
+  if (!clientId) { paypalError.value = 'PayPal non configuré (clé manquante).'; return }
+  try {
+    await loadScript(`https://www.paypal.com/sdk/js?client-id=${clientId}&currency=EUR`)
+    await nextTick()
+    renderPaypalButtons()
+  } catch (e) {
+    paypalError.value = 'PayPal indisponible. Veuillez réessayer.'
+  }
+}
+
+function renderPaypalButtons() {
+  if (!window.paypal || paypalButtonsRendered) return
+  const container = document.getElementById('paypal-button-container')
+  if (!container) return
+  paypalButtonsRendered = true
+  window.paypal.Buttons({
+    style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'pay' },
+    createOrder: async () => {
+      paypalError.value = ''
+      const res = await fetch('/payment/paypal/create-order', {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': getCsrf(), 'Content-Type': 'application/json', Accept: 'application/json' },
+      })
+      const data = await res.json()
+      if (!res.ok) { paypalError.value = data.error || 'Erreur PayPal'; throw new Error(data.error) }
+      return data.order_id
+    },
+    onApprove: async (data) => {
+      const res = await fetch('/payment/paypal/capture-order', {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': getCsrf(), 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ order_id: data.orderID }),
+      })
+      const result = await res.json()
+      if (!res.ok) { paypalError.value = result.error || 'Capture PayPal échouée'; return }
+      form.paypal_order_id = data.orderID
+      form.payment_method  = 'paypal'
+      form.post(route('checkout.process'))
+    },
+    onError: (err) => { paypalError.value = 'Erreur PayPal: ' + (err.message || err) },
+  }).render('#paypal-button-container')
+}
+
+// ── Watch payment method changes ─────────────────────────────────────────
+watch(() => form.payment_method, async (method) => {
+  if (method === 'stripe' && !stripeInstance.value) {
+    await initStripe()
+  } else if (method === 'stripe' && stripeInstance.value) {
+    await nextTick()
+    mountStripeCard()
+  } else if (method === 'paypal') {
+    paypalButtonsRendered = false
+    await nextTick()
+    await initPaypal()
+  }
+})
+
+onMounted(async () => {
+  if (form.payment_method === 'stripe') await initStripe()
+  else if (form.payment_method === 'paypal') await initPaypal()
+})
+
+// ── Submit ────────────────────────────────────────────────────────────────
+const submit = async () => {
+  stripeError.value = ''
+  if (form.payment_method === 'stripe') {
+    if (!stripeInstance.value || !stripeCardEl.value) {
+      stripeError.value = 'Stripe non initialisé. Rechargez la page.'
+      return
+    }
+    form.processing = true
+    // Create PaymentIntent
+    const intentRes = await fetch('/payment/stripe/intent', {
+      method: 'POST',
+      headers: { 'X-CSRF-TOKEN': getCsrf(), 'Content-Type': 'application/json', Accept: 'application/json' },
+    })
+    const intentData = await intentRes.json()
+    if (!intentRes.ok) { stripeError.value = intentData.error || 'Erreur Stripe'; form.processing = false; return }
+
+    const { error, paymentIntent } = await stripeInstance.value.confirmCardPayment(
+      intentData.client_secret,
+      { payment_method: { card: stripeCardEl.value } }
+    )
+    if (error) { stripeError.value = error.message; form.processing = false; return }
+    form.payment_intent_id = paymentIntent.id
+    form.post(route('checkout.process'))
+  }
+  // PayPal is handled by PayPal button callback above
+}
 </script>

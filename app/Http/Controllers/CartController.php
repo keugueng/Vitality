@@ -57,7 +57,7 @@ class CartController extends Controller
         $cart = session('cart', []);
         $cart["consult_{$request->package_type}"] = $pkg;
         session(['cart' => $cart]);
-        return back()->with('success', 'Consultation ajoutée au panier.');
+        return redirect()->route('checkout')->with('success', 'Consultation ajoutée au panier.');
     }
 
     public function addSubscription(Request $request)

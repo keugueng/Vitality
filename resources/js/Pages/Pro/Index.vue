@@ -61,10 +61,11 @@
             <svg class="aside-svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/></svg>
             Consultation
           </Link>
-          <Link v-if="user?.is_pro" :href="route('pro.dashboard')" class="aside-ext-link aside-ext-pro">
+          <button v-if="user?.is_pro" :class="{ active: tab === 'praticien' }" @click="setTab('praticien')" style="color:#c8a96e">
             <svg class="aside-svg" viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/></svg>
             Espace Praticien
-          </Link>
+            <span v-if="proStats?.patients_count" class="aside-count">{{ proStats.patients_count }}</span>
+          </button>
         </nav>
 
         <div style="flex:1"></div>
@@ -345,6 +346,124 @@
           </div>
         </div>
 
+        <!-- ══ PRATICIEN ══ -->
+        <div v-else-if="tab === 'praticien'" class="tab-content">
+          <div class="tab-header">
+            <h2 class="tab-h2" style="color:#c8a96e">Espace Praticien</h2>
+          </div>
+
+          <!-- Stats row -->
+          <div class="kpi-row" v-if="proStats" style="margin-bottom:28px">
+            <div class="kpi-card">
+              <p class="kpi-label">Patients suivis</p>
+              <p class="kpi-value">{{ proStats.patients_count }}</p>
+            </div>
+            <div class="kpi-card">
+              <p class="kpi-label">Protocoles actifs</p>
+              <p class="kpi-value">{{ proStats.protocols_active }}</p>
+            </div>
+            <div class="kpi-card">
+              <p class="kpi-label">Commission totale</p>
+              <p class="kpi-value">€{{ proStats.commission_total }}</p>
+            </div>
+            <div class="kpi-card">
+              <p class="kpi-label">Taux commission</p>
+              <p class="kpi-value">{{ proStats.commission_rate }}%</p>
+            </div>
+          </div>
+
+          <div class="prat-grid">
+            <!-- Add patient form -->
+            <div class="cc-card">
+              <h3 class="cc-title">Ajouter un patient</h3>
+              <form @submit.prevent="submitPatient" class="cc-form">
+                <div class="field-group">
+                  <label>Nom complet *</label>
+                  <input v-model="patientForm.name" required placeholder="Jean Dupont" />
+                  <p v-if="patientForm.errors.name" class="field-error">{{ patientForm.errors.name }}</p>
+                </div>
+                <div class="field-group">
+                  <label>Email</label>
+                  <input v-model="patientForm.email" type="email" placeholder="jean@exemple.com" />
+                </div>
+                <div class="prat-grid-2">
+                  <div class="field-group">
+                    <label>Téléphone</label>
+                    <input v-model="patientForm.phone" placeholder="+33 6 00 00 00 00" />
+                  </div>
+                  <div class="field-group">
+                    <label>Âge</label>
+                    <input v-model="patientForm.age" type="number" min="1" max="120" placeholder="45" />
+                  </div>
+                </div>
+                <div class="field-group">
+                  <label>Antécédents médicaux</label>
+                  <textarea v-model="patientForm.medical_history" rows="2" placeholder="Maladies chroniques, traitements en cours…"></textarea>
+                </div>
+                <button type="submit" class="btn-teal" :disabled="patientForm.processing">
+                  {{ patientForm.processing ? 'Ajout…' : '+ Ajouter le patient' }}
+                </button>
+              </form>
+            </div>
+
+            <!-- Assign protocol form -->
+            <div class="cc-card">
+              <h3 class="cc-title">Assigner un protocole</h3>
+              <form @submit.prevent="submitProtocol" class="cc-form">
+                <div class="field-group">
+                  <label>Patient *</label>
+                  <select v-model="protocolForm.patient_id" required>
+                    <option value="" disabled>Sélectionner un patient…</option>
+                    <option v-for="p in proPatients" :key="p.id" :value="p.id">{{ p.name }}</option>
+                  </select>
+                  <p v-if="protocolForm.errors.patient_id" class="field-error">{{ protocolForm.errors.patient_id }}</p>
+                </div>
+                <div class="field-group">
+                  <label>Programme *</label>
+                  <select v-model="protocolForm.program_id" required>
+                    <option value="" disabled>Sélectionner un programme…</option>
+                    <option v-for="prog in proPrograms" :key="prog.id" :value="prog.id">{{ prog.title }}</option>
+                  </select>
+                  <p v-if="protocolForm.errors.program_id" class="field-error">{{ protocolForm.errors.program_id }}</p>
+                </div>
+                <div class="field-group">
+                  <label>Notes cliniques</label>
+                  <textarea v-model="protocolForm.notes" rows="2" placeholder="Fréquence d'utilisation, recommandations…"></textarea>
+                </div>
+                <button type="submit" class="btn-teal" :disabled="protocolForm.processing">
+                  {{ protocolForm.processing ? 'Assignation…' : 'Assigner le protocole' }}
+                </button>
+              </form>
+            </div>
+          </div>
+
+          <!-- Patients list -->
+          <div class="cc-card" style="margin-top:24px">
+            <h3 class="cc-title">Mes Patients ({{ proPatients.length }})</h3>
+            <div v-if="proPatients.length" class="patients-list">
+              <div v-for="patient in proPatients" :key="patient.id" class="patient-row">
+                <div class="patient-avatar">{{ patient.name.charAt(0).toUpperCase() }}</div>
+                <div class="patient-info">
+                  <p class="patient-name">{{ patient.name }}</p>
+                  <p class="patient-meta">{{ patient.email || '—' }} · {{ patient.age ? patient.age + ' ans' : '' }}</p>
+                </div>
+                <div class="patient-protocols">
+                  <span v-for="proto in patient.protocols" :key="proto.id" class="proto-badge"
+                    :class="proto.status === 'completed' ? 'proto-done' : proto.status === 'assigned' ? 'proto-active' : ''">
+                    {{ proto.program?.title || '—' }}
+                  </span>
+                  <span v-if="!patient.protocols?.length" class="proto-badge proto-none">Aucun protocole</span>
+                </div>
+              </div>
+            </div>
+            <div v-else class="empty-box">
+              <div class="empty-icon">👥</div>
+              <h3>Aucun patient pour l'instant</h3>
+              <p>Ajoutez votre premier patient via le formulaire ci-dessus.</p>
+            </div>
+          </div>
+        </div>
+
         <!-- ══ SUBSCRIPTION ══ -->
         <div v-else-if="tab === 'subscription'" class="tab-content">
           <div class="tab-header">
@@ -510,6 +629,7 @@ const tabTitles = {
   subscription:  'Mon Abonnement',
   profile:       'Mon Profil',
   cart:          'Mon Panier',
+  praticien:     'Espace Praticien',
 }
 
 const props = defineProps({
@@ -519,6 +639,9 @@ const props = defineProps({
   subscription:  { type: Object,         default: null },
   cartItems:     { type: Array,          default: () => [] },
   cartTotal:     { type: [Number,String], default: 0 },
+  proPatients:   { type: Array,          default: () => [] },
+  proPrograms:   { type: Array,          default: () => [] },
+  proStats:      { type: Object,         default: null },
 })
 
 const myPrograms      = computed(() => props.programs || [])
@@ -528,6 +651,16 @@ const cartItems       = computed(() => props.cartItems || [])
 const cartTotal       = computed(() => props.cartTotal || 0)
 const cartCount       = computed(() => cartItems.value.length)
 const subscription    = computed(() => props.subscription)
+const proPatients     = computed(() => props.proPatients || [])
+const proPrograms     = computed(() => props.proPrograms || [])
+const proStats        = computed(() => props.proStats)
+
+// Praticien forms
+const patientForm = useForm({ name: '', email: '', phone: '', age: '', gender: '', medical_history: '' })
+const submitPatient = () => patientForm.post(route('pro.patients.store'), { preserveScroll: true, onSuccess: () => patientForm.reset() })
+
+const protocolForm = useForm({ patient_id: '', program_id: '', notes: '' })
+const submitProtocol = () => protocolForm.post(route('pro.protocols.assign'), { preserveScroll: true, onSuccess: () => protocolForm.reset() })
 
 const loginForm  = useForm({ email: '', password: '', remember: false })
 const submitLogin = () => loginForm.post(route('login'))
@@ -861,6 +994,34 @@ const proFeatures = [
 .btn-outline-sm { display:inline-flex; align-items:center; padding:9px 18px; border-radius:9px; font-size:.8rem; font-weight:500; border:1px solid rgba(255,255,255,.1); color:rgba(200,220,255,.6); background:none; text-decoration:none; cursor:pointer; transition:all .2s; }
 .btn-outline-sm:hover { border-color:rgba(200,169,110,.3); color:#e8d5a3; }
 
+/* ══ PRATICIEN ══ */
+.prat-grid { display:grid; grid-template-columns:1fr 1fr; gap:20px; }
+.prat-grid-2 { display:grid; grid-template-columns:1fr 1fr; gap:12px; }
+.cc-card { background:rgba(12,26,46,.7); border:1px solid rgba(255,255,255,.06); border-radius:14px; padding:22px 24px; }
+.cc-title { font-size:.95rem; font-weight:600; color:#fff; margin-bottom:18px; }
+.cc-form { display:flex; flex-direction:column; gap:14px; }
+.field-group { display:flex; flex-direction:column; gap:6px; }
+.field-group label { font-size:.72rem; font-weight:600; color:rgba(200,220,255,.4); letter-spacing:.04em; text-transform:uppercase; }
+.field-group input, .field-group select, .field-group textarea {
+  background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); border-radius:9px;
+  padding:10px 13px; color:#fff; font-size:.875rem; outline:none; transition:border-color .2s; width:100%;
+}
+.field-group input:focus, .field-group select, .field-group textarea:focus { border-color:rgba(20,168,160,.4); }
+.field-group select option { background:#071F3D; color:#fff; }
+.field-group textarea { resize:vertical; }
+.field-error { font-size:.72rem; color:#f87171; margin-top:2px; }
+.patients-list { display:flex; flex-direction:column; gap:12px; }
+.patient-row { display:flex; align-items:center; gap:14px; padding:14px 16px; background:rgba(255,255,255,.02); border:1px solid rgba(255,255,255,.05); border-radius:10px; flex-wrap:wrap; }
+.patient-avatar { width:38px; height:38px; border-radius:10px; background:linear-gradient(135deg,#0d7377,#14a8a0); display:flex; align-items:center; justify-content:center; font-size:.9rem; font-weight:700; color:#fff; flex-shrink:0; }
+.patient-info { flex:1; min-width:120px; }
+.patient-name { font-size:.88rem; font-weight:600; color:#fff; }
+.patient-meta { font-size:.72rem; color:rgba(200,220,255,.4); margin-top:2px; }
+.patient-protocols { display:flex; gap:6px; flex-wrap:wrap; }
+.proto-badge { font-size:.65rem; font-weight:700; padding:3px 10px; border-radius:100px; border:1px solid rgba(255,255,255,.08); color:rgba(200,220,255,.5); background:rgba(255,255,255,.04); }
+.proto-active { background:rgba(20,168,160,.12); border-color:rgba(20,168,160,.25); color:#14a8a0; }
+.proto-done { background:rgba(134,239,172,.1); border-color:rgba(134,239,172,.2); color:#86efac; }
+.proto-none { color:rgba(200,220,255,.25); }
+
 /* ══ MOBILE OVERLAY ══ */
 .pro-mobile-overlay {
   position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:199;
@@ -878,6 +1039,8 @@ const proFeatures = [
 /* ══ RESPONSIVE ══ */
 @media (max-width:1024px) {
   .kpi-row { grid-template-columns:repeat(2,1fr); }
+  .prat-grid { grid-template-columns:1fr; }
+  .prat-grid-2 { grid-template-columns:1fr; }
   .dash-grid { grid-template-columns:1fr; }
   .sec-grid { grid-template-columns:1fr; }
   .pform-row { grid-template-columns:1fr; }

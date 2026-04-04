@@ -47,8 +47,29 @@ class ProController extends Controller
             }
         }
 
+        // Practitioner data (shown only if user is_pro)
+        $proPatients  = collect();
+        $proPrograms  = collect();
+        $proStats     = null;
+        if ($user->is_pro) {
+            $pro = $user->proProfile ?? ProUser::firstOrCreate(
+                ['user_id' => $user->id],
+                ['commission_rate' => 20, 'total_commissions' => 0, 'status' => 'active']
+            );
+            $proPatients = Patient::with('protocols.program')
+                ->where('pro_user_id', $pro->id)->latest()->get();
+            $proPrograms = Program::with('category')->where('is_active', true)->get();
+            $proStats = [
+                'patients_count'   => $proPatients->count(),
+                'protocols_active' => PatientProtocol::whereIn('patient_id', $proPatients->pluck('id'))->where('status', 'assigned')->count(),
+                'commission_total' => number_format($pro->total_commissions ?? 0, 2),
+                'commission_rate'  => $pro->commission_rate ?? 20,
+            ];
+        }
+
         return Inertia::render('Pro/Index', compact(
-            'programs', 'orders', 'consultations', 'subscription', 'cartItems', 'cartTotal'
+            'programs', 'orders', 'consultations', 'subscription', 'cartItems', 'cartTotal',
+            'proPatients', 'proPrograms', 'proStats'
         ));
     }
 

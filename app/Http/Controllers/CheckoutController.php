@@ -69,18 +69,45 @@ class CheckoutController extends Controller
 
         $hasConsultation = collect($cart)->keys()->contains(fn($k) => str_starts_with($k, 'consult_'));
 
+        if (empty($cart)) {
+            return redirect()->route('shop');
+        }
+
         $rules = [
-            'name'  => 'required|string|max:255',
-            'email' => 'required|email',
-            'phone' => 'nullable|string|max:30',
+            'name'               => 'required|string|max:255',
+            'email'              => 'required|email',
+            'phone'              => 'nullable|string|max:30',
+            'payment_method'     => 'required|in:stripe,paypal',
+            'payment_intent_id'  => 'nullable|string',
+            'paypal_order_id'    => 'nullable|string',
         ];
         if ($hasConsultation) {
-            $rules['symptoms'] = 'required|string|min:10';
+            $rules['symptoms']        = 'required|string|min:10';
             $rules['medical_history'] = 'nullable|string';
         }
         $request->validate($rules);
-        if (empty($cart)) {
-            return redirect()->route('shop');
+
+        // ── Verify Stripe payment ──────────────────────────────────────────
+        if ($request->payment_method === 'stripe') {
+            if (!$request->payment_intent_id) {
+                return back()->withErrors(['payment' => 'Identifiant de paiement Stripe manquant.']);
+            }
+            $mode      = Setting::get('stripe_mode', 'test');
+            $secretKey = $mode === 'live' ? Setting::get('stripe_sk_live') : Setting::get('stripe_sk_test');
+            if ($secretKey) {
+                \Stripe\Stripe::setApiKey($secretKey);
+                $intent = \Stripe\PaymentIntent::retrieve($request->payment_intent_id);
+                if ($intent->status !== 'succeeded') {
+                    return back()->withErrors(['payment' => 'Le paiement Stripe n\'a pas été confirmé.']);
+                }
+            }
+        }
+
+        // ── Verify PayPal payment ──────────────────────────────────────────
+        if ($request->payment_method === 'paypal') {
+            if (!$request->paypal_order_id) {
+                return back()->withErrors(['payment' => 'Identifiant de commande PayPal manquant.']);
+            }
         }
 
         $subtotal = 0;
@@ -102,6 +129,8 @@ class CheckoutController extends Controller
                 $subtotal += $program->price * $item['quantity'];
             }
         }
+
+        $paymentRef = $request->payment_intent_id ?? $request->paypal_order_id ?? 'manual';
 
         $order = Order::create([
             'user_id'        => auth()->id(),
