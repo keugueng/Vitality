@@ -2,79 +2,57 @@
   <AppLayout>
 
     <!-- ═══ HERO ═══ -->
-    <section class="pt-32 pb-16 px-6 relative text-center overflow-hidden">
-      <div class="absolute inset-0 pointer-events-none" style="background: radial-gradient(ellipse 80% 50% at 50% 0%, rgba(17,199,201,0.06) 0%, transparent 70%);"></div>
-      <div class="relative z-10 max-w-3xl mx-auto">
-        <p class="text-[11px] font-semibold tracking-[0.2em] uppercase mb-4" style="color: #11C7C9;">Dr. Éric Rosati</p>
-        <h1 class="font-serif font-light text-white mb-5" style="font-size: clamp(2.2rem, 5vw, 3.5rem); line-height: 1.1;">
-          Your health,<br><em style="color: #D5B67A; font-style: italic;">precisely decoded.</em>
-        </h1>
-        <p class="text-[#9DAAC0] text-lg max-w-2xl mx-auto leading-relaxed mb-8">
-          Describe your symptoms. Dr. Éric Rosati analyzes your bio-energetic profile and delivers a tailor-made frequency protocol — straight to your inbox within 8 hours.
-        </p>
-        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-          <a href="#booking"
-            class="bg-[#11C7C9] hover:bg-[#0db5b7] text-[#03142A] font-bold text-sm tracking-wide uppercase px-8 py-3.5 rounded transition-all">
-            Book Your Consultation
-          </a>
-          <a href="#packages" class="border border-white/30 text-white hover:border-white/60 text-sm font-semibold px-8 py-3.5 rounded transition-all">
-            View Packages →
-          </a>
+    <section class="consult-hero">
+      <div class="hero-inner">
+        <div class="hero-badge"><span class="badge-dot"></span>Dr. Éric Rosati — Ostéopathe &amp; Médecine Quantique</div>
+        <h1>Votre santé,<br><em>précisément décodée.</em></h1>
+        <p class="hero-sub">Décrivez vos symptômes. Le Dr. Éric Rosati analyse votre profil bio-énergétique et vous remet un protocole de fréquences sur-mesure — directement dans votre boîte mail sous 8 heures.</p>
+        <div class="hero-btns">
+          <a href="#booking" class="btn-primary">Réserver ma consultation</a>
+          <a href="#packages" class="btn-outline">Voir les formules →</a>
         </div>
       </div>
     </section>
 
-    <!-- ═══ WHAT YOU RECEIVE ═══ -->
-    <section class="px-6 pb-16 max-w-5xl mx-auto">
-      <div class="text-center mb-10">
-        <p class="text-[11px] font-semibold tracking-[0.2em] uppercase mb-4" style="color: #11C7C9;">What you receive</p>
-        <h2 class="font-serif font-light text-white" style="font-size: clamp(1.8rem, 3.5vw, 2.6rem);">
-          From your symptoms<br>to your <em style="color: #D5B67A; font-style: italic;">personalized protocol</em>
-        </h2>
-      </div>
-      <div class="grid grid-cols-1 md:grid-cols-4 gap-5">
-        <div v-for="(step, i) in consultSteps" :key="i"
-          class="rounded-2xl p-6 text-center"
-          style="background: rgba(10,39,69,0.5); border: 1px solid rgba(255,255,255,0.07);">
-          <div class="w-11 h-11 rounded-full mx-auto mb-4 flex items-center justify-center font-bold text-base"
-            style="background: #11C7C9; color: #03142A;">{{ i + 1 }}</div>
-          <h4 class="text-white font-semibold text-sm mb-2">{{ step.title }}</h4>
-          <p class="text-xs leading-relaxed" style="color: #9DAAC0;">{{ step.desc }}</p>
+    <!-- ═══ CE QUE VOUS RECEVEZ ═══ -->
+    <section class="steps-section">
+      <div class="section-inner">
+        <div class="section-header" style="text-align:center">
+          <p class="section-label">Ce que vous recevez</p>
+          <h2 class="section-title">De vos symptômes à votre <em class="gold-italic">protocole personnalisé</em></h2>
+        </div>
+        <div class="steps-grid">
+          <div v-for="(step, i) in consultSteps" :key="i" class="step">
+            <div class="step-num">{{ i + 1 }}</div>
+            <h4>{{ step.title }}</h4>
+            <p>{{ step.desc }}</p>
+          </div>
         </div>
       </div>
     </section>
 
     <!-- ═══ PACKAGES ═══ -->
-    <section id="packages" class="py-20 px-6" style="background: rgba(4,27,51,0.4);">
-      <div class="max-w-5xl mx-auto">
-        <div class="text-center mb-12">
-          <p class="text-[11px] font-semibold tracking-[0.2em] uppercase mb-4" style="color: #11C7C9;">Packages</p>
-          <h2 class="font-serif font-light text-white" style="font-size: clamp(1.8rem, 3.5vw, 2.6rem);">
-            Lock in savings with<br><em style="color: #D5B67A; font-style: italic;">multi-session packages</em>
-          </h2>
-          <p class="text-[#9DAAC0] mt-3 text-sm">Chronic conditions respond best to multiple consultation cycles. Our packages give you deeper care at reduced cost.</p>
+    <section class="packages-section" id="packages">
+      <div class="section-inner">
+        <div class="section-header" style="text-align:center">
+          <p class="section-label">Formules</p>
+          <h2 class="section-title">Économisez avec nos <em class="gold-italic">formules multi-séances</em></h2>
+          <p class="section-sub" style="margin:0 auto">Les pathologies chroniques répondent mieux à plusieurs cycles de consultation. Nos formules vous offrent un suivi plus approfondi à moindre coût.</p>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="packages-grid">
           <div v-for="pkg in packages" :key="pkg.id"
-            @click="form.package_type = pkg.id"
-            class="rounded-2xl p-7 cursor-pointer transition-all relative"
-            :style="form.package_type === pkg.id
-              ? 'background: rgba(10,39,69,0.9); border: 2px solid #11C7C9; box-shadow: 0 0 30px rgba(17,199,201,0.1);'
-              : 'background: rgba(10,39,69,0.5); border: 2px solid rgba(255,255,255,0.07);'">
-            <!-- Badge sessions -->
-            <div class="text-xs font-semibold mb-4 uppercase tracking-wide" style="color: rgba(157,170,192,0.5);">{{ pkg.sessions }} session{{ pkg.sessions > 1 ? 's' : '' }}</div>
-            <h3 class="font-serif text-white text-xl font-light mb-1">{{ pkg.name }}</h3>
-            <p class="text-sm mb-4" style="color: #9DAAC0;">{{ pkg.tagline }}</p>
-            <p class="font-serif font-light mb-1" style="color: #D5B67A; font-size: 2rem; line-height: 1;">€{{ pkg.price }}</p>
-            <p v-if="pkg.saving" class="text-xs mb-5" style="color: #11C7C9;">{{ pkg.saving }}</p>
-            <ul class="space-y-2 mb-7">
-              <li v-for="f in pkg.features" :key="f" class="flex items-start gap-2 text-xs" style="color: #9DAAC0;">
-                <span class="flex-shrink-0" style="color: #11C7C9;">✦</span>{{ f }}
-              </li>
+            class="pkg-card" :class="{ selected: form.package_type === pkg.id }"
+            @click="form.package_type = pkg.id">
+            <div class="pkg-sessions">{{ pkg.sessions }} séance{{ pkg.sessions > 1 ? 's' : '' }}</div>
+            <h3 class="pkg-name">{{ pkg.name }}</h3>
+            <p class="pkg-tagline">{{ pkg.tagline }}</p>
+            <div class="pkg-price">€{{ pkg.price }}</div>
+            <p v-if="pkg.saving" class="pkg-saving">{{ pkg.saving }}</p>
+            <ul class="pkg-features">
+              <li v-for="f in pkg.features" :key="f"><span class="check">✦</span>{{ f }}</li>
             </ul>
-            <button @click.stop="form.package_type = pkg.id"
-              class="w-full font-bold text-sm tracking-wide uppercase py-3 rounded transition-all"
-              :class="form.package_type === pkg.id ? 'bg-[#11C7C9] text-[#03142A]' : 'border border-white/20 text-white hover:border-[#11C7C9] hover:text-[#11C7C9]'">
+            <button class="pkg-btn" :class="form.package_type === pkg.id ? 'pkg-btn-active' : 'pkg-btn-outline'"
+              @click.stop="form.package_type = pkg.id">
               {{ pkg.label }}
             </button>
           </div>
@@ -82,134 +60,109 @@
       </div>
     </section>
 
-    <!-- ═══ FORM ═══ -->
-    <section id="booking" class="py-20 px-6">
-      <div class="max-w-2xl mx-auto">
-        <div class="rounded-3xl p-8 md:p-10" style="background: rgba(10,39,69,0.5); border: 1px solid rgba(255,255,255,0.07);">
-          <h2 class="font-serif text-2xl text-white mb-2 font-light">Book your consultation</h2>
-          <p class="text-sm mb-8" style="color: #9DAAC0;">Fill in the form, let Dr. Éric Rosati decode your bio-energetic profile.</p>
+    <!-- ═══ FORMULAIRE ═══ -->
+    <section class="form-section" id="booking">
+      <div class="form-card">
+        <h2 class="form-title">Réserver ma consultation</h2>
+        <p class="form-sub">Remplissez le formulaire, laissez le Dr. Éric Rosati décoder votre profil bio-énergétique.</p>
 
-          <div v-if="$page.props.flash?.success"
-            class="rounded-xl p-4 mb-6 text-sm"
-            style="background: rgba(17,199,201,0.1); border: 1px solid rgba(17,199,201,0.3); color: #11C7C9;">
-            ✓ {{ $page.props.flash.success }}
+        <div v-if="$page.props.flash?.success" class="flash-success">
+          ✓ {{ $page.props.flash.success }}
+        </div>
+
+        <form @submit.prevent="submit" class="c-form">
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nom complet *</label>
+              <input v-model="form.name" type="text" required placeholder="Votre nom" />
+              <p v-if="form.errors.name" class="form-error">{{ form.errors.name }}</p>
+            </div>
+            <div class="form-group">
+              <label>Email *</label>
+              <input v-model="form.email" type="email" required placeholder="votre@email.com" />
+              <p v-if="form.errors.email" class="form-error">{{ form.errors.email }}</p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Téléphone</label>
+            <input v-model="form.phone" type="tel" placeholder="+33 6 00 00 00 00" />
+          </div>
+          <div class="form-group">
+            <label>Vos symptômes &amp; objectifs de santé *</label>
+            <textarea v-model="form.symptoms" required rows="4"
+              placeholder="Décrivez vos principales préoccupations de santé, symptômes, durée et ce que vous avez déjà essayé…"></textarea>
+            <p v-if="form.errors.symptoms" class="form-error">{{ form.errors.symptoms }}</p>
+          </div>
+          <div class="form-group">
+            <label>Antécédents médicaux (optionnel)</label>
+            <textarea v-model="form.medical_history" rows="3"
+              placeholder="Diagnostics passés pertinents, médicaments, chirurgies…"></textarea>
           </div>
 
-          <form @submit.prevent="submit" class="space-y-5">
-            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label class="text-xs mb-1.5 block font-semibold" style="color: #9DAAC0;">Full Name *</label>
-                <input v-model="form.name" type="text" required placeholder="Your name"
-                  class="w-full rounded-xl px-4 py-3 text-white text-sm focus:outline-none transition-colors placeholder-white/20"
-                  style="background: rgba(3,20,42,0.7); border: 1px solid rgba(255,255,255,0.1);"/>
-                <p v-if="form.errors.name" class="text-xs mt-1 text-red-400">{{ form.errors.name }}</p>
-              </div>
-              <div>
-                <label class="text-xs mb-1.5 block font-semibold" style="color: #9DAAC0;">Email *</label>
-                <input v-model="form.email" type="email" required placeholder="your@email.com"
-                  class="w-full rounded-xl px-4 py-3 text-white text-sm focus:outline-none transition-colors placeholder-white/20"
-                  style="background: rgba(3,20,42,0.7); border: 1px solid rgba(255,255,255,0.1);"/>
-                <p v-if="form.errors.email" class="text-xs mt-1 text-red-400">{{ form.errors.email }}</p>
-              </div>
-            </div>
+          <div class="form-summary">
             <div>
-              <label class="text-xs mb-1.5 block font-semibold" style="color: #9DAAC0;">Phone</label>
-              <input v-model="form.phone" type="tel" placeholder="+33 6 00 00 00 00"
-                class="w-full rounded-xl px-4 py-3 text-white text-sm focus:outline-none transition-colors placeholder-white/20"
-                style="background: rgba(3,20,42,0.7); border: 1px solid rgba(255,255,255,0.1);"/>
+              <p class="summary-name">{{ selectedPkg.name }}</p>
+              <p class="summary-sub">{{ selectedPkg.sessions }} séance{{ selectedPkg.sessions > 1 ? 's' : '' }} · Protocole livré sous 8 heures</p>
             </div>
-            <div>
-              <label class="text-xs mb-1.5 block font-semibold" style="color: #9DAAC0;">Your symptoms &amp; health goals *</label>
-              <textarea v-model="form.symptoms" required rows="4"
-                placeholder="Describe your main health concerns, symptoms, duration, and what you've already tried…"
-                class="w-full rounded-xl px-4 py-3 text-white text-sm focus:outline-none transition-colors resize-none placeholder-white/20"
-                style="background: rgba(3,20,42,0.7); border: 1px solid rgba(255,255,255,0.1);"></textarea>
-              <p v-if="form.errors.symptoms" class="text-xs mt-1 text-red-400">{{ form.errors.symptoms }}</p>
-            </div>
-            <div>
-              <label class="text-xs mb-1.5 block font-semibold" style="color: #9DAAC0;">Medical history (optional)</label>
-              <textarea v-model="form.medical_history" rows="3"
-                placeholder="Relevant past diagnoses, medications, surgeries…"
-                class="w-full rounded-xl px-4 py-3 text-white text-sm focus:outline-none transition-colors resize-none placeholder-white/20"
-                style="background: rgba(3,20,42,0.7); border: 1px solid rgba(255,255,255,0.1);"></textarea>
-            </div>
+            <span class="summary-price">€{{ selectedPkg.price }}</span>
+          </div>
 
-            <!-- Summary -->
-            <div class="rounded-xl p-4 flex items-center justify-between"
-              style="background: rgba(3,20,42,0.5); border: 1px solid rgba(255,255,255,0.08);">
-              <div>
-                <p class="text-white text-sm font-semibold">{{ selectedPkg.name }}</p>
-                <p class="text-xs" style="color: #9DAAC0;">{{ selectedPkg.sessions }} session{{ selectedPkg.sessions > 1 ? 's' : '' }} · Protocol delivered within 8 hours</p>
-              </div>
-              <span class="font-serif font-light text-xl" style="color: #D5B67A;">€{{ selectedPkg.price }}</span>
-            </div>
-
-            <button type="submit" :disabled="form.processing"
-              class="w-full bg-[#11C7C9] hover:bg-[#0db5b7] text-[#03142A] font-bold text-sm tracking-wide uppercase py-3.5 rounded transition-all disabled:opacity-50">
-              {{ form.processing ? 'Sending…' : `Book Consultation — €${selectedPkg.price}` }}
-            </button>
-            <p class="text-center text-xs" style="color: rgba(157,170,192,0.4);">🔒 Your information is confidential and permanently deleted within 14 days of delivery.</p>
-          </form>
-        </div>
+          <button type="submit" :disabled="form.processing" class="submit-btn">
+            {{ form.processing ? 'Envoi en cours…' : `Réserver — €${selectedPkg.price}` }}
+          </button>
+          <p class="form-notice">🔒 Vos informations sont confidentielles et définitivement supprimées dans les 14 jours suivant la livraison.</p>
+        </form>
       </div>
     </section>
 
-    <!-- ═══ TESTIMONIALS ═══ -->
-    <section class="py-20 px-6" style="background: rgba(4,27,51,0.4);">
-      <div class="max-w-5xl mx-auto">
-        <div class="text-center mb-12">
-          <p class="text-[11px] font-semibold tracking-[0.2em] uppercase mb-4" style="color: #11C7C9;">Patients</p>
-          <h2 class="font-serif font-light text-white" style="font-size: clamp(1.8rem, 3.5vw, 2.6rem);">
-            What patients say about<br><em style="color: #D5B67A; font-style: italic;">their consultation</em>
-          </h2>
+    <!-- ═══ TÉMOIGNAGES ═══ -->
+    <section class="testimonials-section">
+      <div class="section-inner">
+        <div class="section-header" style="text-align:center">
+          <p class="section-label">Patients</p>
+          <h2 class="section-title">Ce que disent les patients de <em class="gold-italic">leur consultation</em></h2>
         </div>
-        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-          <div v-for="t in consultTestimonials" :key="t.name"
-            class="rounded-2xl p-6 border border-white/8"
-            style="background: rgba(10,39,69,0.6);">
-            <div class="text-sm mb-3" style="color: #D5B67A;">★★★★★</div>
-            <p class="text-sm italic leading-relaxed mb-4" style="color: rgba(157,170,192,0.9);">"{{ t.content }}"</p>
-            <p class="text-white font-semibold text-sm">{{ t.name }}</p>
-            <p class="text-xs" style="color: #11C7C9;">{{ t.program }}</p>
+        <div class="testimonials-grid">
+          <div v-for="t in consultTestimonials" :key="t.name" class="testimonial">
+            <div class="stars">★★★★★</div>
+            <q>{{ t.content }}</q>
+            <div class="t-author">
+              <span class="t-name">{{ t.name }}</span>
+              <span class="t-prog">{{ t.program }}</span>
+            </div>
           </div>
         </div>
       </div>
     </section>
 
     <!-- ═══ FAQ ═══ -->
-    <section class="py-20 px-6">
-      <div class="max-w-3xl mx-auto">
-        <div class="text-center mb-10">
-          <h2 class="font-serif font-light text-white" style="font-size: clamp(1.6rem, 3vw, 2.2rem);">
-            Frequently asked <em style="color: #D5B67A; font-style: italic;">questions</em>
-          </h2>
+    <section class="faq-section">
+      <div class="faq-inner">
+        <div class="section-header" style="text-align:center">
+          <h2 class="section-title">Questions <em class="gold-italic">fréquentes</em></h2>
         </div>
-        <div class="rounded-2xl p-6 mb-6 text-sm leading-relaxed" style="background: rgba(10,39,69,0.5); border: 1px solid rgba(255,255,255,0.07); color: #9DAAC0;">
-          <p class="font-semibold text-white mb-2">Important Information</p>
-          Cellular Bio Energy programs are intended to promote well-being through the harmonization of the bio-energetic field. They are not medical applications and should not be used as a substitute for professional medical advice, diagnosis, or treatment. All personal and medical data submitted during consultation is used exclusively to prepare a personalized program and is permanently deleted within 14 days of delivery.
+        <div v-for="q in faqs" :key="q.q" class="faq-item" :class="{ open: openFaq === q.q }" @click="openFaq = openFaq === q.q ? null : q.q">
+          <div class="faq-q">
+            {{ q.q }}
+            <span class="faq-arrow">{{ openFaq === q.q ? '−' : '+' }}</span>
+          </div>
+          <div v-show="openFaq === q.q" class="faq-a">{{ q.a }}</div>
+        </div>
+        <div class="faq-notice">
+          <p class="faq-notice-title">Information importante</p>
+          <p>Les programmes Cellular Bio Energy visent à promouvoir le bien-être par l'harmonisation du champ bio-énergétique. Ils ne constituent pas des applications médicales et ne doivent pas remplacer un avis médical professionnel. Toutes les données personnelles et médicales soumises lors d'une consultation sont utilisées exclusivement pour préparer un programme personnalisé et sont définitivement supprimées dans les 14 jours suivant la livraison.</p>
         </div>
       </div>
     </section>
 
-    <!-- ═══ FINAL CTA ═══ -->
-    <section class="py-20 px-6" style="background: linear-gradient(135deg, #041B33 0%, #051A2E 100%);">
-      <div class="max-w-2xl mx-auto text-center">
-        <h2 class="font-serif font-light text-white mb-4" style="font-size: clamp(1.8rem, 3vw, 2.4rem);">
-          Your protocol is<br><em style="color: #D5B67A; font-style: italic;">8 hours away</em>
-        </h2>
-        <p class="text-[#9DAAC0] mb-8 leading-relaxed">
-          Fill in the form, let Dr. Éric Rosati decode your bio-energetic profile, and receive a personalized frequency protocol designed exclusively for you.
-        </p>
-        <div class="flex flex-col sm:flex-row gap-4 justify-center">
-          <a href="#booking"
-            class="bg-[#11C7C9] hover:bg-[#0db5b7] text-[#03142A] font-bold text-sm tracking-wide uppercase px-8 py-3.5 rounded transition-all">
-            Book Your Consultation — €58
-          </a>
-          <Link :href="route('shop')"
-            class="border border-white/30 text-white hover:border-white/60 text-sm font-semibold px-8 py-3.5 rounded transition-all">
-            Browse Shop Programs
-          </Link>
-        </div>
+    <!-- ═══ CTA FINALE ═══ -->
+    <section class="cta-section">
+      <p class="section-label" style="text-align:center">Votre protocole vous attend</p>
+      <h2 class="section-title" style="text-align:center">Votre protocole est à <em class="gold-italic">8 heures</em></h2>
+      <p class="section-sub" style="text-align:center;margin:0 auto 40px">Remplissez le formulaire, laissez le Dr. Éric Rosati décoder votre profil bio-énergétique et recevez un protocole de fréquences conçu exclusivement pour vous.</p>
+      <div class="cta-btns">
+        <a href="#booking" class="btn-primary">Réserver ma consultation — €58</a>
+        <Link :href="route('shop')" class="btn-outline">Explorer les programmes</Link>
       </div>
     </section>
 
@@ -218,48 +171,249 @@
 
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue'
-import { Link } from '@inertiajs/vue3'
-import { useForm } from '@inertiajs/vue3'
-import { computed } from 'vue'
+import { Link, useForm } from '@inertiajs/vue3'
+import { computed, ref } from 'vue'
+
+const openFaq = ref(null)
 
 const packages = [
   {
-    id: 'single', name: 'Essential', price: 58, sessions: 1, label: 'Book Single — €58',
-    tagline: 'Perfect for targeted, one-off health concerns',
+    id: 'single', name: 'Essentiel', price: 58, sessions: 1, label: 'Réserver — €58',
+    tagline: 'Idéal pour un problème de santé ciblé',
     saving: null,
-    features: ['1 personalized consultation', 'Custom frequency protocol', 'Delivered within 8 hours', 'Secure access link'],
+    features: ['1 consultation personnalisée', 'Protocole de fréquences sur-mesure', 'Livré sous 8 heures', 'Lien d\'accès sécurisé'],
   },
   {
-    id: 'progress', name: 'Progress', price: 149, sessions: 3, label: 'Book 3 Sessions — €149',
-    tagline: 'For chronic conditions requiring phased treatment',
-    saving: 'Save €25 vs individual sessions',
-    features: ['3 personalized consultations', 'Protocol updated at each session', 'Progress tracking between sessions', 'Priority 8-hour response', 'Recommended for complex cases'],
+    id: 'progress', name: 'Évolution', price: 149, sessions: 3, label: 'Réserver 3 séances — €149',
+    tagline: 'Pour les pathologies chroniques nécessitant un traitement par phases',
+    saving: 'Économisez €25 vs séances individuelles',
+    features: ['3 consultations personnalisées', 'Protocole mis à jour à chaque séance', 'Suivi des progrès entre les séances', 'Réponse prioritaire sous 8h', 'Recommandé pour les cas complexes'],
   },
   {
-    id: 'transform', name: 'Transform', price: 239, sessions: 5, label: 'Book 5 Sessions — €239',
-    tagline: 'Complete transformation program with full monitoring',
-    saving: 'Save €51 vs individual sessions',
-    features: ['5 personalized consultations', 'Comprehensive bio-energy mapping', 'Full symptom evolution tracking', 'VIP priority response', 'Best for multi-system conditions'],
+    id: 'transform', name: 'Transformation', price: 239, sessions: 5, label: 'Réserver 5 séances — €239',
+    tagline: 'Programme de transformation complet avec suivi intégral',
+    saving: 'Économisez €51 vs séances individuelles',
+    features: ['5 consultations personnalisées', 'Cartographie bio-énergétique complète', 'Suivi complet de l\'évolution des symptômes', 'Réponse VIP prioritaire', 'Idéal pour les pathologies multi-systèmes'],
   },
 ]
 
 const consultSteps = [
-  { title: 'Fill in the form',   desc: 'Complete the detailed health questionnaire as accurately as possible — symptoms, duration, medical history, and lifestyle context.' },
-  { title: 'Expert analysis',    desc: 'Dr. Éric Rosati — Osteopath & Doctor of Quantum Medicine — reviews your profile and identifies the precise energetic imbalances to address.' },
-  { title: 'Protocol delivered', desc: 'Your custom bio-energy frequency program is assembled and sent to you via a secure link — within 8 hours of submission.' },
-  { title: 'Listen & recover',   desc: 'Follow your protocol at home with headphones. Sessions of 18–35 minutes, over a personalized cure duration. Monitoring included.' },
+  { title: 'Remplissez le formulaire', desc: 'Complétez le questionnaire de santé détaillé aussi précisément que possible — symptômes, durée, antécédents médicaux et contexte de vie.' },
+  { title: 'Analyse experte',          desc: 'Le Dr. Éric Rosati — Ostéopathe & Docteur en Médecine Quantique — examine votre profil et identifie les déséquilibres énergétiques précis à traiter.' },
+  { title: 'Protocole livré',          desc: 'Votre programme de bio-énergie personnalisé est assemblé et envoyé via un lien sécurisé — dans les 8 heures suivant la soumission.' },
+  { title: 'Écoutez & récupérez',      desc: 'Suivez votre protocole chez vous avec des écouteurs. Séances de 18–35 minutes, sur une durée de cure personnalisée. Suivi inclus.' },
 ]
 
 const consultTestimonials = [
-  { content: 'I described my burn-out symptoms in the form and received an incredibly precise protocol within 6 hours. After 3 weeks I felt like myself again — something no doctor had managed in 2 years.', name: 'Marie-Hélène C.', program: 'Burn-Out protocol' },
-  { content: 'The questionnaire was thorough and the analysis clearly personal — not a generic response. My insomnia protocol was perfectly calibrated to my case. Results in less than 2 weeks.', name: 'Bernard T.', program: 'Sleeping Troubles protocol' },
-  { content: 'I booked the 3-session package for my chronic joint pain. Each consultation refined the protocol based on my progress. By session 3, I had reduced my anti-inflammatory use by 80%.', name: 'Gérard F.', program: 'Joint Pain — 3-session package' },
-  { content: 'What impressed me most was the speed and the precision. Dr. Rosati identified a connection between my anxiety and digestive issues that I had never considered. The combined protocol was remarkable.', name: 'Élise R.', program: 'Anxiety + Digestive protocol' },
-  { content: 'I was sceptical of an online consultation but the depth of the questionnaire and the personalization changed my mind immediately. My allergy season this year was entirely manageable.', name: 'Étienne M.', program: 'Allergy protocol' },
-  { content: 'I have done 5 consultations over 8 months for my menopause symptoms. The evolution in each protocol shows genuine follow-up. Hot flushes are 90% reduced.', name: 'Françoise D.', program: 'Menopause — Transform package' },
+  { content: 'J\'ai décrit mes symptômes de burn-out et reçu un protocole incroyablement précis en 6 heures. Après 3 semaines je me sentais à nouveau moi-même — ce qu\'aucun médecin n\'avait réussi en 2 ans.', name: 'Marie-Hélène C.', program: 'Protocole Burn-Out' },
+  { content: 'Le questionnaire était approfondi et l\'analyse clairement personnelle. Mon protocole insomnie était parfaitement calibré à mon cas. Résultats en moins de 2 semaines.', name: 'Bernard T.', program: 'Protocole Troubles du Sommeil' },
+  { content: 'J\'ai réservé la formule 3 séances pour mes douleurs articulaires chroniques. Chaque consultation a affiné le protocole. À la 3e séance, j\'avais réduit mes anti-inflammatoires de 80%.', name: 'Gérard F.', program: 'Douleur Articulaire — formule 3 séances' },
+  { content: 'Ce qui m\'a le plus impressionné c\'est la vitesse et la précision. Dr. Rosati a identifié un lien entre mon anxiété et mes problèmes digestifs que je n\'avais jamais envisagé.', name: 'Élise R.', program: 'Protocole Anxiété + Digestif' },
+  { content: 'J\'étais sceptique face à une consultation en ligne, mais la profondeur du questionnaire et la personnalisation ont changé mon avis immédiatement. Ma saison allergique cette année était tout à fait gérable.', name: 'Étienne M.', program: 'Protocole Allergie' },
+  { content: 'J\'ai effectué 5 consultations sur 8 mois pour mes symptômes de ménopause. L\'évolution de chaque protocole montre un vrai suivi. Bouffées de chaleur réduites de 90%.', name: 'Françoise D.', program: 'Ménopause — formule Transformation' },
+]
+
+const faqs = [
+  { q: 'Comment fonctionne la consultation en ligne ?', a: 'Vous remplissez un formulaire détaillé décrivant vos symptômes, antécédents médicaux et objectifs. Le Dr. Éric Rosati analyse votre profil et vous remet un protocole de fréquences personnalisé par email sous 8 heures.' },
+  { q: 'Ai-je besoin d\'un équipement spécial ?', a: 'Des écouteurs à conduction osseuse sont recommandés pour une transmission optimale des fréquences. Des écouteurs classiques fonctionnent également, mais avec une efficacité légèrement moindre.' },
+  { q: 'Combien de temps dure un programme ?', a: 'La durée dépend de votre protocole personnalisé. La plupart des cures durent entre 14 et 30 jours, avec des séances de 18 à 35 minutes par jour.' },
+  { q: 'Puis-je combiner plusieurs programmes ?', a: 'Oui, avec un abonnement illimité. Pour les consultations personnalisées, le Dr. Rosati vous recommande l\'ordre et la combinaison optimale selon votre profil.' },
 ]
 
 const form = useForm({ name: '', email: '', phone: '', package_type: 'single', symptoms: '', medical_history: '' })
 const selectedPkg = computed(() => packages.find(p => p.id === form.package_type) || packages[0])
 const submit = () => form.post(route('consultation.store'))
 </script>
+
+<style scoped>
+/* HERO */
+.consult-hero {
+  min-height: 100vh; display: flex; align-items: center;
+  padding: 120px 48px 80px;
+  background: radial-gradient(ellipse 80% 60% at 50% 30%, rgba(13,115,119,.18) 0%, transparent 70%), #0a1628;
+  position: relative; overflow: hidden;
+}
+.hero-inner { max-width: 700px; margin: 0 auto; text-align: center; position: relative; z-index: 2; }
+.hero-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(13,115,119,.2); border: 1px solid rgba(13,115,119,.4);
+  padding: 6px 16px; border-radius: 100px;
+  font-size: .75rem; letter-spacing: .1em; text-transform: uppercase; color: #14a8a0; margin-bottom: 28px;
+}
+.badge-dot { width: 6px; height: 6px; border-radius: 50%; background: #14a8a0; animation: blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1} 50%{opacity:.3} }
+.hero-inner h1 {
+  font-family: 'Cormorant Garamond', serif; font-size: clamp(2.8rem, 5vw, 4.5rem);
+  font-weight: 300; line-height: 1.1; margin-bottom: 24px; color: #fff;
+}
+.hero-inner h1 em { color: #c8a96e; font-style: italic; }
+.hero-sub { font-size: 1.05rem; color: rgba(255,255,255,.65); line-height: 1.7; margin-bottom: 40px; max-width: 560px; margin-left: auto; margin-right: auto; }
+.hero-btns { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; }
+.btn-primary {
+  background: linear-gradient(135deg, #0d7377, #14a8a0); color: #fff; border: none;
+  padding: 16px 36px; border-radius: 6px; font-size: .9rem; font-weight: 500;
+  letter-spacing: .04em; cursor: pointer; text-decoration: none; transition: transform .2s, box-shadow .2s;
+  box-shadow: 0 8px 32px rgba(13,115,119,.35); display: inline-block;
+}
+.btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(13,115,119,.5); }
+.btn-outline {
+  background: transparent; border: 1px solid rgba(200,169,110,.3); color: #e8d5a3;
+  padding: 16px 36px; border-radius: 6px; font-size: .9rem; cursor: pointer;
+  text-decoration: none; transition: border-color .2s, background .2s; display: inline-block;
+}
+.btn-outline:hover { border-color: #c8a96e; background: rgba(200,169,110,.07); }
+
+/* STEPS */
+.steps-section { background: rgba(255,255,255,.015); border-top: 1px solid rgba(200,169,110,.2); padding: 100px 48px; }
+.section-inner { max-width: 1100px; margin: 0 auto; }
+.steps-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 24px; }
+.step {
+  text-align: center; padding: 32px 20px;
+  border: 1px solid rgba(200,169,110,.2); border-radius: 12px; background: rgba(255,255,255,.02);
+}
+.step-num {
+  width: 48px; height: 48px; border-radius: 50%;
+  background: linear-gradient(135deg, #0d7377, #14a8a0);
+  display: flex; align-items: center; justify-content: center;
+  font-family: 'Cormorant Garamond', serif; font-size: 1.3rem; color: #fff; margin: 0 auto 20px;
+}
+.step h4 { font-family: 'Cormorant Garamond', serif; font-size: 1.15rem; font-weight: 400; margin-bottom: 10px; color: #fff; }
+.step p { font-size: .82rem; color: rgba(255,255,255,.45); line-height: 1.6; }
+
+/* PACKAGES */
+.packages-section {
+  background: radial-gradient(ellipse 70% 70% at 50% 50%, rgba(13,115,119,.1) 0%, transparent 70%), #0a1628;
+  border-top: 1px solid rgba(200,169,110,.2); padding: 100px 48px;
+}
+.packages-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.pkg-card {
+  border-radius: 16px; padding: 32px 28px; border: 2px solid rgba(200,169,110,.15);
+  background: rgba(255,255,255,.03); cursor: pointer; transition: all .3s;
+}
+.pkg-card:hover { border-color: rgba(200,169,110,.35); transform: translateY(-4px); }
+.pkg-card.selected { background: rgba(13,115,119,.15); border-color: #0d7377; box-shadow: 0 0 30px rgba(13,115,119,.15); }
+.pkg-sessions { font-size: .72rem; font-weight: 600; text-transform: uppercase; letter-spacing: .12em; color: rgba(200,220,255,.4); margin-bottom: 12px; }
+.pkg-name { font-family: 'Cormorant Garamond', serif; font-size: 1.5rem; font-weight: 400; color: #fff; margin-bottom: 6px; }
+.pkg-tagline { font-size: .82rem; color: rgba(255,255,255,.5); margin-bottom: 20px; }
+.pkg-price { font-family: 'Cormorant Garamond', serif; font-size: 2.8rem; font-weight: 300; color: #c8a96e; line-height: 1; margin-bottom: 6px; }
+.pkg-saving { font-size: .78rem; color: #14a8a0; margin-bottom: 20px; }
+.pkg-features { list-style: none; padding: 0; margin-bottom: 28px; }
+.pkg-features li { display: flex; align-items: flex-start; gap: 8px; font-size: .82rem; color: rgba(255,255,255,.65); padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,.04); }
+.pkg-features li:last-child { border-bottom: none; }
+.check { color: #14a8a0; flex-shrink: 0; }
+.pkg-btn {
+  width: 100%; padding: 13px; border-radius: 8px; font-size: .85rem; font-weight: 500;
+  letter-spacing: .04em; cursor: pointer; transition: all .2s; text-align: center; border: none;
+}
+.pkg-btn-active { background: linear-gradient(135deg, #0d7377, #14a8a0); color: #fff; }
+.pkg-btn-outline { background: transparent; color: rgba(255,255,255,.7); border: 1px solid rgba(200,169,110,.2); }
+.pkg-btn-outline:hover { border-color: rgba(200,169,110,.5); color: #e8d5a3; }
+
+/* FORM */
+.form-section { background: #0a1628; padding: 100px 48px; }
+.form-card {
+  max-width: 680px; margin: 0 auto;
+  background: rgba(13,31,58,.6); border: 1px solid rgba(200,169,110,.15);
+  border-radius: 20px; padding: 48px;
+}
+.form-title { font-family: 'Cormorant Garamond', serif; font-size: 2rem; font-weight: 300; color: #fff; margin-bottom: 8px; }
+.form-sub { font-size: .85rem; color: rgba(200,220,255,.45); margin-bottom: 36px; }
+.flash-success {
+  background: rgba(13,115,119,.15); border: 1px solid rgba(13,115,119,.4);
+  color: #14a8a0; border-radius: 10px; padding: 14px 18px; font-size: .85rem; margin-bottom: 24px;
+}
+.c-form { display: flex; flex-direction: column; gap: 20px; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.form-group { display: flex; flex-direction: column; gap: 6px; }
+.form-group label { font-size: .75rem; font-weight: 600; color: rgba(200,220,255,.5); letter-spacing: .05em; }
+.form-group input, .form-group textarea {
+  background: rgba(10,22,40,.7); border: 1px solid rgba(255,255,255,.1);
+  border-radius: 10px; padding: 12px 16px; color: #fff; font-size: .88rem;
+  font-family: 'DM Sans', sans-serif; transition: border-color .2s; resize: none; outline: none;
+}
+.form-group input::placeholder, .form-group textarea::placeholder { color: rgba(255,255,255,.2); }
+.form-group input:focus, .form-group textarea:focus { border-color: rgba(13,115,119,.5); }
+.form-error { font-size: .72rem; color: #f87171; }
+.form-summary {
+  background: rgba(10,22,40,.5); border: 1px solid rgba(200,169,110,.15);
+  border-radius: 12px; padding: 16px 20px; display: flex; align-items: center; justify-content: space-between;
+}
+.summary-name { font-size: .9rem; font-weight: 600; color: #fff; margin-bottom: 2px; }
+.summary-sub { font-size: .75rem; color: rgba(200,220,255,.4); }
+.summary-price { font-family: 'Cormorant Garamond', serif; font-size: 1.8rem; font-weight: 300; color: #c8a96e; }
+.submit-btn {
+  background: linear-gradient(135deg, #0d7377, #14a8a0); color: #fff;
+  border: none; border-radius: 8px; padding: 16px; font-size: .9rem; font-weight: 600;
+  letter-spacing: .05em; cursor: pointer; transition: all .2s;
+}
+.submit-btn:hover { box-shadow: 0 8px 32px rgba(13,115,119,.5); transform: translateY(-1px); }
+.submit-btn:disabled { opacity: .5; cursor: not-allowed; }
+.form-notice { font-size: .72rem; color: rgba(200,220,255,.25); text-align: center; }
+
+/* TESTIMONIALS */
+.testimonials-section { background: rgba(255,255,255,.015); border-top: 1px solid rgba(200,169,110,.2); padding: 100px 48px; }
+.testimonials-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+.testimonial { background: rgba(255,255,255,.03); border: 1px solid rgba(200,169,110,.2); border-radius: 12px; padding: 28px; }
+.stars { color: #c8a96e; margin-bottom: 14px; font-size: .9rem; }
+.testimonial q {
+  font-family: 'Cormorant Garamond', serif; font-size: 1.05rem; font-style: italic;
+  font-weight: 300; line-height: 1.55; color: rgba(255,255,255,.85); quotes: "\201C" "\201D";
+  display: block; margin-bottom: 16px;
+}
+.testimonial q::before { content: open-quote; }
+.testimonial q::after  { content: close-quote; }
+.t-author { display: flex; flex-direction: column; gap: 2px; }
+.t-name { font-size: .82rem; color: #fff; font-weight: 500; }
+.t-prog { font-size: .72rem; color: #14a8a0; }
+
+/* FAQ */
+.faq-section { background: #0a1628; padding: 100px 48px; }
+.faq-inner { max-width: 720px; margin: 0 auto; }
+.faq-item {
+  border: 1px solid rgba(200,169,110,.15); border-radius: 10px; margin-bottom: 12px;
+  background: rgba(255,255,255,.02); cursor: pointer; overflow: hidden; transition: border-color .2s;
+}
+.faq-item.open { border-color: rgba(13,115,119,.4); }
+.faq-q {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 18px 22px; font-size: .9rem; color: rgba(255,255,255,.85); font-weight: 500;
+}
+.faq-arrow { color: #14a8a0; font-size: 1.1rem; flex-shrink: 0; }
+.faq-a { padding: 0 22px 18px; font-size: .83rem; color: rgba(200,220,255,.5); line-height: 1.65; }
+.faq-notice {
+  margin-top: 32px; background: rgba(255,255,255,.03); border: 1px solid rgba(200,169,110,.15);
+  border-radius: 12px; padding: 22px 26px; font-size: .83rem; color: rgba(200,220,255,.45); line-height: 1.65;
+}
+.faq-notice-title { font-weight: 600; color: rgba(255,255,255,.7); margin-bottom: 8px; font-size: .85rem; }
+
+/* CTA */
+.cta-section {
+  text-align: center;
+  background: radial-gradient(ellipse 60% 80% at 50% 50%, rgba(13,115,119,.2) 0%, transparent 70%);
+  border-top: 1px solid rgba(200,169,110,.2); padding: 120px 48px;
+}
+.cta-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+
+/* SHARED */
+.section-header { margin-bottom: 60px; }
+.section-label { font-size: .72rem; letter-spacing: .18em; text-transform: uppercase; color: #14a8a0; margin-bottom: 14px; }
+.section-title {
+  font-family: 'Cormorant Garamond', serif; font-size: clamp(2rem, 3.5vw, 3rem);
+  font-weight: 300; line-height: 1.2; margin-bottom: 16px; color: #fff;
+}
+.section-sub { color: rgba(255,255,255,.55); font-size: 1rem; max-width: 520px; line-height: 1.6; }
+.gold-italic { color: #c8a96e; font-style: italic; font-family: 'Cormorant Garamond', serif; }
+
+@media (max-width: 900px) {
+  .consult-hero { padding: 100px 24px 60px; }
+  .steps-section, .packages-section, .form-section, .testimonials-section, .faq-section, .cta-section { padding: 72px 24px; }
+  .steps-grid { grid-template-columns: 1fr 1fr; }
+  .packages-grid { grid-template-columns: 1fr; }
+  .testimonials-grid { grid-template-columns: 1fr; }
+  .form-card { padding: 32px 24px; }
+  .form-row { grid-template-columns: 1fr; }
+}
+@media (max-width: 560px) {
+  .steps-grid { grid-template-columns: 1fr; }
+}
+</style>
