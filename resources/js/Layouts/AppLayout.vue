@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen" style="background: #03142A;">
+  <div class="min-h-screen" style="background: #0a1628;">
     <!-- Background effects -->
     <div class="fixed inset-0 grid-overlay pointer-events-none z-0"></div>
     <div class="fixed inset-0 halo-glow pointer-events-none z-0"></div>
