@@ -1,36 +1,36 @@
 <template>
   <AuthLayout>
     <div class="auth-card">
-      <h1 class="auth-title">Welcome back</h1>
-      <p class="auth-sub">Sign in to your Vitality Inside account</p>
+      <h1 class="auth-title">{{ t('auth.login_title') }}</h1>
+      <p class="auth-sub">{{ t('auth.login_sub') }}</p>
 
       <div v-if="errors.email" class="auth-error">{{ errors.email }}</div>
 
       <form @submit.prevent="submit" class="auth-form">
         <div class="field">
-          <label class="field-label">Email</label>
+          <label class="field-label">{{ t('auth.email') }}</label>
           <input v-model="form.email" type="email" required autofocus
             class="field-input" placeholder="your@email.com" />
         </div>
         <div class="field">
-          <label class="field-label">Password</label>
+          <label class="field-label">{{ t('auth.password') }}</label>
           <input v-model="form.password" type="password" required
             class="field-input" placeholder="••••••••" />
         </div>
         <div class="field-row">
           <label class="remember">
             <input v-model="form.remember" type="checkbox" />
-            Remember me
+            {{ t('auth.remember') }}
           </label>
-          <Link :href="route('password.request')" class="forgot-link">Forgot password?</Link>
+          <Link :href="route('password.request')" class="forgot-link">{{ t('auth.forgot') }}</Link>
         </div>
         <button type="submit" :disabled="form.processing" class="auth-btn">
-          {{ form.processing ? 'Signing in…' : 'Sign In' }}
+          {{ form.processing ? t('auth.login_btn_loading') : t('auth.login_btn') }}
         </button>
       </form>
 
       <p class="auth-alt">
-        No account? <Link :href="route('register')" class="auth-link">Create one free</Link>
+        {{ t('auth.no_account') }} <Link :href="route('register')" class="auth-link">{{ t('auth.register_link') }}</Link>
       </p>
     </div>
   </AuthLayout>
@@ -39,6 +39,8 @@
 <script setup>
 import AuthLayout from '@/Layouts/AuthLayout.vue'
 import { Link, useForm } from '@inertiajs/vue3'
+import { useI18n } from '@/composables/useI18n'
+const { t } = useI18n()
 defineProps({ errors: Object })
 const form = useForm({ email: '', password: '', remember: false })
 const submit = () => form.post(route('login'))

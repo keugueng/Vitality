@@ -17,23 +17,23 @@
       <div class="hero-content">
         <div class="hero-badge">
           <span class="hero-badge-dot"></span>
-          Bio-Energy Frequency Therapy · Est. 25 years
+          {{ t('home.hero_badge') }}
         </div>
         <h1 style="font-family:'Cormorant Garamond',serif; font-size:clamp(3rem,6vw,5.5rem); font-weight:300; line-height:1.05; margin-bottom:24px; color:#ffffff;">
-          Your body speaks<br>in <em style="color:#c8a96e; font-style:italic;">frequencies.</em><br>We listen.
+          {{ t('home.hero_title') }}<br>in <em style="color:#c8a96e; font-style:italic;">{{ t('home.hero_title_em') }}</em>
         </h1>
         <p class="hero-sub">
-          Vibrational cell rebalancing through bio-resonance — a science-backed approach that turns your brain into a natural medicine box. Over 60 targeted programs, delivered to your device.
+          {{ t('home.hero_sub') }}
         </p>
         <div class="hero-stats">
-          <div class="hstat"><span class="hstat-val">21,000+</span><span class="hstat-lbl">Active users</span></div>
-          <div class="hstat"><span class="hstat-val">60+</span><span class="hstat-lbl">Programs</span></div>
-          <div class="hstat"><span class="hstat-val">25 yrs</span><span class="hstat-lbl">Clinical experience</span></div>
-          <div class="hstat"><span class="hstat-val">&lt; 8h</span><span class="hstat-lbl">Protocol delivery</span></div>
+          <div class="hstat"><span class="hstat-val">21,000+</span><span class="hstat-lbl">{{ t('home.stats_patients') }}</span></div>
+          <div class="hstat"><span class="hstat-val">60+</span><span class="hstat-lbl">{{ t('home.stats_programs') }}</span></div>
+          <div class="hstat"><span class="hstat-val">25 yrs</span><span class="hstat-lbl">{{ t('home.stats_experience') }}</span></div>
+          <div class="hstat"><span class="hstat-val">&lt; 8h</span><span class="hstat-lbl">{{ t('home.stats_satisfaction') }}</span></div>
         </div>
         <div class="hero-btns">
-          <Link :href="route('shop')" class="btn-primary">Explore Programs</Link>
-          <Link :href="route('consultation')" class="btn-outline">Book a Consultation</Link>
+          <Link :href="route('shop')" class="btn-primary">{{ t('home.hero_cta1') }}</Link>
+          <Link :href="route('consultation')" class="btn-outline">{{ t('common.book_now') }}</Link>
         </div>
       </div>
 
@@ -46,8 +46,8 @@
     <!-- ═══ HOW IT WORKS ═══ -->
     <section class="how-section" id="how">
       <div style="text-align:center; margin-bottom:56px;">
-        <p class="section-label">Simple &amp; Accessible</p>
-        <h2 class="section-title">Your protocol in <span class="gold-em">4 steps</span></h2>
+        <p class="section-label">{{ t('home.how_label') }}</p>
+        <h2 class="section-title">{{ t('home.how_title') }} <span class="gold-em">{{ t('home.how_title_em') }}</span></h2>
       </div>
       <div class="how-grid">
         <div v-for="(step, i) in steps" :key="i" class="how-step">
@@ -63,12 +63,12 @@
     <section class="pathology-section">
       <div class="pathology-intro">
         <div>
-          <p class="section-label">Areas of Action</p>
-          <h2 class="section-title">Your body's<br><span class="gold-em">complete system</span></h2>
+          <p class="section-label">{{ t('home.areas_label') }}</p>
+          <h2 class="section-title">{{ t('home.areas_title') }}<br><span class="gold-em">{{ t('home.areas_title_em') }}</span></h2>
           <p class="body-text" style="margin-bottom:20px;">This method — turning your brain into a natural medicine box — addresses the full spectrum of frequently encountered health challenges, from structural to emotional to hormonal.</p>
           <p class="body-text">Each program targets a specific bio-energetic disruption identified through decades of clinical practice by Dr. Éric Rosati.</p>
           <div style="margin-top:32px;">
-            <Link :href="route('shop')" class="btn-primary">Browse All 60+ Programs</Link>
+            <Link :href="route('shop')" class="btn-primary">{{ t('home.cta_btn1') }}</Link>
           </div>
         </div>
         <div class="pathology-systems">
@@ -85,10 +85,10 @@
     <section class="programs-section">
       <div style="display:flex; justify-content:space-between; align-items:flex-end; margin-bottom:40px; flex-wrap:wrap; gap:16px;">
         <div>
-          <p class="section-label">Most Popular</p>
-          <h2 class="section-title" style="margin-bottom:0;">Featured <span class="gold-em">programs</span></h2>
+          <p class="section-label">{{ t('home.programs_label') }}</p>
+          <h2 class="section-title" style="margin-bottom:0;">{{ t('home.programs_title') }} <span class="gold-em">{{ t('home.programs_title_em') }}</span></h2>
         </div>
-        <Link :href="route('shop')" class="btn-outline" style="padding:12px 28px; font-size:.82rem;">View all 60+ programs →</Link>
+        <Link :href="route('shop')" class="btn-outline" style="padding:12px 28px; font-size:.82rem;">{{ t('common.view_all') }} →</Link>
       </div>
       <div class="prog-carousel">
         <template v-if="featuredPrograms && featuredPrograms.length">
@@ -138,8 +138,8 @@
     <!-- ═══ TESTIMONIALS TICKER ═══ -->
     <section class="testimonials-section">
       <div style="text-align:center; margin-bottom:0;">
-        <p class="section-label">21,000+ users</p>
-        <h2 class="section-title">What our community <span class="gold-em">experiences</span></h2>
+        <p class="section-label">{{ t('home.testimonials_label') }}</p>
+        <h2 class="section-title">{{ t('home.testimonials_title') }} <span class="gold-em">{{ t('home.testimonials_title_em') }}</span></h2>
       </div>
       <div class="ticker-wrapper" style="margin-top:48px;">
         <div class="ticker-track">
@@ -208,12 +208,11 @@
       <div class="cta-bg"></div>
       <div class="cta-grid-bg"></div>
       <div class="cta-content">
-        <p class="section-label">Begin today</p>
-        <h2 class="section-title" style="font-size:clamp(2.2rem,4vw,3.5rem);">A better life starts with<br><span class="gold-em">one frequency.</span></h2>
-        <p style="color:rgba(200,220,255,.5); max-width:500px; margin:0 auto;">Browse our programs, subscribe for unlimited access, or book a personalized consultation with Dr. Éric Rosati.</p>
+        <p class="section-label">{{ t('home.cta_title') }}</p>
+        <h2 class="section-title" style="font-size:clamp(2.2rem,4vw,3.5rem);">{{ t('home.cta_sub') }}</h2>
         <div class="cta-btns">
-          <Link :href="route('shop')" class="btn-primary">Explore All Programs</Link>
-          <Link :href="route('consultation')" class="btn-outline">Book a Consultation — €58</Link>
+          <Link :href="route('shop')" class="btn-primary">{{ t('home.cta_btn1') }}</Link>
+          <Link :href="route('consultation')" class="btn-outline">{{ t('home.cta_btn2') }}</Link>
         </div>
       </div>
     </section>
@@ -225,6 +224,8 @@
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { Link } from '@inertiajs/vue3'
 import { computed, onMounted } from 'vue'
+import { useI18n } from '@/composables/useI18n'
+const { t } = useI18n()
 
 const props = defineProps({
   featuredPrograms: { type: Array, default: () => [] },

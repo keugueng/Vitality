@@ -3,26 +3,28 @@
 
     <!-- ═══ HERO ═══ -->
     <section class="hero">
-      <div class="hero-tag"><span>◆</span> BIO-ENERGY FREQUENCY THERAPY · EST. 25 YEARS</div>
-      <h1>A science rooted in<br><em>25 years of healing</em></h1>
-      <p class="hero-p">Vitality Inside was born from decades of clinical research into the body's natural frequency intelligence — combining osteopathy, Chinese medicine and quantum biophysics.</p>
+      <div class="hero-tag"><span>◆</span> {{ t('about.hero_tag') }}</div>
+      <h1>{{ t('about.hero_title') }}<br><em>{{ t('about.hero_title_em') }}</em></h1>
+      <p class="hero-p">{{ t('about.hero_sub') }}</p>
     </section>
 
     <!-- ═══ FOUNDER ═══ -->
     <section class="founder">
       <div class="founder-img">
         <div class="founder-photo">
-          <div class="photo-inner">ER</div>
+          <div class="photo-inner">
+            <img src="/images/dr-rosati.jpeg" alt="Dr. Éric Rosati" onerror="this.style.display='none'">
+          </div>
         </div>
         <div class="founder-badge">
           <div class="years">25+</div>
-          <div class="label">Years of research</div>
+          <div class="label">{{ t('about.years_research') }}</div>
         </div>
       </div>
       <div class="founder-text">
-        <div class="ftag">FOUNDER &amp; CREATOR</div>
+        <div class="ftag">{{ t('about.founder_role') }}</div>
         <h2>Dr. Eric Rosati</h2>
-        <div class="sub">Osteopath · Energy Medicine Expert</div>
+        <div class="sub">{{ t('about.founder_subtitle') }}</div>
         <p>Eric Rosati graduated in osteopathy, Chinese medicine, energy medicine and is the founder of the Isoposturale method. With more than 25 years of professional experience, he spent over a decade searching for a way to provide his patients with more effective and lasting relief.</p>
         <p>Since then, his enthusiasm for this energy approach has grown and led him to train in other techniques such as homeopathy, herbal medicine, Chinese medicine and quantum biophysics. This vibratory vision of disease has allowed him to better understand the mechanisms of pathologies and especially to provide more effective and sustainable care.</p>
         <p>The only motivation in developing this method is to provide patients with the best possible care — accessible from anywhere in the world, at any time.</p>
@@ -40,7 +42,7 @@
     <!-- ═══ MISSION ═══ -->
     <section class="mission">
       <div class="mission-inner">
-        <h2>Our Mission</h2>
+        <h2>{{ t('about.mission_label') }}</h2>
         <p>Frequency therapy applications have been developed over decades of research by therapists and scientists. Numerous studies have demonstrated the effectiveness of frequency therapy in managing pain, improving well-being and treating various pathologies.</p>
         <p>At Vitality Inside, we have synthesized this research into over 37 precise protocols, each targeting specific physiological mechanisms through carefully calibrated bio-energetic frequencies.</p>
         <blockquote>
@@ -52,8 +54,8 @@
 
     <!-- ═══ SCIENCE ═══ -->
     <section class="science">
-      <h2>The Science Behind the Method</h2>
-      <p class="sci-sub">Three pillars of bio-energetic healing</p>
+      <h2>{{ t('about.science_title_main') }}</h2>
+      <p class="sci-sub">{{ t('about.science_sub') }}</p>
       <div class="sci-grid">
         <div v-for="pillar in pillars" :key="pillar.title" class="sci-card">
           <div class="ic">{{ pillar.icon }}</div>
@@ -73,11 +75,11 @@
 
     <!-- ═══ CTA ═══ -->
     <section class="cta-section">
-      <h2>Begin Your Healing Journey</h2>
-      <p>Choose a protocol. Listen with bone conduction headphones. Let your body recalibrate.</p>
+      <h2>{{ t('about.cta_title') }}</h2>
+      <p>{{ t('about.cta_sub') }}</p>
       <div class="cta-btns">
-        <Link :href="route('shop')" class="btn-primary">Explore Programs</Link>
-        <Link :href="route('consultation')" class="btn-secondary">Book a Consultation</Link>
+        <Link :href="route('shop')" class="btn-primary">{{ t('about.cta_btn1') }}</Link>
+        <Link :href="route('consultation')" class="btn-secondary">{{ t('about.cta_btn') }}</Link>
       </div>
     </section>
 
@@ -87,6 +89,8 @@
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { Link } from '@inertiajs/vue3'
+import { useI18n } from '@/composables/useI18n'
+const { t } = useI18n()
 
 const pillars = [
   {

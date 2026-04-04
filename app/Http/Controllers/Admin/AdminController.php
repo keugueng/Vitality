@@ -12,6 +12,7 @@ use App\Models\Program;
 use App\Models\Setting;
 use App\Models\Testimonial;
 use App\Models\User;
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Inertia\Inertia;
@@ -365,44 +366,64 @@ class AdminController extends Controller
     /* ─── Notifications ─── */
     public function notifications()
     {
+        $notifications = UserNotification::with('user')
+            ->orderByDesc('created_at')
+            ->paginate(20);
+
+        $stats = [
+            'total'     => UserNotification::count(),
+            'unread'    => UserNotification::whereNull('read_at')->count(),
+            'broadcast' => UserNotification::where('broadcast', true)->count(),
+            'users'     => User::count(),
+        ];
+
         return Inertia::render('Admin/Notifications', [
-            'alerts' => [
-                [
-                    'id'      => 1,
-                    'color'   => 'red',
-                    'icon'    => '⏰',
-                    'title'   => '47 essais expirent dans 48h',
-                    'desc'    => 'Envoyer campagne de relance avec promo -10%',
-                    'action'  => 'Envoyer maintenant',
-                    'primary' => true,
-                ],
-                [
-                    'id'      => 2,
-                    'color'   => 'amber',
-                    'icon'    => '💳',
-                    'title'   => '6 paiements échoués',
-                    'desc'    => 'Relance automatique dans 24h · Mode dégradé activé',
-                    'action'  => 'Relancer',
-                    'primary' => false,
-                ],
-                [
-                    'id'      => 3,
-                    'color'   => 'blue',
-                    'icon'    => '📊',
-                    'title'   => 'Rapport hebdo non envoyé',
-                    'desc'    => 'Semaine 17–23 mars 2026 · En attente validation',
-                    'action'  => 'Valider & Envoyer',
-                    'primary' => false,
-                ],
-            ],
-            'campaigns' => [
-                ['name' => 'Bienvenue Sophie',       'type' => 'Email', 'recipients' => 1,     'open_rate' => null, 'conv_rate' => null, 'date' => '24 mars 9:41', 'status' => 'Envoyé'],
-                ['name' => 'Relance essai Mars',     'type' => 'Email', 'recipients' => 312,   'open_rate' => '68%','conv_rate' => '14%','date' => '23 mars',       'status' => 'Terminé'],
-                ['name' => 'Push séance du jour',    'type' => 'Push',  'recipients' => 8247,  'open_rate' => '42%','conv_rate' => null, 'date' => '24 mars 9h',   'status' => 'Envoyé'],
-                ['name' => 'Promo -10% 3 mois',      'type' => 'Email', 'recipients' => 156,   'open_rate' => '71%','conv_rate' => '22%','date' => '20 mars',       'status' => 'Terminé'],
-                ['name' => 'Relance expirations 48h','type' => 'Email', 'recipients' => 47,    'open_rate' => null, 'conv_rate' => null, 'date' => 'En attente',    'status' => 'En attente'],
-            ],
+            'notifications' => $notifications,
+            'stats'         => $stats,
         ]);
+    }
+
+    public function sendNotification(Request $request)
+    {
+        $data = $request->validate([
+            'title'        => 'required|string|max:255',
+            'body'         => 'required|string',
+            'type'         => 'required|in:info,success,warning,promo',
+            'target'       => 'required|in:all,user',
+            'user_id'      => 'nullable|exists:users,id',
+            'action_url'   => 'nullable|string|max:255',
+            'action_label' => 'nullable|string|max:100',
+        ]);
+
+        if ($data['target'] === 'all') {
+            UserNotification::create([
+                'user_id'      => null,
+                'type'         => $data['type'],
+                'title'        => $data['title'],
+                'body'         => $data['body'],
+                'action_url'   => $data['action_url'] ?? null,
+                'action_label' => $data['action_label'] ?? null,
+                'broadcast'    => true,
+            ]);
+        } else {
+            UserNotification::create([
+                'user_id'      => $data['user_id'],
+                'type'         => $data['type'],
+                'title'        => $data['title'],
+                'body'         => $data['body'],
+                'action_url'   => $data['action_url'] ?? null,
+                'action_label' => $data['action_label'] ?? null,
+                'broadcast'    => false,
+            ]);
+        }
+
+        return back()->with('success', 'Notification envoyée.');
+    }
+
+    public function deleteNotification(UserNotification $notification)
+    {
+        $notification->delete();
+        return back()->with('success', 'Notification supprimée.');
     }
 
     /* ─── Audio Files ─── */

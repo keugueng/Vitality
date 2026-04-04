@@ -3,9 +3,9 @@
 
     <!-- ═══ HERO ═══ -->
     <section class="blog-hero">
-      <div class="badge">ANALYSES D'EXPERTS · MÉDECINE ÉNERGÉTIQUE</div>
-      <h1>Le Centre de Connaissance<br><em>Vitality Inside</em></h1>
-      <p class="hero-sub">Articles scientifiques sur la biorésonance, la thérapie par fréquences et la guérison naturelle — rédigés par le Dr Éric Rosati, Ostéopathe et Docteur en Médecine Quantique.</p>
+      <div class="badge">{{ t('blog.hero_label') }}</div>
+      <h1>{{ t('blog.hero_title') }}<br><em>{{ t('blog.hero_title_em') }}</em></h1>
+      <p class="hero-sub">{{ t('blog.hero_sub') }}</p>
     </section>
 
     <!-- ═══ FILTRES ═══ -->
@@ -33,7 +33,7 @@
               </div>
               <div class="card-title">{{ post.title }}</div>
               <div class="card-excerpt">{{ post.excerpt }}</div>
-              <span class="read-more">Lire l'article →</span>
+              <span class="read-more">{{ t('blog.read_more') }} →</span>
             </div>
           </div>
         </template>
@@ -52,7 +52,7 @@
               </div>
               <div class="card-title">{{ article.title }}</div>
               <div class="card-excerpt">{{ article.excerpt }}</div>
-              <span class="read-more">Lire l'article →</span>
+              <span class="read-more">{{ t('blog.read_more') }} →</span>
             </div>
           </div>
         </template>
@@ -62,11 +62,11 @@
     <!-- ═══ NEWSLETTER ═══ -->
     <div class="nl-wrap">
       <div class="nl reveal">
-        <h2>Recevez les dernières recherches</h2>
-        <p>Articles exclusifs, nouvelles études et protocoles directement dans votre boîte mail.</p>
+        <h2>{{ t('blog.newsletter_title') }}</h2>
+        <p>{{ t('blog.newsletter_sub') }}</p>
         <div class="nlf">
-          <input v-model="nlEmail" type="email" placeholder="votre@email.com" />
-          <button @click="nlSubmit">{{ nlDone ? 'Inscrit ✓' : "S'inscrire" }}</button>
+          <input v-model="nlEmail" type="email" :placeholder="t('blog.newsletter_placeholder')" />
+          <button @click="nlSubmit">{{ nlDone ? '✓' : t('blog.newsletter_btn') }}</button>
         </div>
       </div>
     </div>
@@ -98,6 +98,8 @@
 <script setup>
 import { ref, computed, onMounted } from 'vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
+import { useI18n } from '@/composables/useI18n'
+const { t } = useI18n()
 
 const props = defineProps({ posts: Object })
 

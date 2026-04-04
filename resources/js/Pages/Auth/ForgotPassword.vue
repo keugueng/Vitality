@@ -1,17 +1,17 @@
 <template>
   <AuthLayout>
     <div class="auth-card">
-      <h1 class="auth-title">Reset Password</h1>
-      <p class="auth-sub">Enter your email to receive a reset link.</p>
+      <h1 class="auth-title">{{ t('auth.forgot_title') }}</h1>
+      <p class="auth-sub">{{ t('auth.forgot_sub') }}</p>
       <form class="auth-form">
         <div class="field">
-          <label class="field-label">Email</label>
+          <label class="field-label">{{ t('auth.email') }}</label>
           <input type="email" required class="field-input" placeholder="your@email.com" />
         </div>
-        <button type="submit" class="auth-btn">Send Reset Link</button>
+        <button type="submit" class="auth-btn">{{ t('auth.forgot_btn') }}</button>
       </form>
       <p class="auth-alt">
-        <Link :href="route('login')" class="auth-link">← Back to login</Link>
+        <Link :href="route('login')" class="auth-link">{{ t('auth.back_login') }}</Link>
       </p>
     </div>
   </AuthLayout>
@@ -20,6 +20,8 @@
 <script setup>
 import AuthLayout from '@/Layouts/AuthLayout.vue'
 import { Link } from '@inertiajs/vue3'
+import { useI18n } from '@/composables/useI18n'
+const { t } = useI18n()
 </script>
 
 <style scoped>

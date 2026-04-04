@@ -2,6 +2,7 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\UserNotification;
 use Illuminate\Http\Request;
 use Inertia\Middleware;
 
@@ -42,8 +43,15 @@ class HandleInertiaRequests extends Middleware
                 'success' => fn () => $request->session()->get('success'),
                 'error'   => fn () => $request->session()->get('error'),
             ],
-            'cart_count' => fn () => $request->session()->get('cart', []) ? count($request->session()->get('cart', [])) : 0,
-            'locale' => fn () => app()->getLocale(),
+            'cart_count'    => fn () => $request->session()->get('cart', []) ? count($request->session()->get('cart', [])) : 0,
+            'notif_count'   => fn () => $request->user()
+                ? rescue(fn () => UserNotification::forUser($request->user()->id)->whereNull('read_at')->count(), 0)
+                : 0,
+            'locale'       => fn () => app()->getLocale(),
+            'translations' => fn () => rescue(
+                fn () => json_decode(file_get_contents(base_path('lang/' . app()->getLocale() . '.json')), true),
+                json_decode(file_get_contents(base_path('lang/fr.json')), true)
+            ),
         ]);
     }
 }

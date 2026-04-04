@@ -1,36 +1,36 @@
 <template>
   <AuthLayout>
     <div class="auth-card">
-      <h1 class="auth-title">Create account</h1>
-      <p class="auth-sub">Join 21,000+ Vitality Inside users</p>
+      <h1 class="auth-title">{{ t('auth.register_title') }}</h1>
+      <p class="auth-sub">{{ t('auth.register_sub') }}</p>
 
       <form @submit.prevent="submit" class="auth-form">
         <div class="field">
-          <label class="field-label">Full Name</label>
+          <label class="field-label">{{ t('auth.name') }}</label>
           <input v-model="form.name" type="text" required autofocus class="field-input" placeholder="Your full name" />
           <p v-if="form.errors.name" class="field-error">{{ form.errors.name }}</p>
         </div>
         <div class="field">
-          <label class="field-label">Email</label>
+          <label class="field-label">{{ t('auth.email') }}</label>
           <input v-model="form.email" type="email" required class="field-input" placeholder="your@email.com" />
           <p v-if="form.errors.email" class="field-error">{{ form.errors.email }}</p>
         </div>
         <div class="field">
-          <label class="field-label">Password</label>
+          <label class="field-label">{{ t('auth.password') }}</label>
           <input v-model="form.password" type="password" required class="field-input" placeholder="Min. 8 characters" />
           <p v-if="form.errors.password" class="field-error">{{ form.errors.password }}</p>
         </div>
         <div class="field">
-          <label class="field-label">Confirm Password</label>
+          <label class="field-label">{{ t('auth.confirm_password') }}</label>
           <input v-model="form.password_confirmation" type="password" required class="field-input" placeholder="Repeat password" />
         </div>
         <button type="submit" :disabled="form.processing" class="auth-btn">
-          {{ form.processing ? 'Creating account…' : 'Create Account' }}
+          {{ form.processing ? t('auth.register_btn_loading') : t('auth.register_btn') }}
         </button>
       </form>
 
       <p class="auth-alt">
-        Already have an account? <Link :href="route('login')" class="auth-link">Sign in</Link>
+        {{ t('auth.have_account') }} <Link :href="route('login')" class="auth-link">{{ t('auth.login_link') }}</Link>
       </p>
     </div>
   </AuthLayout>
@@ -39,6 +39,8 @@
 <script setup>
 import AuthLayout from '@/Layouts/AuthLayout.vue'
 import { Link, useForm } from '@inertiajs/vue3'
+import { useI18n } from '@/composables/useI18n'
+const { t } = useI18n()
 const form = useForm({ name: '', email: '', password: '', password_confirmation: '' })
 const submit = () => form.post(route('register'))
 </script>

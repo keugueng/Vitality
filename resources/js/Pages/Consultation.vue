@@ -6,13 +6,13 @@
       <div class="hero-grid">
         <!-- Left -->
         <div class="hero-left">
-          <div class="hero-badge"><span class="badge-dot"></span>Dr. Éric Rosati — Ostéopathe &amp; Médecine Quantique</div>
+          <div class="hero-badge"><span class="badge-dot"></span>{{ t('consultation.badge') }}</div>
           <h1>Votre santé,<br><em>précisément décodée.</em></h1>
           <p class="hero-sub">Décrivez vos symptômes. Le Dr. Éric Rosati analyse votre profil bio-énergétique et vous remet un protocole de fréquences sur-mesure — directement dans votre boîte mail sous 8 heures.</p>
           <div class="hero-price-row">
-            <span class="hero-from">À partir de</span>
+            <span class="hero-from">{{ t('consultation.from') }}</span>
             <span class="hero-price">€58</span>
-            <span class="hero-price-sub">/ consultation</span>
+            <span class="hero-price-sub">{{ t('consultation.per_session') }}</span>
           </div>
           <div class="hero-btns">
             <a href="#booking" class="btn-primary">Réserver ma consultation</a>
@@ -58,8 +58,8 @@
     <section class="steps-section">
       <div class="section-inner">
         <div class="section-header" style="text-align:center">
-          <p class="section-label">Comment ça marche</p>
-          <h2 class="section-title">De vos symptômes à votre <em class="gold-italic">protocole personnalisé</em></h2>
+          <p class="section-label">{{ t('consultation.how_label') }}</p>
+          <h2 class="section-title">{{ t('consultation.how_title') }} <em class="gold-italic">{{ t('consultation.how_title_em') }}</em></h2>
         </div>
         <div class="steps-grid">
           <div v-for="(step, i) in consultSteps" :key="i" class="step">
@@ -75,8 +75,8 @@
     <section class="packages-section" id="packages">
       <div class="section-inner">
         <div class="section-header" style="text-align:center">
-          <p class="section-label">Formules</p>
-          <h2 class="section-title">Économisez avec nos <em class="gold-italic">formules multi-séances</em></h2>
+          <p class="section-label">{{ t('consultation.packages_label') }}</p>
+          <h2 class="section-title">{{ t('consultation.packages_title') }} <em class="gold-italic">{{ t('consultation.packages_title_em') }}</em></h2>
           <p class="section-sub" style="margin:0 auto">Les pathologies chroniques répondent mieux à plusieurs cycles de consultation. Nos formules vous offrent un suivi plus approfondi à moindre coût.</p>
         </div>
         <div class="packages-grid">
@@ -106,8 +106,8 @@
       <div class="section-inner">
         <div class="included-grid">
           <div class="included-left">
-            <p class="section-label">Ce qui est inclus</p>
-            <h2 class="section-title">Tout ce dont vous avez besoin <em class="gold-italic">dans chaque consultation</em></h2>
+            <p class="section-label">{{ t('consultation.included2_label') }}</p>
+            <h2 class="section-title">{{ t('consultation.included2_title') }} <em class="gold-italic">{{ t('consultation.included2_title_em') }}</em></h2>
             <ul class="included-list">
               <li><div class="inc-icon">✦</div><div><strong>Analyse bio-énergétique approfondie</strong><p>Le Dr. Rosati examine chaque symptôme à travers le prisme de la médecine quantique pour identifier les déséquilibres précis.</p></div></li>
               <li><div class="inc-icon">✦</div><div><strong>Protocole de fréquences sur-mesure</strong><p>Séquence audio personnalisée encodée avec les fréquences exactes correspondant à votre profil pathologique.</p></div></li>
@@ -136,8 +136,8 @@
     <!-- ═══ FORMULAIRE ═══ -->
     <section class="form-section" id="booking">
       <div class="form-card">
-        <h2 class="form-title">Réserver ma consultation</h2>
-        <p class="form-sub">Remplissez le formulaire, laissez le Dr. Éric Rosati décoder votre profil bio-énergétique.</p>
+        <h2 class="form-title">{{ t('consultation.book_title') }}</h2>
+        <p class="form-sub">{{ t('consultation.book_sub') }}</p>
 
         <div v-if="$page.props.flash?.success" class="flash-success">
           ✓ {{ $page.props.flash.success }}
@@ -246,6 +246,8 @@
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { Link, useForm } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
+import { useI18n } from '@/composables/useI18n'
+const { t } = useI18n()
 
 const openFaq = ref(null)
 

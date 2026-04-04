@@ -1,166 +1,107 @@
 <template>
   <ProLayout>
-    <div class="max-w-5xl">
 
-      <!-- Header page -->
-      <div class="flex items-center justify-between mb-8">
-        <div>
-          <h1 class="font-serif text-3xl font-light text-white mb-1">My Patients</h1>
-          <p class="text-sm" style="color: #9DAAC0;">{{ patients.length }} patient{{ patients.length !== 1 ? 's' : '' }} registered</p>
+    <!-- Page header -->
+    <div class="p-page-head">
+      <div>
+        <h1 class="p-title">Mes patients</h1>
+        <p class="p-sub">{{ patients.length }} patient{{ patients.length !== 1 ? 's' : '' }} enregistré{{ patients.length !== 1 ? 's' : '' }}</p>
+      </div>
+      <button @click="showAddPatient = true" class="p-btn-gold">+ Nouveau patient</button>
+    </div>
+
+    <!-- Flash -->
+    <div v-if="$page.props.flash?.success" class="p-flash">✓ {{ $page.props.flash.success }}</div>
+
+    <!-- Search -->
+    <div class="p-search-wrap">
+      <input v-model="search" type="text" placeholder="Rechercher un patient…" class="p-search" />
+    </div>
+
+    <!-- List -->
+    <div v-if="filtered.length" class="p-list">
+      <div v-for="patient in filtered" :key="patient.id" class="p-patient-row">
+
+        <div class="p-patient-left">
+          <div class="p-avatar-lg">{{ patient.name?.charAt(0).toUpperCase() }}</div>
+          <div>
+            <p class="p-patient-name">{{ patient.name }}</p>
+            <p class="p-patient-meta">
+              {{ patient.email || 'Pas d\'email' }}
+              <span v-if="patient.phone"> · {{ patient.phone }}</span>
+            </p>
+          </div>
         </div>
-        <button @click="showAddPatient = true"
-          class="bg-[#11C7C9] hover:bg-[#0db5b7] text-[#03142A] font-bold text-sm tracking-wide uppercase px-5 py-2.5 rounded transition-all">
-          + Add Patient
-        </button>
-      </div>
 
-      <!-- Flash success -->
-      <div v-if="$page.props.flash?.success"
-        class="rounded-xl p-4 mb-6 text-sm"
-        style="background: rgba(17,199,201,0.1); border: 1px solid rgba(17,199,201,0.3); color: #11C7C9;">
-        {{ $page.props.flash.success }}
-      </div>
-
-      <!-- Patient list -->
-      <div v-if="patients.length" class="space-y-3">
-        <div v-for="patient in patients" :key="patient.id"
-          class="rounded-xl p-5 flex items-center justify-between transition-all"
-          style="background: rgba(10,39,69,0.5); border: 1px solid rgba(255,255,255,0.07);"
-          @mouseover="$event.currentTarget.style.borderColor='rgba(255,255,255,0.15)'"
-          @mouseout="$event.currentTarget.style.borderColor='rgba(255,255,255,0.07)'">
-
-          <div class="flex items-center gap-4 flex-1">
-            <!-- Avatar initiale -->
-            <div class="w-10 h-10 rounded-full flex items-center justify-center font-bold text-sm flex-shrink-0"
-              style="background: rgba(17,199,201,0.15); color: #11C7C9;">
-              {{ patient.name.charAt(0).toUpperCase() }}
-            </div>
-            <div class="flex-1">
-              <p class="text-white font-semibold text-sm">{{ patient.name }}</p>
-              <p class="text-[11px] mt-0.5" style="color: #9DAAC0;">
-                {{ patient.email || 'No email' }}
-                <span v-if="patient.phone"> · {{ patient.phone }}</span>
-              </p>
-            </div>
-          </div>
-
-          <!-- Protocols badges -->
-          <div class="flex items-center gap-2 mx-4">
-            <span v-for="p in (patient.protocols || []).slice(0,3)" :key="p.id"
-              class="text-lg" :title="p.program?.title">
-              {{ p.program?.emoji || '✨' }}
-            </span>
-            <span v-if="(patient.protocols||[]).length > 3"
-              class="text-[10px]" style="color: #9DAAC0;">
-              +{{ patient.protocols.length - 3 }}
-            </span>
-          </div>
-
-          <!-- Protocol count + status -->
-          <div class="text-right mr-4 hidden md:block">
-            <p class="text-white text-sm font-semibold">{{ (patient.protocols||[]).length }}</p>
-            <p class="text-[10px] uppercase tracking-wide" style="color: #9DAAC0;">Protocol{{ (patient.protocols||[]).length !== 1 ? 's' : '' }}</p>
-          </div>
-
-          <!-- Status badge -->
-          <span class="text-[10px] font-semibold tracking-wide uppercase px-2.5 py-1 rounded-full"
-            :style="patient.status === 'active'
-              ? 'background: rgba(17,199,201,0.1); color: #11C7C9; border: 1px solid rgba(17,199,201,0.3);'
-              : 'background: rgba(157,170,192,0.1); color: #9DAAC0; border: 1px solid rgba(157,170,192,0.2);'">
-            {{ patient.status || 'active' }}
+        <div class="p-patient-protocols">
+          <span v-for="pr in (patient.protocols || []).slice(0,3)" :key="pr.id"
+            class="p-proto-emoji" :title="pr.program?.title">{{ pr.program?.emoji || '✨' }}</span>
+          <span v-if="(patient.protocols||[]).length > 3" class="p-proto-more">
+            +{{ patient.protocols.length - 3 }}
           </span>
-
-          <!-- Actions -->
-          <div class="flex items-center gap-2 ml-4">
-            <button @click="openAssign(patient)"
-              class="text-[11px] font-semibold px-3 py-1.5 rounded transition-all"
-              style="border: 1px solid rgba(213,182,122,0.4); color: #D5B67A;"
-              onmouseover="this.style.background='rgba(213,182,122,0.08)'"
-              onmouseout="this.style.background='transparent'">
-              Assign Protocol
-            </button>
-            <Link :href="route('pro.patients.destroy', patient.id)" method="delete" as="button"
-              class="text-[11px] font-semibold px-2.5 py-1.5 rounded transition-all"
-              style="color: rgba(157,170,192,0.4);"
-              onmouseover="this.style.color='#ef4444'" onmouseout="this.style.color='rgba(157,170,192,0.4)'"
-              onclick="return confirm('Remove this patient?')">
-              ✕
-            </Link>
-          </div>
+          <span v-if="!(patient.protocols||[]).length" class="p-proto-none">Aucun protocole</span>
         </div>
-      </div>
 
-      <!-- Empty state -->
-      <div v-else
-        class="rounded-2xl p-12 text-center"
-        style="background: rgba(10,39,69,0.4); border: 1px solid rgba(255,255,255,0.07);">
-        <div class="text-5xl mb-4">👥</div>
-        <p class="text-white font-semibold mb-2">No patients yet</p>
-        <p class="text-sm mb-6" style="color: #9DAAC0;">Start by adding your first patient and assigning a protocol.</p>
-        <button @click="showAddPatient = true"
-          class="bg-[#11C7C9] hover:bg-[#0db5b7] text-[#03142A] font-bold text-sm uppercase px-6 py-2.5 rounded transition-all">
-          + Add First Patient
-        </button>
+        <span class="p-status-badge" :class="(patient.status || 'active') === 'active' ? 'teal' : 'muted'">
+          {{ patient.status || 'actif' }}
+        </span>
+
+        <div class="p-patient-actions">
+          <button @click="openAssign(patient)" class="p-btn-gold-sm">Assigner</button>
+          <Link :href="route('pro.patients.destroy', patient.id)" method="delete" as="button"
+            class="p-btn-del" @click.prevent="confirmDelete(patient)">✕</Link>
+        </div>
       </div>
     </div>
 
-    <!-- ═══ Add Patient Modal ═══ -->
-    <div v-if="showAddPatient" class="fixed inset-0 z-50 flex items-center justify-center px-4"
-      style="background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);">
-      <div class="rounded-3xl p-8 w-full max-w-md"
-        style="background: rgba(4,27,51,0.98); border: 1px solid rgba(255,255,255,0.1);">
-        <h3 class="font-serif text-xl text-white font-light mb-6">Add Patient</h3>
-        <form @submit.prevent="addPatient" class="space-y-4">
-          <input v-model="patientForm.name" type="text" required placeholder="Full name *"
-            class="w-full rounded-xl px-4 py-3 text-white text-sm focus:outline-none"
-            style="background: rgba(3,20,42,0.8); border: 1px solid rgba(255,255,255,0.1);"/>
-          <input v-model="patientForm.email" type="email" placeholder="Email (optional)"
-            class="w-full rounded-xl px-4 py-3 text-white text-sm focus:outline-none"
-            style="background: rgba(3,20,42,0.8); border: 1px solid rgba(255,255,255,0.1);"/>
-          <input v-model="patientForm.phone" type="tel" placeholder="Phone (optional)"
-            class="w-full rounded-xl px-4 py-3 text-white text-sm focus:outline-none"
-            style="background: rgba(3,20,42,0.8); border: 1px solid rgba(255,255,255,0.1);"/>
-          <textarea v-model="patientForm.medical_history" rows="3" placeholder="Medical history / notes (optional)"
-            class="w-full rounded-xl px-4 py-3 text-white text-sm focus:outline-none resize-none"
-            style="background: rgba(3,20,42,0.8); border: 1px solid rgba(255,255,255,0.1);"></textarea>
-          <div class="flex gap-3 pt-2">
-            <button type="button" @click="showAddPatient = false"
-              class="flex-1 text-sm font-semibold py-2.5 rounded transition-all"
-              style="border: 1px solid rgba(255,255,255,0.15); color: #9DAAC0;">Cancel</button>
-            <button type="submit" :disabled="patientForm.processing"
-              class="flex-1 bg-[#11C7C9] hover:bg-[#0db5b7] text-[#03142A] font-bold text-sm py-2.5 rounded transition-all disabled:opacity-50">
-              Add Patient
-            </button>
+    <!-- Empty -->
+    <div v-else class="p-empty">
+      <span class="p-empty-icon">👥</span>
+      <p class="p-empty-title">Aucun patient{{ search ? ' trouvé' : ' pour l\'instant' }}</p>
+      <p class="p-empty-sub">{{ search ? 'Modifiez votre recherche.' : 'Ajoutez votre premier patient pour commencer.' }}</p>
+      <button v-if="!search" @click="showAddPatient = true" class="p-btn-gold">+ Ajouter un patient</button>
+    </div>
+
+    <!-- Add Patient Modal -->
+    <div v-if="showAddPatient" class="p-modal-bg">
+      <div class="p-modal">
+        <div class="p-modal-head">
+          <h3>Nouveau patient</h3>
+          <button @click="showAddPatient = false" class="p-modal-x">×</button>
+        </div>
+        <form @submit.prevent="addPatient" class="p-modal-form">
+          <div class="p-field"><label>Nom complet *</label><input v-model="patientForm.name" type="text" required placeholder="Jean Dupont" /></div>
+          <div class="p-field"><label>Email</label><input v-model="patientForm.email" type="email" placeholder="jean@email.com" /></div>
+          <div class="p-field"><label>Téléphone</label><input v-model="patientForm.phone" type="tel" placeholder="+33 6 …" /></div>
+          <div class="p-field"><label>Notes médicales</label><textarea v-model="patientForm.medical_history" rows="2" placeholder="Antécédents…"></textarea></div>
+          <div class="p-modal-actions">
+            <button type="button" @click="showAddPatient = false" class="p-btn-ghost">Annuler</button>
+            <button type="submit" :disabled="patientForm.processing" class="p-btn-gold">{{ patientForm.processing ? '…' : 'Créer' }}</button>
           </div>
         </form>
       </div>
     </div>
 
-    <!-- ═══ Assign Protocol Modal ═══ -->
-    <div v-if="assignTarget" class="fixed inset-0 z-50 flex items-center justify-center px-4"
-      style="background: rgba(0,0,0,0.6); backdrop-filter: blur(6px);">
-      <div class="rounded-3xl p-8 w-full max-w-md"
-        style="background: rgba(4,27,51,0.98); border: 1px solid rgba(255,255,255,0.1);">
-        <h3 class="font-serif text-xl text-white font-light mb-1">Assign Protocol</h3>
-        <p class="text-sm mb-6" style="color: #9DAAC0;">Patient: <span style="color: #D5B67A;">{{ assignTarget.name }}</span></p>
-        <form @submit.prevent="assignProtocol" class="space-y-4">
-          <select v-model="protocolForm.program_id"
-            class="w-full rounded-xl px-4 py-3 text-white text-sm focus:outline-none"
-            style="background: rgba(3,20,42,0.8); border: 1px solid rgba(255,255,255,0.1);">
-            <option value="" disabled>Select program…</option>
-            <option v-for="pg in programs" :key="pg.id" :value="pg.id">{{ pg.emoji }} {{ pg.title }}</option>
-          </select>
-          <textarea v-model="protocolForm.notes" rows="2" placeholder="Clinical notes (optional)"
-            class="w-full rounded-xl px-4 py-3 text-white text-sm focus:outline-none resize-none"
-            style="background: rgba(3,20,42,0.8); border: 1px solid rgba(255,255,255,0.1);"></textarea>
-          <div class="flex gap-3 pt-2">
-            <button type="button" @click="assignTarget = null"
-              class="flex-1 text-sm font-semibold py-2.5 rounded transition-all"
-              style="border: 1px solid rgba(255,255,255,0.15); color: #9DAAC0;">Cancel</button>
-            <button type="submit" :disabled="protocolForm.processing"
-              class="flex-1 bg-[#11C7C9] hover:bg-[#0db5b7] text-[#03142A] font-bold text-sm py-2.5 rounded transition-all disabled:opacity-50">
-              Assign Protocol
-            </button>
+    <!-- Assign Protocol Modal -->
+    <div v-if="assignTarget" class="p-modal-bg">
+      <div class="p-modal">
+        <div class="p-modal-head">
+          <h3>Assigner un protocole</h3>
+          <button @click="assignTarget = null" class="p-modal-x">×</button>
+        </div>
+        <p class="p-modal-patient">Patient : <em>{{ assignTarget.name }}</em></p>
+        <form @submit.prevent="assignProtocol" class="p-modal-form">
+          <div class="p-field">
+            <label>Programme *</label>
+            <select v-model="protocolForm.program_id">
+              <option value="" disabled>Sélectionner…</option>
+              <option v-for="pg in programs" :key="pg.id" :value="pg.id">{{ pg.emoji }} {{ pg.title }}</option>
+            </select>
+          </div>
+          <div class="p-field"><label>Notes cliniques</label><textarea v-model="protocolForm.notes" rows="2" placeholder="Instructions…"></textarea></div>
+          <div class="p-modal-actions">
+            <button type="button" @click="assignTarget = null" class="p-btn-ghost">Annuler</button>
+            <button type="submit" :disabled="protocolForm.processing" class="p-btn-teal">{{ protocolForm.processing ? '…' : 'Assigner' }}</button>
           </div>
         </form>
       </div>
@@ -171,22 +112,27 @@
 
 <script setup>
 import ProLayout from '@/Layouts/ProLayout.vue'
-import { Link, useForm } from '@inertiajs/vue3'
-import { ref } from 'vue'
+import { Link, useForm, router } from '@inertiajs/vue3'
+import { ref, computed } from 'vue'
 
-defineProps({ patients: Array, programs: Array, pro: Object })
+const props = defineProps({ patients: { type: Array, default: () => [] }, programs: { type: Array, default: () => [] }, pro: Object })
 
 const showAddPatient = ref(false)
 const assignTarget   = ref(null)
+const search         = ref('')
+
+const filtered = computed(() => {
+  if (!search.value) return props.patients
+  const q = search.value.toLowerCase()
+  return props.patients.filter(p => p.name?.toLowerCase().includes(q) || p.email?.toLowerCase().includes(q))
+})
 
 const patientForm  = useForm({ name: '', email: '', phone: '', medical_history: '' })
 const protocolForm = useForm({ patient_id: '', program_id: '', notes: '' })
 
-const addPatient = () => {
-  patientForm.post(route('pro.patients.store'), {
-    onSuccess: () => { showAddPatient.value = false; patientForm.reset() }
-  })
-}
+const addPatient = () => patientForm.post(route('pro.patients.store'), {
+  onSuccess: () => { showAddPatient.value = false; patientForm.reset() }
+})
 
 const openAssign = (patient) => {
   assignTarget.value = patient
@@ -195,9 +141,74 @@ const openAssign = (patient) => {
   protocolForm.notes = ''
 }
 
-const assignProtocol = () => {
-  protocolForm.post(route('pro.protocols.assign'), {
-    onSuccess: () => { assignTarget.value = null; protocolForm.reset() }
-  })
+const assignProtocol = () => protocolForm.post(route('pro.protocols.assign'), {
+  onSuccess: () => { assignTarget.value = null; protocolForm.reset() }
+})
+
+const confirmDelete = (patient) => {
+  if (confirm(`Supprimer ${patient.name} ?`)) router.delete(route('pro.patients.destroy', patient.id))
 }
 </script>
+
+<style scoped>
+.p-page-head { display:flex; align-items:center; justify-content:space-between; margin-bottom:24px; flex-wrap:wrap; gap:12px; }
+.p-title { font-family:'Cormorant Garamond',serif; font-size:1.8rem; font-weight:300; color:#fff; }
+.p-sub   { font-size:.8rem; color:rgba(200,220,255,.4); margin-top:3px; }
+.p-flash { background:rgba(13,115,119,.12); border:1px solid rgba(13,115,119,.3); color:#14a8a0; padding:12px 16px; border-radius:10px; font-size:.82rem; margin-bottom:18px; }
+
+.p-search-wrap { margin-bottom:20px; }
+.p-search { width:100%; max-width:380px; background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); border-radius:10px; padding:10px 14px; color:#fff; font-size:.83rem; outline:none; font-family:inherit; transition:border-color .2s; }
+.p-search:focus { border-color:rgba(200,169,110,.35); }
+
+.p-list { display:flex; flex-direction:column; gap:8px; }
+.p-patient-row { background:rgba(13,31,58,.7); border:1px solid rgba(255,255,255,.06); border-radius:14px; padding:16px 20px; display:flex; align-items:center; gap:16px; flex-wrap:wrap; transition:border-color .2s; }
+.p-patient-row:hover { border-color:rgba(200,169,110,.18); }
+
+.p-patient-left { display:flex; align-items:center; gap:12px; flex:1; min-width:200px; }
+.p-avatar-lg { width:38px; height:38px; border-radius:10px; background:linear-gradient(135deg,#0d7377,#14a8a0); display:flex; align-items:center; justify-content:center; font-size:.88rem; font-weight:700; color:#fff; flex-shrink:0; }
+.p-patient-name { font-size:.9rem; font-weight:600; color:#fff; }
+.p-patient-meta { font-size:.74rem; color:rgba(200,220,255,.38); margin-top:2px; }
+
+.p-patient-protocols { display:flex; align-items:center; gap:4px; flex-shrink:0; }
+.p-proto-emoji { font-size:1.1rem; }
+.p-proto-more  { font-size:.68rem; color:rgba(200,220,255,.35); margin-left:2px; }
+.p-proto-none  { font-size:.72rem; color:rgba(200,220,255,.22); }
+
+.p-status-badge { font-size:.66rem; font-weight:700; letter-spacing:.1em; text-transform:uppercase; padding:3px 10px; border-radius:100px; flex-shrink:0; }
+.p-status-badge.teal  { background:rgba(13,115,119,.15); border:1px solid rgba(13,115,119,.3); color:#14a8a0; }
+.p-status-badge.muted { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1); color:rgba(200,220,255,.4); }
+
+.p-patient-actions { display:flex; align-items:center; gap:8px; flex-shrink:0; margin-left:auto; }
+
+.p-empty { text-align:center; padding:64px 20px; }
+.p-empty-icon  { font-size:3rem; display:block; margin-bottom:14px; }
+.p-empty-title { font-size:1rem; font-weight:600; color:#fff; margin-bottom:6px; }
+.p-empty-sub   { font-size:.82rem; color:rgba(200,220,255,.35); margin-bottom:20px; }
+
+/* Buttons */
+.p-btn-gold    { background:linear-gradient(135deg,#c8a96e,#e8d5a3); color:#0a1628; border:none; padding:10px 20px; border-radius:10px; font-size:.8rem; font-weight:700; cursor:pointer; }
+.p-btn-gold-sm { background:rgba(200,169,110,.12); border:1px solid rgba(200,169,110,.3); color:#c8a96e; padding:5px 12px; border-radius:7px; font-size:.72rem; font-weight:600; cursor:pointer; transition:all .2s; }
+.p-btn-gold-sm:hover { background:rgba(200,169,110,.22); }
+.p-btn-teal    { background:linear-gradient(135deg,#0d7377,#14a8a0); color:#fff; border:none; padding:10px 20px; border-radius:10px; font-size:.8rem; font-weight:600; cursor:pointer; }
+.p-btn-ghost   { background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.08); color:rgba(200,220,255,.5); padding:10px 20px; border-radius:10px; font-size:.8rem; cursor:pointer; }
+.p-btn-del     { background:none; border:none; color:rgba(200,220,255,.25); font-size:1.2rem; cursor:pointer; padding:4px 6px; transition:color .2s; line-height:1; }
+.p-btn-del:hover { color:#ef4444; }
+
+/* Modal */
+.p-modal-bg      { position:fixed; inset:0; z-index:200; display:flex; align-items:center; justify-content:center; background:rgba(0,0,0,.65); backdrop-filter:blur(6px); padding:20px; }
+.p-modal         { background:#0a1628; border:1px solid rgba(200,169,110,.2); border-radius:18px; width:100%; max-width:440px; overflow:hidden; }
+.p-modal-head    { display:flex; align-items:center; justify-content:space-between; padding:18px 22px 0; }
+.p-modal-head h3 { font-family:'Cormorant Garamond',serif; font-size:1.15rem; font-weight:600; color:#fff; }
+.p-modal-x       { background:none; border:none; color:rgba(200,220,255,.35); font-size:1.4rem; cursor:pointer; line-height:1; }
+.p-modal-patient { padding:4px 22px 0; font-size:.78rem; color:rgba(200,220,255,.45); }
+.p-modal-patient em { color:#c8a96e; font-style:normal; }
+.p-modal-form    { padding:16px 22px 22px; display:flex; flex-direction:column; gap:12px; }
+.p-field         { display:flex; flex-direction:column; gap:4px; }
+.p-field label   { font-size:.67rem; text-transform:uppercase; letter-spacing:.1em; color:rgba(200,220,255,.33); }
+.p-field input, .p-field select, .p-field textarea { background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.08); border-radius:8px; padding:10px 12px; color:#fff; font-size:.83rem; outline:none; font-family:inherit; }
+.p-field input:focus, .p-field select:focus, .p-field textarea:focus { border-color:rgba(200,169,110,.4); }
+.p-field select option { background:#0d1f3a; }
+.p-field textarea { resize:none; }
+.p-modal-actions { display:flex; gap:10px; }
+.p-modal-actions > * { flex:1; }
+</style>

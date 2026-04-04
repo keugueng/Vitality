@@ -10,7 +10,7 @@
         <div class="footer-brand">
           <Link :href="route('home')" class="footer-logo">Vitality Inside</Link>
           <p class="footer-tagline">
-            Bio-energy frequency therapy designed by Dr. Éric Rosati. Science-backed protocols for complete wellness.
+            {{ t('footer.tagline') }}
           </p>
           <div class="footer-socials">
             <a v-for="s in socials" :key="s.label" :href="s.href" target="_blank" rel="noopener"
@@ -20,7 +20,7 @@
 
         <!-- Col 2: Programs -->
         <div>
-          <h5 class="footer-col-title">Programs</h5>
+          <h5 class="footer-col-title">{{ t('footer.programs') }}</h5>
           <ul class="footer-links">
             <li v-for="link in programLinks" :key="link.label">
               <Link :href="route('shop')" class="footer-link">{{ link.label }}</Link>
@@ -30,32 +30,32 @@
 
         <!-- Col 3: Company -->
         <div>
-          <h5 class="footer-col-title">Company</h5>
+          <h5 class="footer-col-title">{{ t('footer.company') }}</h5>
           <ul class="footer-links">
-            <li><Link :href="route('about')"        class="footer-link">About Dr. Rosati</Link></li>
-            <li><Link :href="route('consultation')" class="footer-link">Consultation</Link></li>
-            <li><Link :href="route('blog')"         class="footer-link">Blog</Link></li>
-            <li><Link :href="route('legal-notice')" class="footer-link">Legal Notice</Link></li>
+            <li><Link :href="route('about')"        class="footer-link">{{ t('footer.about') }}</Link></li>
+            <li><Link :href="route('consultation')" class="footer-link">{{ t('footer.consultation') }}</Link></li>
+            <li><Link :href="route('blog')"         class="footer-link">{{ t('footer.blog') }}</Link></li>
+            <li><Link :href="route('legal-notice')" class="footer-link">{{ t('footer.legal_notice') }}</Link></li>
           </ul>
         </div>
 
         <!-- Col 4: Account -->
         <div>
-          <h5 class="footer-col-title">Account</h5>
+          <h5 class="footer-col-title">{{ t('footer.account') }}</h5>
           <ul class="footer-links">
-            <li v-if="auth.user"><Link :href="route('dashboard')" class="footer-link">My Account</Link></li>
-            <li v-if="auth.user && auth.user.has_program"><Link :href="route('my-program')" class="footer-link">My Programs</Link></li>
-            <li><Link :href="route('pro')" class="footer-link">PRO Space</Link></li>
-            <li v-if="!auth.user"><Link :href="route('login')" class="footer-link">Login</Link></li>
+            <li v-if="auth.user"><Link :href="route('dashboard')" class="footer-link">{{ t('footer.my_account') }}</Link></li>
+            <li v-if="auth.user && auth.user.has_program"><Link :href="route('my-program')" class="footer-link">{{ t('footer.my_programs') }}</Link></li>
+            <li><Link :href="route('pro')" class="footer-link">{{ t('footer.pro_space') }}</Link></li>
+            <li v-if="!auth.user"><Link :href="route('login')" class="footer-link">{{ t('nav.login') }}</Link></li>
           </ul>
         </div>
       </div>
 
       <!-- Footer bottom -->
       <div class="footer-bottom">
-        <p class="footer-copy">© {{ year }} Vitality Inside — All rights reserved.</p>
+        <p class="footer-copy">&copy; {{ year }} Vitality Inside &mdash; {{ t('footer.rights') }}</p>
         <div class="footer-legal">
-          <Link :href="route('legal-notice')" class="footer-legal-link">Legal Notice</Link>
+          <Link :href="route('legal-notice')" class="footer-legal-link">{{ t('footer.legal_notice') }}</Link>
           <span class="footer-sep">·</span>
           <a href="#" class="footer-legal-link">Privacy Policy</a>
           <span class="footer-sep">·</span>
@@ -69,10 +69,12 @@
 <script setup>
 import { Link, usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'
+import { useI18n } from '@/composables/useI18n'
 
 const year = new Date().getFullYear()
 const page = usePage()
 const auth = computed(() => page.props.auth)
+const { t } = useI18n()
 
 const socials = [
   {

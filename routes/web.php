@@ -6,6 +6,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProController;
 use App\Http\Controllers\ShopController;
@@ -60,6 +61,14 @@ Route::middleware('guest')->group(function () {
 });
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout')->middleware('auth');
 
+/* ─── Notifications ─── */
+Route::middleware('auth')->prefix('notifications')->name('notifications.')->group(function () {
+    Route::get('/', [NotificationController::class, 'index'])->name('index');
+    Route::get('/count', [NotificationController::class, 'unreadCount'])->name('count');
+    Route::post('/{id}/read', [NotificationController::class, 'markRead'])->name('read');
+    Route::post('/read-all', [NotificationController::class, 'markAllRead'])->name('read-all');
+});
+
 /* ─── User Dashboard ─── */
 Route::middleware('auth')->prefix('dashboard')->name('dashboard')->group(function () {
     Route::get('/', [DashboardController::class, 'index']);
@@ -109,6 +118,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::delete('/testimonials/{testimonial}', [AdminController::class, 'destroyTestimonial'])->name('testimonials.destroy');
 
     Route::get('/notifications', [AdminController::class, 'notifications'])->name('notifications');
+    Route::post('/notifications', [AdminController::class, 'sendNotification'])->name('notifications.send');
+    Route::delete('/notifications/{notification}', [AdminController::class, 'deleteNotification'])->name('notifications.destroy');
     Route::get('/subscriptions', [AdminController::class, 'subscriptions'])->name('subscriptions');
 
     Route::get('/audio', [AdminController::class, 'audioFiles'])->name('audio');

@@ -195,6 +195,8 @@
 import { ref, computed } from 'vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { Link, router } from '@inertiajs/vue3'
+import { useI18n } from '@/composables/useI18n'
+const { t } = useI18n()
 
 const props = defineProps({ programs: Array, categories: Array, testimonials: Array })
 

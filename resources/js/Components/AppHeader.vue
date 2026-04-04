@@ -33,7 +33,7 @@
         <button @click.stop="langOpen = !langOpen"
           style="background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.25); color:#fff; padding:5px 11px; border-radius:20px; cursor:pointer; font-size:.75rem; letter-spacing:.06em; display:flex; align-items:center; gap:5px; transition:all .2s; font-family:inherit;"
           class="hover:border-white/50">
-          {{ locale === 'fr' ? '�🇷 FR' : '�🇬🇧 EN' }} ▾
+          {{ locale === 'fr' ? '�🇷 FR' : '�🇧 EN' }} ▾
         </button>
         <div v-if="langOpen" data-lang
           style="position:absolute; top:calc(100% + 8px); right:0; background:rgba(13,32,64,.97); border:1px solid rgba(200,169,110,.25); border-radius:10px; min-width:140px; z-index:9999; padding:6px; box-shadow:0 8px 32px rgba(0,0,0,.5);">
@@ -47,6 +47,9 @@
             @click="langOpen=false">🇫🇷 Français</a>
         </div>
       </div>
+
+      <!-- Notification Bell (auth only) -->
+      <NotificationBell v-if="auth.user" />
 
       <!-- PRO: gold gradient -->
       <Link :href="route('pro')"
@@ -65,14 +68,14 @@
         <Link :href="route('logout')" method="post" as="button"
           style="color:rgba(255,255,255,.4); font-size:.72rem; letter-spacing:.06em; text-transform:uppercase; transition:color .2s; cursor:pointer;"
           class="hover:text-white">
-          Logout
+          {{ t('nav.logout') }}
         </Link>
       </template>
       <template v-else>
         <Link :href="route('login')"
           style="color:rgba(255,255,255,.5); font-size:.78rem; letter-spacing:.06em; text-transform:uppercase; text-decoration:none; transition:color .2s;"
           class="hover:text-white">
-          Login
+          {{ t('nav.login') }}
         </Link>
       </template>
 
@@ -91,7 +94,7 @@
       <Link :href="route('shop')"
         style="background:linear-gradient(135deg,#0d7377,#14a8a0); color:#fff; border:none; padding:10px 24px; border-radius:5px; font-size:.78rem; letter-spacing:.08em; text-transform:uppercase; text-decoration:none; transition:all .2s; box-shadow:0 4px 16px rgba(13,115,119,.35);"
         class="hover:shadow-xl hover:-translate-y-px">
-        Explore Programs
+        {{ t('nav.explore') }}
       </Link>
     </div>
 
@@ -125,11 +128,11 @@
             style="background:linear-gradient(135deg,#c8a96e,#e8d5a3); color:#0a1628; text-decoration:none;">PRO</Link>
           <Link :href="route('shop')" @click="mobileOpen = false"
             class="rounded text-center py-3 text-xs font-bold tracking-widest uppercase"
-            style="background:linear-gradient(135deg,#0d7377,#14a8a0); color:#fff; text-decoration:none;">Explore Programs</Link>
+            style="background:linear-gradient(135deg,#0d7377,#14a8a0); color:#fff; text-decoration:none;">{{ t('nav.explore') }}</Link>
           <template v-if="!auth.user">
             <Link :href="route('login')" @click="mobileOpen = false"
               class="text-center py-2 text-xs font-semibold uppercase tracking-widest"
-              style="color:rgba(255,255,255,.5); text-decoration:none;">Login</Link>
+              style="color:rgba(255,255,255,.5); text-decoration:none;">{{ t('nav.login') }}</Link>
           </template>
         </div>
       </div>
@@ -140,23 +143,26 @@
 <script setup>
 import { ref, computed, onMounted, onUnmounted } from 'vue'
 import { Link, usePage } from '@inertiajs/vue3'
+import { useI18n } from '@/composables/useI18n'
+import NotificationBell from '@/Components/NotificationBell.vue'
 
 const page      = usePage()
 const auth      = computed(() => page.props.auth)
 const cartCount = computed(() => page.props.cart_count || 0)
 const locale    = computed(() => page.props.locale || 'en')
+const { t }     = useI18n()
 
 const scrolled   = ref(false)
 const mobileOpen = ref(false)
 const langOpen   = ref(false)
 
-const navItems = [
-  { label: 'Home',         route: 'home' },
-  { label: 'Shop',         route: 'shop' },
-  { label: 'Consultation', route: 'consultation' },
-  { label: 'About',        route: 'about' },
-  { label: 'Blog',         route: 'blog' },
-]
+const navItems = computed(() => [
+  { label: t('nav.home'),         route: 'home' },
+  { label: t('nav.shop'),         route: 'shop' },
+  { label: t('nav.consultation'), route: 'consultation' },
+  { label: t('nav.about'),        route: 'about' },
+  { label: t('nav.blog'),         route: 'blog' },
+])
 
 const isActive = (r) => { try { return route().current(r) } catch { return false } }
 
