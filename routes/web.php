@@ -14,15 +14,13 @@ use App\Http\Controllers\ShopController;
 use Illuminate\Support\Facades\Route;
 
 /* ─── Locale Switch ─── */
-Route::get('/set-locale/{locale}', function ($locale) {
+Route::get('/set-locale/{locale}', function (\Illuminate\Http\Request $request, $locale) {
     if (in_array($locale, ['en', 'fr'])) {
         session(['locale' => $locale]);
         app()->setLocale($locale);
-        session()->save(); // Force save session
-        // Also set as cookie as fallback
-        cookie()->queue('locale', $locale, 525600); // 1 year
     }
-    return redirect()->back();
+    $to = $request->query('from');
+    return redirect($to && str_starts_with($to, '/') ? $to : '/');
 })->name('locale.switch');
 
 /* ─── Public Pages ─── */

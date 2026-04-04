@@ -50,9 +50,9 @@ class CartController extends Controller
     {
         $request->validate(['package_type' => 'required|in:single,progress,transform']);
         $pkg = [
-            'single'  => ['name' => 'Consultation unique', 'sessions' => 1, 'price' => 55],
-            'progress' => ['name' => 'Consultation progression (3 séances)', 'sessions' => 3, 'price' => 145],
-            'transform' => ['name' => 'Consultation transformation (5 séances)', 'sessions' => 5, 'price' => 225],
+            'single'    => ['name' => 'Consultation unique', 'sessions' => 1, 'price' => 58,  'package_type' => 'single'],
+            'progress'  => ['name' => 'Consultation progression (3 séances)', 'sessions' => 3, 'price' => 149, 'package_type' => 'progress'],
+            'transform' => ['name' => 'Consultation transformation (5 séances)', 'sessions' => 5, 'price' => 239, 'package_type' => 'transform'],
         ][$request->package_type];
         $cart = session('cart', []);
         $cart["consult_{$request->package_type}"] = $pkg;

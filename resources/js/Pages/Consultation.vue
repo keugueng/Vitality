@@ -66,8 +66,8 @@
       </div>
       <div class="packages-grid">
         <div v-for="pkg in packages" :key="pkg.id"
-          class="pkg-card" :class="{ featured: pkg.featured, selected: form.package_type === pkg.id }"
-          @click="form.package_type = pkg.id">
+          class="pkg-card" :class="{ featured: pkg.featured, selected: selectedPackageType === pkg.id }"
+          @click="selectedPackageType = pkg.id">
           <div v-if="pkg.featured" class="pkg-featured-badge">Plus populaire</div>
           <p class="pkg-sessions">{{ pkg.sessionsLabel }}</p>
           <h3 class="pkg-name">{{ pkg.name }}</h3>
@@ -219,6 +219,8 @@ function handleReserve(pkgId) {
   }
   router.post(route('cart.add-consultation'), { package_type: pkgId })
 }
+
+const selectedPackageType = ref('single')
 
 const openFaq = ref(null)
 function toggleFaq(q) {

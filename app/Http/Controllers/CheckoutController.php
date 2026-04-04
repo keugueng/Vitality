@@ -53,10 +53,10 @@ class CheckoutController extends Controller
         }
 
         $paymentConfig = [
-            'stripe_enabled'    => Setting::get('stripe_enabled', '1') === '1',
-            'paypal_enabled'    => Setting::get('paypal_enabled', '0') === '1',
+            'stripe_enabled'    => true,
+            'paypal_enabled'    => true,
             'paypal_client_id'  => Setting::get('paypal_client_id', ''),
-            'paypal_email'      => Setting::get('paypal_email', ''),
+            'paypal_email'      => Setting::get('paypal_email', 'paypal@vitalityinside.com'),
         ];
 
         return Inertia::render('Checkout', compact('items', 'total', 'paymentConfig'));
@@ -117,18 +117,18 @@ class CheckoutController extends Controller
                     'quantity'      => 1,
                 ]);
                 Consultation::create([
-                    'user_id'        => auth()->id(),
-                    'name'           => $request->name,
-                    'email'          => $request->email,
-                    'phone'          => $request->phone ?? '',
-                    'package_type'   => $c['package_type'],
-                    'sessions_count' => $c['sessions'],
-                    'amount'         => $c['price'],
-                    'symptoms'       => 'Consultation via panier',
-                    'medical_history'=> null,
-                    'status'         => 'pending',
-                    'payment_status' => 'paid',
-                    'payment_intent' => 'order-' . $order->order_number,
+                    'user_id'         => auth()->id(),
+                    'name'            => $request->name,
+                    'email'           => $request->email,
+                    'phone'           => $request->phone ?? '',
+                    'package_type'    => $c['package_type'],
+                    'sessions_count'  => $c['sessions'],
+                    'amount'          => $c['price'],
+                    'status'          => 'pending',
+                    'payment_status'  => 'paid',
+                    'payment_intent'  => 'order-' . $order->order_number,
+                    'symptoms'        => '',
+                    'medical_history' => '',
                 ]);
                 continue;
             }

@@ -168,10 +168,8 @@ const isActive = (r) => { try { return route().current(r) } catch { return false
 
 function switchLocale(lang) {
   langOpen.value = false
-  // Try both session and URL parameter approaches
-  const currentUrl = new URL(window.location.href)
-  currentUrl.searchParams.set('locale', lang)
-  window.location.href = route('locale.switch', lang)
+  const from = encodeURIComponent(window.location.pathname + window.location.search + window.location.hash)
+  window.location.href = `/set-locale/${lang}?from=${from}`
 }
 
 const onScroll = () => { scrolled.value = window.scrollY > 30 }

@@ -9,7 +9,7 @@ class SetLocale
 {
     public function handle(Request $request, Closure $next)
     {
-        $locale = session('locale', $request->cookie('locale', config('app.locale', 'fr')));
+        $locale = session('locale', config('app.locale', 'fr'));
         if (in_array($locale, ['en', 'fr'])) {
             app()->setLocale($locale);
         }
