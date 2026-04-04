@@ -102,13 +102,14 @@
               <p class="prog-desc">{{ p.short_desc }}</p>
               <div class="prog-meta">
                 <span v-if="p.duration" class="prog-meta-item">⏱ {{ p.duration }} min/séance</span>
-                <span v-if="p.cure_days" class="prog-meta-item">🗓 {{ p.cure_days }}-jours de cure</span>
+                <span v-if="p.cure_days" class="prog-meta-item">� {{ p.cure_days }}-jours de cure</span>
               </div>
               <div class="prog-footer">
                 <span class="prog-price">€{{ p.price ?? 11 }}</span>
                 <div class="prog-actions">
                   <button class="prog-details" @click.stop="goToProgram(p)">Détails</button>
-                  <Link :href="route('shop')" class="prog-add" @click.stop>+ Panier</Link>
+                  <button class="prog-play" @click.stop="goToProgram(p)"><svg width="10" height="10" viewBox="0 0 12 12" fill="currentColor"><polygon points="2,0 12,6 2,12"/></svg> Écouter</button>
+                  <Link :href="route('cart.add')" method="post" as="button" :data="{ program_id: p.id }" class="prog-add" @click.stop>+ Panier</Link>
                 </div>
               </div>
             </div>
@@ -125,12 +126,14 @@
             <p class="prog-desc">{{ p.short_desc }}</p>
             <div class="prog-meta">
               <span v-if="p.duration" class="prog-meta-item">⏱ {{ p.duration }} min/séance</span>
+              <span v-if="p.cure_days" class="prog-meta-item">🔄 {{ p.cure_days }}-jours de cure</span>
             </div>
             <div class="prog-footer">
               <span class="prog-price">€{{ p.price ?? 11 }}</span>
               <div class="prog-actions">
                 <button class="prog-details" @click.stop="goToProgram(p)">Détails</button>
-                <Link :href="route('shop')" class="prog-add" @click.stop>+ Panier</Link>
+                <button class="prog-play" @click.stop="goToProgram(p)"><svg width="10" height="10" viewBox="0 0 12 12" fill="currentColor"><polygon points="2,0 12,6 2,12"/></svg> Écouter</button>
+                <Link :href="route('cart.add')" method="post" as="button" :data="{ program_id: p.id }" class="prog-add" @click.stop>+ Panier</Link>
               </div>
             </div>
           </div>
@@ -426,6 +429,14 @@ const fallbackTestimonials = [
   text-decoration: none; display: inline-block;
 }
 .prog-add:hover { background: rgba(13,115,119,.5); color: #fff; }
+.prog-play {
+  background: linear-gradient(135deg, #0d7377, #14a8a0); border: none; color: #fff;
+  font-size: .72rem; padding: 6px 13px; border-radius: 6px; cursor: pointer; transition: all .2s;
+  font-family: 'DM Sans', sans-serif; display: flex; align-items: center; gap: 5px;
+  box-shadow: 0 3px 12px rgba(13,115,119,.4);
+}
+.prog-play:hover { transform: scale(1.05); box-shadow: 0 5px 18px rgba(13,115,119,.6); }
+.prog-play svg { flex-shrink: 0; }
 .reset-btn {
   margin-top: 16px; color: #14a8a0; background: none; border: none; cursor: pointer; font-size: .85rem;
 }
