@@ -6,6 +6,10 @@ use App\Models\Patient;
 use App\Models\PatientProtocol;
 use App\Models\Program;
 use App\Models\ProUser;
+use App\Models\Subscription;
+use App\Models\UserProgram;
+use App\Models\Order;
+use App\Models\Consultation;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -13,7 +17,39 @@ class ProController extends Controller
 {
     public function index()
     {
-        return Inertia::render('Pro/Index');
+        $user = auth()->user();
+
+        if (!$user) {
+            return Inertia::render('Pro/Index');
+        }
+
+        $programs = UserProgram::with('program.category')
+            ->where('user_id', $user->id)->latest()->get();
+
+        $orders = Order::with('items.program')
+            ->where('user_id', $user->id)->latest()->take(20)->get();
+
+        $consultations = Consultation::where('user_id', $user->id)->latest()->take(20)->get();
+
+        $subscription = Subscription::where('user_id', $user->id)
+            ->where('status', 'active')
+            ->where(fn($q) => $q->whereNull('ends_at')->orWhere('ends_at', '>', now()))
+            ->first();
+
+        $cart = session('cart', []);
+        $cartItems = [];
+        $cartTotal = 0;
+        foreach ($cart as $id => $item) {
+            $program = Program::find($id);
+            if ($program) {
+                $cartItems[] = ['program' => $program, 'quantity' => $item['quantity']];
+                $cartTotal  += $program->price * $item['quantity'];
+            }
+        }
+
+        return Inertia::render('Pro/Index', compact(
+            'programs', 'orders', 'consultations', 'subscription', 'cartItems', 'cartTotal'
+        ));
     }
 
     public function dashboard()

@@ -49,6 +49,7 @@
         <SectionLabel label="Finance" />
         <NavItem :href="route('admin.orders')" :active="route().current('admin.orders')" icon="💰" label="Revenus" />
         <NavItem :href="route('admin.pricing')" :active="route().current('admin.pricing')" icon="🏷️" label="Tarification" />
+        <NavItem :href="route('admin.payment-settings')" :active="route().current('admin.payment-settings')" icon="💳" label="Paiements" />
 
         <!-- PARAMÈTRES -->
         <SectionLabel label="Paramètres" />

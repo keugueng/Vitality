@@ -6,6 +6,7 @@ use App\Http\Controllers\CartController;
 use App\Http\Controllers\CheckoutController;
 use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\SubscriptionController;
 use App\Http\Controllers\NotificationController;
 use App\Http\Controllers\PageController;
 use App\Http\Controllers\ProController;
@@ -77,6 +78,13 @@ Route::middleware('auth')->prefix('dashboard')->name('dashboard')->group(functio
     Route::get('/orders', [DashboardController::class, 'orders'])->name('.orders');
 });
 
+/* ─── Subscriptions ─── */
+Route::get('/subscribe', [SubscriptionController::class, 'index'])->name('subscribe');
+Route::middleware('auth')->group(function () {
+    Route::post('/subscribe', [SubscriptionController::class, 'store'])->name('subscribe.store');
+    Route::post('/subscribe/cancel', [SubscriptionController::class, 'cancel'])->name('subscribe.cancel');
+});
+
 /* ─── PRO Space ─── */
 Route::get('/pro', [ProController::class, 'index'])->name('pro');
 Route::middleware(['auth'])->prefix('pro')->name('pro.')->group(function () {
@@ -133,4 +141,6 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::get('/pricing', [AdminController::class, 'pricing'])->name('pricing');
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
     Route::post('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
+    Route::get('/payment-settings', [AdminController::class, 'paymentSettings'])->name('payment-settings');
+    Route::post('/payment-settings', [AdminController::class, 'updatePaymentSettings'])->name('payment-settings.update');
 });

@@ -14,7 +14,8 @@
           <span class="hero-price-label">par consultation · protocole inclus</span>
         </div>
         <div class="hero-btns">
-          <a href="#booking" class="btn-primary">Réserver ma consultation</a>
+          <a v-if="isAuthenticated" href="#booking" class="btn-primary">Réserver ma consultation</a>
+          <Link v-else :href="route('login')" class="btn-primary">Réserver ma consultation</Link>
           <a href="#packages" class="btn-outline">Voir les formules →</a>
         </div>
       </div>
@@ -77,7 +78,7 @@
             <li v-for="f in pkg.features" :key="f"><span class="pkg-check">✦</span>{{ f }}</li>
           </ul>
           <button class="pkg-btn" :class="pkg.featured ? 'pkg-btn-primary' : 'pkg-btn-outline'"
-            @click.stop="form.package_type = pkg.id">
+            @click.stop="handleReserve(pkg.id)">
             {{ pkg.label }}
           </button>
         </div>
@@ -246,7 +247,8 @@
       <h2 class="section-title">Votre protocole est à<br><span class="gold-em">8 heures</span></h2>
       <p class="cta-sub">Remplissez le formulaire, laissez le Dr. Éric Rosati décoder votre profil bio-énergétique et recevez un protocole de fréquences conçu exclusivement pour vous.</p>
       <div class="cta-btns">
-        <a href="#booking" class="btn-primary">Réserver ma consultation — €58</a>
+        <a v-if="isAuthenticated" href="#booking" class="btn-primary">Réserver ma consultation — €58</a>
+        <Link v-else :href="route('login')" class="btn-primary">Réserver ma consultation — €58</Link>
         <Link :href="route('shop')" class="btn-outline">Explorer les programmes</Link>
       </div>
     </section>
@@ -256,8 +258,20 @@
 
 <script setup>
 import AppLayout from '@/Layouts/AppLayout.vue'
-import { Link, useForm } from '@inertiajs/vue3'
+import { Link, useForm, usePage, router } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
+
+const page = usePage()
+const isAuthenticated = computed(() => !!page.props.auth?.user)
+
+function handleReserve(pkgId) {
+  if (!isAuthenticated.value) {
+    router.visit(route('login'))
+    return
+  }
+  form.package_type = pkgId
+  document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' })
+}
 
 const openFaq = ref(null)
 function toggleFaq(q) {
@@ -313,7 +327,13 @@ const faqs = [
 
 const form = useForm({ name: '', email: '', phone: '', package_type: 'single', symptoms: '', medical_history: '' })
 const selectedPkg = computed(() => packages.find(p => p.id === form.package_type) || packages[0])
-const submit = () => form.post(route('consultation.store'))
+const submit = () => {
+  if (!isAuthenticated.value) {
+    router.visit(route('login'))
+    return
+  }
+  form.post(route('consultation.store'))
+}
 </script>
 
 <style scoped>

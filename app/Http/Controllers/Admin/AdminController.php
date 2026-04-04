@@ -564,4 +564,30 @@ class AdminController extends Controller
         }
         return back()->with('success', 'Paramètres enregistrés.');
     }
+
+    /* ─── Payment Settings ─── */
+    public function paymentSettings()
+    {
+        $keys = [
+            'stripe_enabled', 'stripe_mode', 'stripe_account_email', 'stripe_account_id',
+            'stripe_pk_live', 'stripe_sk_live', 'stripe_pk_test', 'stripe_sk_test',
+            'stripe_webhook_secret',
+            'paypal_enabled', 'paypal_mode', 'paypal_merchant_id', 'paypal_email',
+            'paypal_client_id', 'paypal_client_secret',
+            'paypal_client_id_sandbox', 'paypal_client_secret_sandbox',
+        ];
+        $settings = [];
+        foreach ($keys as $key) {
+            $settings[$key] = Setting::get($key);
+        }
+        return Inertia::render('Admin/PaymentSettings', ['settings' => $settings]);
+    }
+
+    public function updatePaymentSettings(Request $request)
+    {
+        foreach ($request->settings as $key => $value) {
+            Setting::set($key, (string) $value);
+        }
+        return back()->with('success', 'Configuration de paiement enregistrée.');
+    }
 }

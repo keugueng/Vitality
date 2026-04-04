@@ -84,7 +84,10 @@ const userInitial = computed(() => userName.value.charAt(0).toUpperCase())
 
 const proNav = [
   { icon: '📊', label: 'Dashboard', route: 'pro.dashboard' },
-  { icon: '👥', label: 'Patients',  route: 'pro.patients'  },
+  { icon: '🛒', label: 'Mon Panier', route: 'cart.index' },
+  { icon: '📦', label: 'Mes Commandes', route: 'dashboard.orders' },
+  { icon: '👤', label: 'Mon Profil', route: 'dashboard.profile' },
+  { icon: '�', label: 'Patients',  route: 'pro.patients'  },
   { icon: '🎯', label: 'Protocoles',route: 'pro.protocols' },
 ]
 

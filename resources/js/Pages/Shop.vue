@@ -96,19 +96,23 @@
             <span class="category-count">{{ cat.programs.length }} programme{{ cat.programs.length > 1 ? 's' : '' }}</span>
           </div>
           <div class="programmes-grid">
-            <div v-for="p in cat.programs" :key="p.id" class="program-card" @click="goToProgram(p)">
+            <div v-for="p in cat.programs" :key="p.id" class="program-card" @click="openDetail(p)">
               <span v-if="p.is_bestseller" class="prog-tag">⭐ Bestseller</span>
               <p class="prog-name">{{ p.title }}</p>
               <p class="prog-desc">{{ p.short_desc }}</p>
               <div class="prog-meta">
-                <span v-if="p.duration" class="prog-meta-item">⏱ {{ p.duration }} min/séance</span>
-                <span v-if="p.cure_days" class="prog-meta-item">� {{ p.cure_days }}-jours de cure</span>
+                <span v-if="p.session_duration || p.duration" class="prog-meta-item">⏱ {{ p.session_duration || p.duration }} min/séance</span>
+                <span v-if="p.cure_duration || p.cure_days" class="prog-meta-item">🔄 {{ p.cure_duration || p.cure_days }}-jours de cure</span>
               </div>
               <div class="prog-footer">
                 <span class="prog-price">€{{ p.price ?? 11 }}</span>
                 <div class="prog-actions">
-                  <button class="prog-details" @click.stop="goToProgram(p)">Détails</button>
-                  <button class="prog-play" @click.stop="goToProgram(p)"><svg width="10" height="10" viewBox="0 0 12 12" fill="currentColor"><polygon points="2,0 12,6 2,12"/></svg> Écouter</button>
+                  <button class="prog-details" @click.stop="openDetail(p)">Détails</button>
+                  <button class="prog-play" :class="{ playing: playingId === p.id && isPlaying }" @click.stop="playPreview(p, $event)">
+                    <svg v-if="playingId === p.id && isPlaying" width="10" height="10" viewBox="0 0 12 12" fill="currentColor"><rect x="1" y="0" width="3.5" height="12"/><rect x="7.5" y="0" width="3.5" height="12"/></svg>
+                    <svg v-else width="10" height="10" viewBox="0 0 12 12" fill="currentColor"><polygon points="2,0 12,6 2,12"/></svg>
+                    {{ playingId === p.id && isPlaying ? 'Pause' : 'Écouter' }}
+                  </button>
                   <Link :href="route('cart.add')" method="post" as="button" :data="{ program_id: p.id }" class="prog-add" @click.stop>+ Panier</Link>
                 </div>
               </div>
@@ -120,19 +124,23 @@
       <!-- Filtered view -->
       <template v-else>
         <div class="programmes-grid" style="margin-top:32px">
-          <div v-for="p in filtered" :key="p.id" class="program-card" @click="goToProgram(p)">
+          <div v-for="p in filtered" :key="p.id" class="program-card" @click="openDetail(p)">
             <span v-if="p.is_bestseller" class="prog-tag">⭐ Bestseller</span>
             <p class="prog-name">{{ p.title }}</p>
             <p class="prog-desc">{{ p.short_desc }}</p>
             <div class="prog-meta">
-              <span v-if="p.duration" class="prog-meta-item">⏱ {{ p.duration }} min/séance</span>
-              <span v-if="p.cure_days" class="prog-meta-item">🔄 {{ p.cure_days }}-jours de cure</span>
+              <span v-if="p.session_duration || p.duration" class="prog-meta-item">⏱ {{ p.session_duration || p.duration }} min/séance</span>
+              <span v-if="p.cure_duration || p.cure_days" class="prog-meta-item">🔄 {{ p.cure_duration || p.cure_days }}-jours de cure</span>
             </div>
             <div class="prog-footer">
               <span class="prog-price">€{{ p.price ?? 11 }}</span>
               <div class="prog-actions">
-                <button class="prog-details" @click.stop="goToProgram(p)">Détails</button>
-                <button class="prog-play" @click.stop="goToProgram(p)"><svg width="10" height="10" viewBox="0 0 12 12" fill="currentColor"><polygon points="2,0 12,6 2,12"/></svg> Écouter</button>
+                <button class="prog-details" @click.stop="openDetail(p)">Détails</button>
+                <button class="prog-play" :class="{ playing: playingId === p.id && isPlaying }" @click.stop="playPreview(p, $event)">
+                  <svg v-if="playingId === p.id && isPlaying" width="10" height="10" viewBox="0 0 12 12" fill="currentColor"><rect x="1" y="0" width="3.5" height="12"/><rect x="7.5" y="0" width="3.5" height="12"/></svg>
+                  <svg v-else width="10" height="10" viewBox="0 0 12 12" fill="currentColor"><polygon points="2,0 12,6 2,12"/></svg>
+                  {{ playingId === p.id && isPlaying ? 'Pause' : 'Écouter' }}
+                </button>
                 <Link :href="route('cart.add')" method="post" as="button" :data="{ program_id: p.id }" class="prog-add" @click.stop>+ Panier</Link>
               </div>
             </div>
@@ -191,11 +199,93 @@
       </div>
     </section>
 
+    <!-- ═══ FLOATING AUDIO PLAYER ═══ -->
+    <Teleport to="body">
+      <transition name="audio-slide">
+        <div v-if="playingId" class="audio-player-bar">
+          <button class="apb-play" @click="toggleAudio">
+            <svg v-if="isPlaying" width="14" height="14" viewBox="0 0 12 12" fill="currentColor"><rect x="1" y="0" width="3.5" height="12"/><rect x="7.5" y="0" width="3.5" height="12"/></svg>
+            <svg v-else width="14" height="14" viewBox="0 0 12 12" fill="currentColor"><polygon points="2,0 12,6 2,12"/></svg>
+          </button>
+          <div class="apb-info">
+            <p class="apb-title">{{ playingTitle }}</p>
+            <div class="apb-progress-bar" @click="seekAudio">
+              <div class="apb-progress-fill" :style="{ width: audioProgress + '%' }"></div>
+            </div>
+            <p class="apb-time">{{ formatTime(audioCurrent) }} / {{ formatTime(audioDuration) }}</p>
+          </div>
+          <button class="apb-close" @click="stopAudio">✕</button>
+        </div>
+      </transition>
+    </Teleport>
+
+    <!-- ═══ DETAIL POPUP ═══ -->
+    <Teleport to="body">
+    <div class="detail-overlay" :class="{ open: !!selectedProgram }" @click.self="closeDetail">
+      <div v-if="selectedProgram" class="detail-modal">
+        <div class="detail-modal-top"></div>
+        <button class="detail-close" @click="closeDetail">✕</button>
+
+        <div class="detail-header">
+          <div class="detail-category">
+            <span>{{ selectedProgram.category?.emoji || '✨' }}</span>
+            {{ selectedProgram.category?.name || 'Programme' }}
+          </div>
+          <h2 class="detail-title">{{ selectedProgram.title || selectedProgram.title_fr }}</h2>
+          <p class="detail-tagline">{{ selectedProgram.short_desc || selectedProgram.short_desc_fr }}</p>
+          <div class="detail-metas">
+            <span class="detail-pill">⏱ {{ selectedProgram.session_duration || selectedProgram.duration || '30' }} min/séance</span>
+            <span class="detail-pill">🔄 {{ selectedProgram.cure_duration || selectedProgram.cure_days || '21' }}-jours de cure</span>
+            <span class="detail-pill">🎧 Écouteurs requis</span>
+          </div>
+        </div>
+
+        <div class="detail-body">
+          <div class="detail-desc-block">
+            <p class="detail-block-label">📋 Description</p>
+            <div v-if="selectedProgram.long_desc" v-html="selectedProgram.long_desc" class="detail-desc-text"></div>
+            <p v-else class="detail-desc-text">{{ selectedProgram.short_desc || selectedProgram.short_desc_fr }}</p>
+          </div>
+
+          <div class="detail-proto-block">
+            <p class="detail-block-label">🧬 Protocole</p>
+            <div class="proto-steps">
+              <div class="proto-step"><div class="proto-dot"></div><p><strong>Séance quotidienne</strong> — Écoutez avec des écouteurs à conduction osseuse.</p></div>
+              <div class="proto-step"><div class="proto-dot"></div><p><strong>Cure complète</strong> — Suivez le programme pendant {{ selectedProgram.cure_duration || selectedProgram.cure_days || '21' }} jours.</p></div>
+              <div class="proto-step"><div class="proto-dot"></div><p><strong>Environnement calme</strong> — Installez-vous confortablement, yeux fermés.</p></div>
+            </div>
+          </div>
+
+          <div v-if="selectedProgram.benefits?.length" class="detail-benefits">
+            <p class="detail-block-label">✦ Bénéfices</p>
+            <div class="benefits-list">
+              <span v-for="(b, i) in selectedProgram.benefits" :key="i" class="benefit-tag">✓ {{ b }}</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="detail-footer">
+          <div class="detail-price-row">
+            <span class="detail-price">€{{ selectedProgram.price ?? 11 }}</span>
+            <span class="detail-price-note">/ programme · Accès permanent</span>
+          </div>
+          <div class="detail-actions">
+            <Link :href="route('cart.add')" method="post" as="button"
+              :data="{ program_id: selectedProgram.id }" class="btn-primary" @click="closeDetail">
+              + Ajouter au panier — €{{ selectedProgram.price ?? 11 }}
+            </Link>
+            <button class="btn-outline" @click="closeDetail">Fermer</button>
+          </div>
+        </div>
+      </div>
+    </div>
+    </Teleport>
+
   </AppLayout>
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, onUnmounted } from 'vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { Link, router } from '@inertiajs/vue3'
 import { useI18n } from '@/composables/useI18n'
@@ -230,9 +320,64 @@ const displayTestimonials = computed(() => {
   return list.length >= 3 ? list.slice(0, 3) : fallbackTestimonials
 })
 
-function goToProgram(p) {
-  if (p.slug) router.visit(route('shop.show', p.slug))
+const selectedProgram = ref(null)
+function openDetail(p) { selectedProgram.value = p }
+function closeDetail() { selectedProgram.value = null }
+function goToProgram(p) { openDetail(p) }
+
+/* ── AUDIO PLAYER ── */
+const audioEl       = ref(null)
+const playingId     = ref(null)
+const isPlaying     = ref(false)
+const audioProgress = ref(0)
+const audioCurrent  = ref(0)
+const audioDuration = ref(0)
+const playingTitle  = ref('')
+
+function playPreview(p, e) {
+  if (e) e.stopPropagation()
+  if (!p.audio_url) { openDetail(p); return }
+  if (playingId.value === p.id) {
+    toggleAudio(); return
+  }
+  stopAudio()
+  const el = new Audio(p.audio_url)
+  audioEl.value = el
+  playingId.value = p.id
+  playingTitle.value = p.title
+  el.addEventListener('timeupdate', () => {
+    audioCurrent.value  = el.currentTime
+    audioDuration.value = el.duration || 0
+    audioProgress.value = el.duration ? (el.currentTime / el.duration) * 100 : 0
+  })
+  el.addEventListener('ended', () => { isPlaying.value = false; audioProgress.value = 0 })
+  el.play().then(() => { isPlaying.value = true }).catch(() => { openDetail(p) })
 }
+
+function toggleAudio() {
+  if (!audioEl.value) return
+  if (isPlaying.value) { audioEl.value.pause(); isPlaying.value = false }
+  else { audioEl.value.play(); isPlaying.value = true }
+}
+
+function stopAudio() {
+  if (audioEl.value) { audioEl.value.pause(); audioEl.value = null }
+  playingId.value = null; isPlaying.value = false; audioProgress.value = 0
+}
+
+function seekAudio(e) {
+  if (!audioEl.value || !audioDuration.value) return
+  const rect = e.currentTarget.getBoundingClientRect()
+  const pct  = (e.clientX - rect.left) / rect.width
+  audioEl.value.currentTime = pct * audioDuration.value
+}
+
+function formatTime(s) {
+  if (!s || isNaN(s)) return '0:00'
+  return `${Math.floor(s/60)}:${String(Math.floor(s%60)).padStart(2,'0')}`
+}
+
+onUnmounted(stopAudio)
 
 const howSteps = [
   { title: 'Choisissez votre programme', desc: 'Parcourez notre bibliothèque et sélectionnez le protocole adapté à votre situation.' },
@@ -501,6 +646,107 @@ const fallbackTestimonials = [
 .section-sub { color: rgba(255,255,255,.55); font-size: 1rem; max-width: 520px; line-height: 1.6; }
 .gold-italic { color: #c8a96e; font-style: italic; font-family: 'Cormorant Garamond', serif; }
 
+/* DETAIL POPUP */
+/* FLOATING AUDIO PLAYER */
+.audio-player-bar {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 9999;
+  background: rgba(10,22,40,.97); border-top: 1px solid rgba(200,169,110,.25);
+  backdrop-filter: blur(20px); display: flex; align-items: center; gap: 16px;
+  padding: 12px 24px; box-shadow: 0 -4px 32px rgba(0,0,0,.5);
+}
+.apb-play {
+  width: 40px; height: 40px; border-radius: 50%;
+  background: linear-gradient(135deg,#0d7377,#14a8a0);
+  border: none; cursor: pointer; flex-shrink:0; display:flex;
+  align-items:center; justify-content:center; color:#fff;
+  transition: transform .2s;
+}
+.apb-play:hover { transform: scale(1.08); }
+.apb-info { flex: 1; min-width: 0; }
+.apb-title { font-size:.8rem; font-weight:600; color:#fff; margin-bottom:6px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+.apb-progress-bar {
+  height: 4px; background: rgba(255,255,255,.12); border-radius:2px;
+  cursor: pointer; position:relative; margin-bottom:4px;
+}
+.apb-progress-fill { height:100%; background:linear-gradient(90deg,#0d7377,#14a8a0); border-radius:2px; transition:width .1s linear; }
+.apb-time { font-size:.65rem; color:rgba(200,220,255,.4); }
+.apb-close {
+  width:28px; height:28px; border-radius:50%; background:rgba(255,255,255,.07);
+  border:1px solid rgba(255,255,255,.1); color:rgba(200,220,255,.5);
+  cursor:pointer; font-size:.75rem; display:flex; align-items:center; justify-content:center;
+  transition:all .2s;
+}
+.apb-close:hover { background:rgba(239,68,68,.2); color:#ef4444; }
+.audio-slide-enter-active, .audio-slide-leave-active { transition: transform .3s ease, opacity .3s; }
+.audio-slide-enter-from, .audio-slide-leave-to { transform: translateY(100%); opacity: 0; }
+.prog-play.playing { background: rgba(13,115,119,.25); color:#14a8a0; border-color:rgba(13,115,119,.4); }
+
+.detail-overlay {
+  position: fixed; inset: 0; background: rgba(5,12,24,.8); backdrop-filter: blur(12px);
+  z-index: 600; display: flex; align-items: center; justify-content: center;
+  padding: 24px; opacity: 0; pointer-events: none; transition: opacity .3s;
+}
+.detail-overlay.open { opacity: 1; pointer-events: all; }
+.detail-modal {
+  background: linear-gradient(145deg, #0d1f3a, #081222);
+  border: 1px solid rgba(200,169,110,.2); border-radius: 20px;
+  width: 100%; max-width: 620px; max-height: 90vh; overflow-y: auto;
+  position: relative; transform: translateY(30px); transition: transform .35s cubic-bezier(.34,1.56,.64,1);
+}
+.detail-overlay.open .detail-modal { transform: translateY(0); }
+.detail-modal-top { height: 3px; background: linear-gradient(90deg, #0d7377, #14a8a0, #c8a96e); border-radius: 20px 20px 0 0; }
+.detail-close {
+  position: absolute; top: 16px; right: 16px; z-index: 2;
+  background: rgba(255,255,255,.07); border: 1px solid rgba(200,169,110,.2);
+  color: rgba(255,255,255,.6); width: 32px; height: 32px; border-radius: 50%;
+  font-size: 1rem; cursor: pointer; display: flex; align-items: center; justify-content: center;
+  transition: all .2s;
+}
+.detail-close:hover { background: rgba(255,255,255,.15); color: #fff; }
+.detail-header { padding: 28px 28px 0; }
+.detail-category {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-size: .72rem; letter-spacing: .14em; text-transform: uppercase;
+  color: #14a8a0; margin-bottom: 12px;
+}
+.detail-title {
+  font-family: 'Cormorant Garamond', serif; font-size: 2rem;
+  font-weight: 300; line-height: 1.15; color: #fff; margin-bottom: 10px;
+}
+.detail-tagline { font-size: .9rem; color: rgba(255,255,255,.55); line-height: 1.6; margin-bottom: 20px; }
+.detail-metas { display: flex; flex-wrap: nowrap; gap: 8px; margin-bottom: 4px; overflow-x: auto; }
+.detail-pill {
+  font-size: .72rem; background: rgba(13,115,119,.15); border: 1px solid rgba(13,115,119,.25);
+  color: #14a8a0; padding: 4px 14px; border-radius: 100px;
+}
+.detail-body { padding: 20px 28px; display: flex; flex-direction: column; gap: 20px; }
+.detail-block-label {
+  font-size: .72rem; letter-spacing: .12em; text-transform: uppercase;
+  color: #14a8a0; margin-bottom: 10px;
+}
+.detail-desc-block, .detail-proto-block, .detail-benefits {
+  background: rgba(255,255,255,.03); border: 1px solid rgba(200,169,110,.15);
+  border-radius: 12px; padding: 18px;
+}
+.detail-desc-text { font-size: .85rem; color: rgba(255,255,255,.65); line-height: 1.7; }
+.proto-steps { display: flex; flex-direction: column; gap: 10px; }
+.proto-step { display: flex; align-items: flex-start; gap: 10px; }
+.proto-dot { width: 7px; height: 7px; border-radius: 50%; background: #14a8a0; flex-shrink: 0; margin-top: 6px; }
+.proto-step p { font-size: .82rem; color: rgba(255,255,255,.7); line-height: 1.5; }
+.proto-step strong { color: #fff; }
+.benefits-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.benefit-tag {
+  font-size: .78rem; background: rgba(13,115,119,.12); border: 1px solid rgba(13,115,119,.2);
+  color: #14a8a0; padding: 4px 14px; border-radius: 100px;
+}
+.detail-footer {
+  padding: 20px 28px 28px; border-top: 1px solid rgba(200,169,110,.15); margin-top: 4px;
+}
+.detail-price-row { display: flex; align-items: baseline; gap: 8px; margin-bottom: 16px; }
+.detail-price { font-family: 'Cormorant Garamond', serif; font-size: 2.2rem; color: #c8a96e; font-weight: 300; }
+.detail-price-note { font-size: .8rem; color: rgba(255,255,255,.35); }
+.detail-actions { display: flex; gap: 12px; flex-wrap: wrap; }
+
 @media (max-width: 900px) {
   .shop-hero { padding: 100px 24px 60px; }
   .sub-section, .catalogue-section, .how-section, .testimonials-section, .cta-section { padding: 72px 24px; }
@@ -508,6 +754,7 @@ const fallbackTestimonials = [
   .plan-card.featured { transform: none; }
   .steps-grid { grid-template-columns: 1fr 1fr; }
   .testimonials-grid { grid-template-columns: 1fr; }
+  .detail-modal { max-width: 100%; }
 }
 @media (max-width: 560px) {
   .steps-grid { grid-template-columns: 1fr; }

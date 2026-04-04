@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Program;
+use App\Models\Setting;
 use App\Models\UserProgram;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -29,7 +30,14 @@ class CheckoutController extends Controller
             }
         }
 
-        return Inertia::render('Checkout', compact('items', 'total'));
+        $paymentConfig = [
+            'stripe_enabled'    => Setting::get('stripe_enabled', '1') === '1',
+            'paypal_enabled'    => Setting::get('paypal_enabled', '0') === '1',
+            'paypal_client_id'  => Setting::get('paypal_client_id', ''),
+            'paypal_email'      => Setting::get('paypal_email', ''),
+        ];
+
+        return Inertia::render('Checkout', compact('items', 'total', 'paymentConfig'));
     }
 
     public function process(Request $request)
@@ -63,7 +71,7 @@ class CheckoutController extends Controller
             'subtotal'       => $subtotal,
             'total'          => $subtotal,
             'status'         => 'completed',
-            'payment_method' => 'stripe',
+            'payment_method' => $request->input('payment_method', 'stripe'),
         ]);
 
         foreach ($cartItems as $cartItem) {

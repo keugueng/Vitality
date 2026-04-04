@@ -70,9 +70,16 @@
                   Méthode de paiement
                 </h2>
 
+                <!-- No payment methods warning -->
+                <div v-if="!paymentConfig?.stripe_enabled && !paymentConfig?.paypal_enabled"
+                  class="p-4 rounded-xl bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-sm">
+                  ⚠️ Aucun mode de paiement configuré. Contactez l'administrateur.
+                </div>
+
                 <!-- Payment options -->
                 <div class="space-y-3">
-                  <label class="flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all"
+                  <label v-if="paymentConfig?.stripe_enabled"
+                    class="flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all"
                     :class="form.payment_method === 'stripe' ? 'border-vitality-cyan/50 bg-vitality-cyan/5' : 'border-white/10 hover:border-white/20'">
                     <input type="radio" v-model="form.payment_method" value="stripe" class="hidden" />
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-sm"
@@ -86,19 +93,26 @@
                     </div>
                   </label>
 
-                  <label class="flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all"
+                  <label v-if="paymentConfig?.paypal_enabled"
+                    class="flex items-center gap-3 p-4 rounded-xl border cursor-pointer transition-all"
                     :class="form.payment_method === 'paypal' ? 'border-vitality-cyan/50 bg-vitality-cyan/5' : 'border-white/10 hover:border-white/20'">
                     <input type="radio" v-model="form.payment_method" value="paypal" class="hidden" />
                     <div class="w-8 h-8 rounded-lg flex items-center justify-center font-bold text-xs"
                       style="background: rgba(0,112,240,0.2); color: #0070F0;">PP</div>
                     <div class="flex-1">
                       <p class="text-white text-sm font-medium">PayPal</p>
-                      <p class="text-vitality-text text-xs">Paiement via votre compte PayPal</p>
+                      <p class="text-vitality-text text-xs">Paiement via votre compte PayPal · {{ paymentConfig?.paypal_email }}</p>
                     </div>
                     <div v-if="form.payment_method === 'paypal'" class="w-4 h-4 rounded-full border-2 border-vitality-cyan flex items-center justify-center">
                       <div class="w-2 h-2 rounded-full bg-vitality-cyan"></div>
                     </div>
                   </label>
+                </div>
+
+                <!-- PayPal redirect notice -->
+                <div v-if="form.payment_method === 'paypal' && paymentConfig?.paypal_enabled"
+                  class="p-3 rounded-xl bg-blue-500/10 border border-blue-500/20 text-blue-300 text-xs flex items-center gap-2">
+                  ℹ️ Vous serez redirigé vers PayPal pour finaliser votre paiement de façon sécurisée.
                 </div>
 
                 <!-- Card fields (shown when Stripe selected) -->
@@ -212,15 +226,25 @@ import AppLayout from '@/Layouts/AppLayout.vue'
 import { useForm, usePage } from '@inertiajs/vue3'
 import { computed } from 'vue'
 
-const props = defineProps({ items: Array, total: [Number, String] })
+const props = defineProps({
+  items: Array,
+  total: [Number, String],
+  paymentConfig: { type: Object, default: () => ({ stripe_enabled: true, paypal_enabled: false }) },
+})
 const page = usePage()
 const user = computed(() => page.props.auth?.user)
+
+const defaultMethod = computed(() => {
+  if (props.paymentConfig?.stripe_enabled) return 'stripe'
+  if (props.paymentConfig?.paypal_enabled) return 'paypal'
+  return 'stripe'
+})
 
 const form = useForm({
   name: user.value?.name || '',
   email: user.value?.email || '',
   phone: '',
-  payment_method: 'stripe',
+  payment_method: defaultMethod.value,
   card_number: '',
   card_expiry: '',
   card_cvv: '',
