@@ -28,43 +28,43 @@
       </div>
       <div class="plans-grid">
         <div class="plan-card">
-          <p class="plan-name">Programme Unique</p>
-          <p class="plan-desc">Un protocole ciblé, à vous pour toujours</p>
+          <p class="plan-name">{{ t('shop.plan1_name') }}</p>
+          <p class="plan-desc">{{ t('shop.plan1_desc') }}</p>
           <div class="plan-price"><span class="plan-currency">€</span><span class="plan-amount">11</span><span class="plan-period">/ programme</span></div>
           <ul class="plan-features">
-            <li><span class="check">✦</span>1 programme de fréquences au choix</li>
-            <li><span class="check">✦</span>Accès permanent via lien sécurisé</li>
-            <li><span class="check">✦</span>Disponible sur tous les appareils</li>
-            <li><span class="check">✦</span>Livré par email sous 24h</li>
+            <li><span class="check">✦</span>{{ t('shop.plan1_feat1') }}</li>
+            <li><span class="check">✦</span>{{ t('shop.plan1_feat2') }}</li>
+            <li><span class="check">✦</span>{{ t('shop.plan1_feat3') }}</li>
+            <li><span class="check">✦</span>{{ t('shop.plan1_feat4') }}</li>
           </ul>
-          <a href="#catalogue" class="plan-btn plan-btn-outline">Parcourir</a>
+          <a href="#catalogue" class="plan-btn plan-btn-outline">{{ t('shop.plan1_btn') }}</a>
         </div>
         <div class="plan-card featured">
-          <div class="plan-badge">Le plus populaire</div>
-          <p class="plan-name">Mensuel Illimité</p>
-          <p class="plan-desc">Accès complet, renouvelé chaque mois</p>
+          <div class="plan-badge">{{ t('shop.plan2_badge') }}</div>
+          <p class="plan-name">{{ t('shop.plan2_name') }}</p>
+          <p class="plan-desc">{{ t('shop.plan2_desc') }}</p>
           <div class="plan-price"><span class="plan-currency">€</span><span class="plan-amount">29.90</span><span class="plan-period">/ mois</span></div>
           <ul class="plan-features">
-            <li><span class="check">✦</span>Accès à toute la bibliothèque de programmes</li>
-            <li><span class="check">✦</span>Nouveaux protocoles ajoutés chaque mois</li>
-            <li><span class="check">✦</span>Combinez et alternez librement</li>
-            <li><span class="check">✦</span>Support email prioritaire</li>
-            <li><span class="check">✦</span>Annulez à tout moment</li>
+            <li><span class="check">✦</span>{{ t('shop.plan2_feat1') }}</li>
+            <li><span class="check">✦</span>{{ t('shop.plan2_feat2') }}</li>
+            <li><span class="check">✦</span>{{ t('shop.plan2_feat3') }}</li>
+            <li><span class="check">✦</span>{{ t('shop.plan2_feat4') }}</li>
+            <li><span class="check">✦</span>{{ t('shop.plan2_feat5') }}</li>
           </ul>
-          <Link :href="route('cart.add-subscription')" method="post" as="button" :data="{ plan: 'monthly' }" class="plan-btn plan-btn-primary">Ajouter au panier — €29.90 / mois</Link>
+          <Link :href="route('cart.add-subscription')" method="post" as="button" :data="{ plan: 'monthly' }" class="plan-btn plan-btn-primary">{{ t('shop.plan2_btn') }}</Link>
         </div>
         <div class="plan-card">
-          <p class="plan-name">Annuel Illimité</p>
-          <p class="plan-desc">Meilleure valeur — 2 mois gratuits</p>
+          <p class="plan-name">{{ t('shop.plan3_name') }}</p>
+          <p class="plan-desc">{{ t('shop.plan3_desc') }}</p>
           <div class="plan-price"><span class="plan-currency">€</span><span class="plan-amount">249</span><span class="plan-period">/ an</span></div>
           <ul class="plan-features">
-            <li><span class="check">✦</span>Tout du mensuel inclus</li>
-            <li><span class="check">✦</span>Économisez €109 vs facturation mensuelle</li>
-            <li><span class="check">✦</span>1 consultation personnalisée incluse</li>
-            <li><span class="check">✦</span>Accès anticipé aux nouveaux programmes</li>
-            <li><span class="check">✦</span>Support email VIP</li>
+            <li><span class="check">✦</span>{{ t('shop.plan3_feat1') }}</li>
+            <li><span class="check">✦</span>{{ t('shop.plan3_feat2') }}</li>
+            <li><span class="check">✦</span>{{ t('shop.plan3_feat3') }}</li>
+            <li><span class="check">✦</span>{{ t('shop.plan3_feat4') }}</li>
+            <li><span class="check">✦</span>{{ t('shop.plan3_feat5') }}</li>
           </ul>
-          <Link :href="route('cart.add-subscription')" method="post" as="button" :data="{ plan: 'annual' }" class="plan-btn plan-btn-outline">Ajouter au panier — €249 / an</Link>
+          <Link :href="route('cart.add-subscription')" method="post" as="button" :data="{ plan: 'annual' }" class="plan-btn plan-btn-outline">{{ t('shop.plan3_btn') }}</Link>
         </div>
       </div>
     </section>
@@ -97,7 +97,7 @@
           </div>
           <div class="programmes-grid">
             <div v-for="p in cat.programs" :key="p.id" class="program-card" @click="openDetail(p)">
-              <span v-if="p.is_bestseller" class="prog-tag">⭐ Bestseller</span>
+              <span v-if="p.is_bestseller" class="prog-tag">⭐ {{ t('shop.bestseller') }}</span>
               <p class="prog-name">{{ p.title }}</p>
               <p class="prog-desc">{{ p.short_desc }}</p>
               <div class="prog-meta">
@@ -125,7 +125,7 @@
       <template v-else>
         <div class="programmes-grid" style="margin-top:32px">
           <div v-for="p in filtered" :key="p.id" class="program-card" @click="openDetail(p)">
-            <span v-if="p.is_bestseller" class="prog-tag">⭐ Bestseller</span>
+            <span v-if="p.is_bestseller" class="prog-tag">⭐ {{ t('shop.bestseller') }}</span>
             <p class="prog-name">{{ p.title }}</p>
             <p class="prog-desc">{{ p.short_desc }}</p>
             <div class="prog-meta">
@@ -148,8 +148,8 @@
         </div>
         <div v-if="!filtered.length" class="text-center py-20" style="color:rgba(200,220,255,.4)">
           <p style="font-size:2.5rem;margin-bottom:12px">🔍</p>
-          <p>Aucun programme dans cette catégorie.</p>
-          <button @click="activeCategory=null" class="reset-btn">Voir tous les programmes</button>
+          <p>{{ t('shop.no_category') }}</p>
+          <button @click="activeCategory=null" class="reset-btn">{{ t('shop.show_all') }}</button>
         </div>
       </template>
     </section>
@@ -192,10 +192,10 @@
     <section class="cta-section">
       <p class="section-label" style="text-align:center">{{ t('shop.cta_now') }}</p>
       <h2 class="section-title" style="text-align:center">{{ t('shop.cta_freq_title') }} <em class="gold-italic">{{ t('shop.cta_freq_em') }}</em></h2>
-      <p class="section-sub" style="text-align:center;margin:0 auto 40px">Parcourez nos programmes, abonnez-vous pour un accès illimité, ou réservez une consultation personnalisée avec le Dr. Éric Rosati.</p>
+      <p class="section-sub" style="text-align:center;margin:0 auto 40px">{{ t('shop.cta_desc') }}</p>
       <div class="cta-btns">
-        <a href="#catalogue" class="btn-primary">Explorer tous les programmes</a>
-        <Link :href="route('consultation')" class="btn-outline">Réserver une consultation — €58</Link>
+        <a href="#catalogue" class="btn-primary">{{ t('shop.cta_explore') }}</a>
+        <Link :href="route('consultation')" class="btn-outline">{{ t('shop.cta_consult') }}</Link>
       </div>
     </section>
 
@@ -234,9 +234,9 @@
           <h2 class="detail-title">{{ selectedProgram.title || selectedProgram.title_fr }}</h2>
           <p class="detail-tagline">{{ selectedProgram.short_desc || selectedProgram.short_desc_fr }}</p>
           <div class="detail-metas">
-            <span class="detail-pill">⏱ {{ selectedProgram.session_duration || selectedProgram.duration || '30' }} min/séance</span>
-            <span class="detail-pill">🔄 {{ selectedProgram.cure_duration || selectedProgram.cure_days || '21' }}-jours de cure</span>
-            <span class="detail-pill">🎧 Écouteurs requis</span>
+            <span class="detail-pill">⏱ {{ selectedProgram.session_duration || selectedProgram.duration || '30' }} {{ t('shop.min_session') }}</span>
+            <span class="detail-pill">🔄 {{ selectedProgram.cure_duration || selectedProgram.cure_days || '21' }}-{{ t('shop.days_cure') }}</span>
+            <span class="detail-pill">🎧 {{ t('shop.detail_headphones') }}</span>
           </div>
         </div>
 
@@ -250,9 +250,9 @@
           <div class="detail-proto-block">
             <p class="detail-block-label">🧬 Protocole</p>
             <div class="proto-steps">
-              <div class="proto-step"><div class="proto-dot"></div><p><strong>Séance quotidienne</strong> — Écoutez avec des écouteurs à conduction osseuse.</p></div>
-              <div class="proto-step"><div class="proto-dot"></div><p><strong>Cure complète</strong> — Suivez le programme pendant {{ selectedProgram.cure_duration || selectedProgram.cure_days || '21' }} jours.</p></div>
-              <div class="proto-step"><div class="proto-dot"></div><p><strong>Environnement calme</strong> — Installez-vous confortablement, yeux fermés.</p></div>
+              <div class="proto-step"><div class="proto-dot"></div><p><strong>{{ t('shop.detail_daily') }}</strong> — {{ t('shop.detail_daily_desc') }}</p></div>
+              <div class="proto-step"><div class="proto-dot"></div><p><strong>{{ t('shop.detail_cure') }}</strong> — {{ selectedProgram.cure_duration || selectedProgram.cure_days || '21' }} {{ t('shop.days_cure') }}.</p></div>
+              <div class="proto-step"><div class="proto-dot"></div><p><strong>{{ t('shop.detail_env') }}</strong> — {{ t('shop.detail_env_desc') }}</p></div>
             </div>
           </div>
 
@@ -272,9 +272,9 @@
           <div class="detail-actions">
             <Link :href="route('cart.add')" method="post" as="button"
               :data="{ program_id: selectedProgram.id }" class="btn-primary" @click="closeDetail">
-              + Ajouter au panier — €{{ selectedProgram.price ?? 11 }}
+              {{ t('shop.detail_add') }}{{ selectedProgram.price ?? 11 }}
             </Link>
-            <button class="btn-outline" @click="closeDetail">Fermer</button>
+            <button class="btn-outline" @click="closeDetail">{{ t('common.close') }}</button>
           </div>
         </div>
       </div>

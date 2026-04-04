@@ -25,9 +25,9 @@
         <div class="ftag">{{ t('about.founder_role') }}</div>
         <h2>Dr. Eric Rosati</h2>
         <div class="sub">{{ t('about.founder_subtitle') }}</div>
-        <p>Eric Rosati graduated in osteopathy, Chinese medicine, energy medicine and is the founder of the Isoposturale method. With more than 25 years of professional experience, he spent over a decade searching for a way to provide his patients with more effective and lasting relief.</p>
-        <p>Since then, his enthusiasm for this energy approach has grown and led him to train in other techniques such as homeopathy, herbal medicine, Chinese medicine and quantum biophysics. This vibratory vision of disease has allowed him to better understand the mechanisms of pathologies and especially to provide more effective and sustainable care.</p>
-        <p>The only motivation in developing this method is to provide patients with the best possible care — accessible from anywhere in the world, at any time.</p>
+        <p>{{ t('about.founder_p1') }}</p>
+        <p>{{ t('about.founder_p2') }}</p>
+        <p>{{ t('about.founder_p3') }}</p>
         <div class="creds">
           <span class="cred">Osteopathy</span>
           <span class="cred">Chinese Medicine</span>
@@ -43,11 +43,11 @@
     <section class="mission">
       <div class="mission-inner">
         <h2>{{ t('about.mission_label') }}</h2>
-        <p>Frequency therapy applications have been developed over decades of research by therapists and scientists. Numerous studies have demonstrated the effectiveness of frequency therapy in managing pain, improving well-being and treating various pathologies.</p>
-        <p>At Vitality Inside, we have synthesized this research into over 37 precise protocols, each targeting specific physiological mechanisms through carefully calibrated bio-energetic frequencies.</p>
+        <p>{{ t('about.mission_p1') }}</p>
+        <p>{{ t('about.mission_p2') }}</p>
         <blockquote>
-          <p>"The human body is not just chemistry — it is electricity, vibration, and resonance. When we speak its language, healing becomes natural."</p>
-          <cite>— Dr. Eric Rosati, Founder of Vitality Inside</cite>
+          <p>{{ t('about.mission_quote') }}</p>
+          <cite>{{ t('about.mission_cite') }}</cite>
         </blockquote>
       </div>
     </section>

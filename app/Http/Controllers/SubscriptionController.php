@@ -50,9 +50,14 @@ class SubscriptionController extends Controller
                 ->first()
             : null;
 
+        $stripeMode    = Setting::get('stripe_mode', 'test');
+        $paypalMode    = Setting::get('paypal_mode', 'sandbox');
         $paymentConfig = [
-            'stripe_enabled' => Setting::get('stripe_enabled', '1') === '1',
-            'paypal_enabled' => Setting::get('paypal_enabled', '0') === '1',
+            'stripe_enabled'   => true,
+            'paypal_enabled'   => true,
+            'paypal_client_id' => $paypalMode === 'live'
+                ? Setting::get('paypal_client_id', '')
+                : Setting::get('paypal_client_id_sandbox', ''),
         ];
 
         return Inertia::render('Subscribe', compact('plans', 'activeSubscription', 'paymentConfig'));
@@ -61,16 +66,32 @@ class SubscriptionController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'plan'           => 'required|in:monthly,annual',
-            'payment_method' => 'required|in:stripe,paypal',
-            'card_number'    => 'required_if:payment_method,stripe|nullable|string',
-            'card_expiry'    => 'required_if:payment_method,stripe|nullable|string',
-            'card_cvv'       => 'required_if:payment_method,stripe|nullable|string',
-        ], [
-            'card_number.required_if' => 'Le numéro de carte est requis.',
-            'card_expiry.required_if' => 'La date d\'expiration est requise.',
-            'card_cvv.required_if'    => 'Le CVV est requis.',
+            'plan'              => 'required|in:monthly,annual',
+            'payment_method'    => 'required|in:stripe,paypal',
+            'payment_intent_id' => 'nullable|string',
+            'paypal_order_id'   => 'nullable|string',
         ]);
+
+        // ── Verify Stripe payment ───────────────────────────────────────────
+        if ($request->payment_method === 'stripe') {
+            if (!$request->payment_intent_id) {
+                return back()->withErrors(['payment' => 'Identifiant de paiement Stripe manquant.']);
+            }
+            $mode      = Setting::get('stripe_mode', 'test');
+            $secretKey = $mode === 'live' ? Setting::get('stripe_sk_live') : Setting::get('stripe_sk_test');
+            if ($secretKey) {
+                \Stripe\Stripe::setApiKey($secretKey);
+                $intent = \Stripe\PaymentIntent::retrieve($request->payment_intent_id);
+                if ($intent->status !== 'succeeded') {
+                    return back()->withErrors(['payment' => 'Le paiement Stripe n\'a pas été confirmé.']);
+                }
+            }
+        }
+
+        // ── Verify PayPal payment ───────────────────────────────────────────
+        if ($request->payment_method === 'paypal' && !$request->paypal_order_id) {
+            return back()->withErrors(['payment' => 'Identifiant de commande PayPal manquant.']);
+        }
 
         $prices = ['monthly' => Setting::get('sub_monthly_price', '29'), 'annual' => Setting::get('sub_annual_price', '199')];
         $price  = (float) $prices[$request->plan];
@@ -79,6 +100,8 @@ class SubscriptionController extends Controller
         if ($existing) {
             return back()->with('error', 'Vous avez déjà un abonnement actif.');
         }
+
+        $paymentRef = $request->payment_intent_id ?? $request->paypal_order_id ?? 'manual-' . strtoupper(Str::random(12));
 
         $endsAt = $request->plan === 'monthly'
             ? Carbon::now()->addMonth()
@@ -89,7 +112,7 @@ class SubscriptionController extends Controller
             'type'           => $request->plan,
             'price'          => $price,
             'status'         => 'active',
-            'payment_intent' => 'manual-' . strtoupper(\Str::random(12)),
+            'payment_intent' => $paymentRef,
             'starts_at'      => now(),
             'ends_at'        => $endsAt,
         ]);

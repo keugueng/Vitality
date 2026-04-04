@@ -71,19 +71,27 @@ class PaymentController extends Controller
 
     public function stripeIntent(Request $request)
     {
-        $cart = session('cart', []);
-        if (empty($cart)) {
-            return response()->json(['error' => 'Panier vide'], 422);
+        // Amount from cart OR from explicit amount parameter (for subscriptions)
+        if ($request->has('amount')) {
+            $total = (float) $request->amount;
+        } else {
+            $cart = session('cart', []);
+            if (empty($cart)) {
+                return response()->json(['error' => 'Panier vide'], 422);
+            }
+            $total = $this->cartTotal();
+        }
+
+        if ($total <= 0) {
+            return response()->json(['error' => 'Montant invalide'], 422);
         }
 
         $keys = $this->stripeKeys();
         if (!$keys['secret_key']) {
-            return response()->json(['error' => 'Stripe non configuré'], 422);
+            return response()->json(['error' => 'Stripe non configuré. Ajoutez vos clés dans l\'admin.'], 422);
         }
 
         \Stripe\Stripe::setApiKey($keys['secret_key']);
-
-        $total = $this->cartTotal();
 
         $intent = \Stripe\PaymentIntent::create([
             'amount'                    => (int) round($total * 100),
@@ -102,18 +110,27 @@ class PaymentController extends Controller
 
     public function paypalCreateOrder(Request $request)
     {
-        $cart = session('cart', []);
-        if (empty($cart)) {
-            return response()->json(['error' => 'Panier vide'], 422);
+        // Amount from cart OR from explicit amount parameter (for subscriptions)
+        if ($request->has('amount')) {
+            $total = (float) $request->amount;
+        } else {
+            $cart = session('cart', []);
+            if (empty($cart)) {
+                return response()->json(['error' => 'Panier vide'], 422);
+            }
+            $total = $this->cartTotal();
+        }
+
+        if ($total <= 0) {
+            return response()->json(['error' => 'Montant invalide'], 422);
         }
 
         $token = $this->getPaypalToken();
         if (!$token) {
-            return response()->json(['error' => 'PayPal non configuré'], 422);
+            return response()->json(['error' => 'PayPal non configuré. Ajoutez vos clés dans l\'admin.'], 422);
         }
 
         $cfg   = $this->paypalConfig();
-        $total = $this->cartTotal();
 
         $response = Http::withToken($token)
             ->post("{$cfg['base_url']}/v2/checkout/orders", [

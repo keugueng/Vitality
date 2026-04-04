@@ -53,11 +53,13 @@ class CheckoutController extends Controller
             }
         }
 
+        $paypalMode    = Setting::get('paypal_mode', 'sandbox');
         $paymentConfig = [
-            'stripe_enabled'    => true,
-            'paypal_enabled'    => true,
-            'paypal_client_id'  => Setting::get('paypal_client_id', ''),
-            'paypal_email'      => Setting::get('paypal_email', 'paypal@vitalityinside.com'),
+            'stripe_enabled'   => true,
+            'paypal_enabled'   => true,
+            'paypal_client_id' => $paypalMode === 'live'
+                ? Setting::get('paypal_client_id', '')
+                : Setting::get('paypal_client_id_sandbox', ''),
         ];
 
         return Inertia::render('Checkout', compact('items', 'total', 'paymentConfig'));

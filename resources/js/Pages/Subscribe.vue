@@ -87,29 +87,20 @@
             </div>
           </div>
 
-          <!-- Card fields (Stripe) -->
+          <!-- Stripe Card Element -->
           <div v-if="form.payment_method === 'stripe'" class="card-fields">
             <div class="card-field-group">
               <label class="card-label">{{ t('checkout.card_number') }}</label>
-              <input v-model="form.card_number" type="text" maxlength="19"
-                @input="formatCard"
-                class="card-input" placeholder="1234 5678 9012 3456" />
-              <p v-if="form.errors.card_number" class="card-error">{{ form.errors.card_number }}</p>
+              <div id="sub-stripe-card-element" class="card-input" style="min-height:44px;padding-top:12px"></div>
             </div>
-            <div class="card-row">
-              <div class="card-field-group">
-                <label class="card-label">{{ t('checkout.expiry') }}</label>
-                <input v-model="form.card_expiry" type="text" maxlength="5"
-                  @input="formatExpiry"
-                  class="card-input" placeholder="MM/AA" />
-              </div>
-              <div class="card-field-group">
-                <label class="card-label">{{ t('checkout.cvv') }}</label>
-                <input v-model="form.card_cvv" type="text" maxlength="4"
-                  class="card-input" placeholder="123" />
-              </div>
-            </div>
+            <p v-if="stripeError" class="card-error">{{ stripeError }}</p>
             <p class="card-secure">🔒 {{ t('checkout.ssl_note') }}</p>
+          </div>
+
+          <!-- PayPal Button -->
+          <div v-if="form.payment_method === 'paypal'" class="card-fields">
+            <div id="sub-paypal-button-container" style="min-height:48px"></div>
+            <p v-if="paypalError" class="card-error">{{ paypalError }}</p>
           </div>
         </div>
 
@@ -122,10 +113,13 @@
             <p class="sub-cta-note">Pas encore de compte ? <Link :href="route('register')" class="cta-link">Créer un compte gratuit</Link></p>
           </template>
           <template v-else>
-            <button class="sub-btn-primary" @click="subscribe" :disabled="form.processing || !selectedPlan">
-              <span v-if="form.processing">⌛ {{ t('subscribe.subscribing') }}</span>
+            <!-- Submit button — hidden when PayPal selected (PayPal has its own button) -->
+            <button v-if="form.payment_method !== 'paypal'" class="sub-btn-primary"
+              @click="subscribe" :disabled="form.processing || stripeLoading || !selectedPlan">
+              <span v-if="form.processing || stripeLoading">⌛ {{ stripeLoading ? 'Chargement Stripe…' : t('subscribe.subscribing') }}</span>
               <span v-else>🔒 {{ t('subscribe.subscribe_btn') }} — €{{ selectedPlanData?.price }}/{{ selectedPlan === 'monthly' ? t('cart.monthly') : t('cart.annual') }}</span>
             </button>
+            <p v-if="form.errors.payment" class="card-error" style="text-align:center">{{ form.errors.payment }}</p>
             <p class="sub-cta-note">Sans engagement · Annulation en un clic · Accès immédiat</p>
           </template>
         </div>
@@ -143,7 +137,7 @@
 </template>
 
 <script setup>
-import { ref, computed } from 'vue'
+import { ref, computed, watch, onMounted, nextTick } from 'vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { Link, useForm, usePage } from '@inertiajs/vue3'
 import { useI18n } from '@/composables/useI18n'
@@ -162,33 +156,162 @@ const selectedPlan = ref(props.plans?.find(p => p.highlight)?.id || props.plans?
 const selectedPlanData = computed(() => props.plans?.find(p => p.id === selectedPlan.value))
 
 const form = useForm({
-  plan: selectedPlan,
+  plan: '',
   payment_method: props.paymentConfig?.stripe_enabled ? 'stripe' : 'paypal',
-  card_number: '',
-  card_expiry: '',
-  card_cvv: '',
+  payment_intent_id: '',
+  paypal_order_id: '',
 })
 
-function formatCard(e) {
-  const val = e.target.value.replace(/\D/g, '').substring(0, 16)
-  form.card_number = val.match(/.{1,4}/g)?.join(' ') || val
-}
-function formatExpiry(e) {
-  let val = e.target.value.replace(/\D/g, '').substring(0, 4)
-  if (val.length >= 3) val = val.substring(0,2) + '/' + val.substring(2)
-  form.card_expiry = val
-}
-
 const cancelForm = useForm({})
-
-function subscribe() {
-  form.plan = selectedPlan.value
-  form.post(route('subscribe.store'))
-}
 
 function formatDate(date) {
   if (!date) return ''
   return new Date(date).toLocaleDateString('fr-FR', { day: '2-digit', month: 'long', year: 'numeric' })
+}
+
+function getCsrf() {
+  return document.querySelector('meta[name="csrf-token"]')?.content || ''
+}
+async function loadScript(src) {
+  return new Promise((resolve, reject) => {
+    if (document.querySelector(`script[src="${src}"]`)) { resolve(); return }
+    const s = document.createElement('script')
+    s.src = src; s.onload = resolve; s.onerror = reject
+    document.head.appendChild(s)
+  })
+}
+
+// ── Stripe ────────────────────────────────────────────────────────────
+const stripeInstance = ref(null)
+const stripeCardEl   = ref(null)
+const stripeError    = ref('')
+const stripeLoading  = ref(false)
+
+async function initStripe() {
+  if (!props.paymentConfig?.stripe_enabled) return
+  stripeLoading.value = true
+  try {
+    await loadScript('https://js.stripe.com/v3/')
+    const res = await fetch('/payment/stripe/public-key')
+    const { public_key } = await res.json()
+    if (!public_key) { stripeLoading.value = false; return }
+    stripeInstance.value = window.Stripe(public_key)
+    await nextTick()
+    mountStripeCard()
+  } catch (e) {
+    stripeError.value = 'Stripe indisponible. Veuillez réessayer.'
+  } finally {
+    stripeLoading.value = false
+  }
+}
+
+function mountStripeCard() {
+  if (!stripeInstance.value) return
+  const el = document.getElementById('sub-stripe-card-element')
+  if (!el || stripeCardEl.value) return
+  const elements = stripeInstance.value.elements()
+  stripeCardEl.value = elements.create('card', {
+    style: {
+      base: { color: '#ffffff', fontSize: '14px', fontFamily: 'inherit', '::placeholder': { color: 'rgba(200,220,255,0.4)' } },
+      invalid: { color: '#f87171' },
+    },
+  })
+  stripeCardEl.value.mount('#sub-stripe-card-element')
+}
+
+// ── PayPal ────────────────────────────────────────────────────────────
+const paypalError = ref('')
+let paypalButtonsRendered = false
+
+async function initPaypal() {
+  if (!props.paymentConfig?.paypal_enabled) return
+  const clientId = props.paymentConfig?.paypal_client_id
+  if (!clientId) { paypalError.value = 'PayPal non configuré (clé manquante).'; return }
+  try {
+    await loadScript(`https://www.paypal.com/sdk/js?client-id=${clientId}&currency=EUR`)
+    await nextTick()
+    renderPaypalButtons()
+  } catch (e) {
+    paypalError.value = 'PayPal indisponible.'
+  }
+}
+
+function renderPaypalButtons() {
+  if (!window.paypal || paypalButtonsRendered) return
+  const container = document.getElementById('sub-paypal-button-container')
+  if (!container) return
+  paypalButtonsRendered = true
+  const amount = selectedPlanData.value?.price ?? 29
+  window.paypal.Buttons({
+    style: { layout: 'vertical', color: 'blue', shape: 'rect', label: 'pay' },
+    createOrder: async () => {
+      paypalError.value = ''
+      const res = await fetch('/payment/paypal/create-order', {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': getCsrf(), 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ amount }),
+      })
+      const data = await res.json()
+      if (!res.ok) { paypalError.value = data.error || 'Erreur PayPal'; throw new Error(data.error) }
+      return data.order_id
+    },
+    onApprove: async (data) => {
+      const res = await fetch('/payment/paypal/capture-order', {
+        method: 'POST',
+        headers: { 'X-CSRF-TOKEN': getCsrf(), 'Content-Type': 'application/json', Accept: 'application/json' },
+        body: JSON.stringify({ order_id: data.orderID }),
+      })
+      const result = await res.json()
+      if (!res.ok) { paypalError.value = result.error || 'Capture PayPal échouée'; return }
+      form.paypal_order_id = data.orderID
+      form.plan = selectedPlan.value
+      form.payment_method = 'paypal'
+      form.post(route('subscribe.store'))
+    },
+    onError: (err) => { paypalError.value = 'Erreur PayPal: ' + (err.message || err) },
+  }).render('#sub-paypal-button-container')
+}
+
+// ── Watch payment method and plan changes ────────────────────────────
+watch(() => form.payment_method, async (method) => {
+  stripeCardEl.value = null
+  if (method === 'stripe' && !stripeInstance.value) await initStripe()
+  else if (method === 'stripe' && stripeInstance.value) { await nextTick(); mountStripeCard() }
+  else if (method === 'paypal') { paypalButtonsRendered = false; await nextTick(); await initPaypal() }
+})
+
+onMounted(async () => {
+  if (form.payment_method === 'stripe') await initStripe()
+  else if (form.payment_method === 'paypal') await initPaypal()
+})
+
+// ── Subscribe (Stripe only) ──────────────────────────────────────────
+async function subscribe() {
+  stripeError.value = ''
+  if (!auth.value?.user) return
+  if (form.payment_method === 'stripe') {
+    if (!stripeInstance.value || !stripeCardEl.value) {
+      stripeError.value = 'Stripe non initialisé. Rechargez la page.'
+      return
+    }
+    form.processing = true
+    const amount = selectedPlanData.value?.price ?? 29
+    const intentRes = await fetch('/payment/stripe/intent', {
+      method: 'POST',
+      headers: { 'X-CSRF-TOKEN': getCsrf(), 'Content-Type': 'application/json', Accept: 'application/json' },
+      body: JSON.stringify({ amount }),
+    })
+    const intentData = await intentRes.json()
+    if (!intentRes.ok) { stripeError.value = intentData.error || 'Erreur Stripe'; form.processing = false; return }
+    const { error, paymentIntent } = await stripeInstance.value.confirmCardPayment(
+      intentData.client_secret,
+      { payment_method: { card: stripeCardEl.value } }
+    )
+    if (error) { stripeError.value = error.message; form.processing = false; return }
+    form.payment_intent_id = paymentIntent.id
+    form.plan = selectedPlan.value
+    form.post(route('subscribe.store'))
+  }
 }
 </script>
 

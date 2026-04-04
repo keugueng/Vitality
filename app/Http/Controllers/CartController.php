@@ -73,7 +73,7 @@ class CartController extends Controller
         $cart = array_filter($cart, fn($k) => !str_starts_with($k, 'sub_'), ARRAY_FILTER_USE_KEY);
         $cart["sub_{$request->plan}"] = $plan;
         session(['cart' => $cart]);
-        return back()->with('success', 'Abonnement ajouté au panier.');
+        return redirect()->route('checkout')->with('success', 'Abonnement ajouté au panier.');
     }
 
     public function add(Request $request)
