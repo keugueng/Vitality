@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Program;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 use Inertia\Inertia;
 
@@ -38,12 +39,21 @@ class CartController extends Controller
             }
             $program = Program::find($id);
             if ($program) {
-                $items[] = ['type' => 'program', 'program' => $program, 'quantity' => $item['quantity']];
+                $items[] = ['type' => 'program', 'key' => "prog_{$program->id}", 'program' => $program, 'quantity' => $item['quantity']];
                 $total += $program->price * $item['quantity'];
             }
         }
 
-        return Inertia::render('Cart', compact('items', 'total'));
+        $paypalMode    = Setting::get('paypal_mode', 'sandbox');
+        $paymentConfig = [
+            'stripe_enabled'   => true,
+            'paypal_enabled'   => true,
+            'paypal_client_id' => $paypalMode === 'live'
+                ? Setting::get('paypal_client_id', '')
+                : Setting::get('paypal_client_id_sandbox', ''),
+        ];
+
+        return Inertia::render('Cart', compact('items', 'total', 'paymentConfig'));
     }
 
     public function addConsultation(Request $request)

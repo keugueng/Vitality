@@ -87,18 +87,19 @@
             </div>
           </div>
 
-          <!-- Stripe Card Element -->
-          <div v-if="form.payment_method === 'stripe'" class="card-fields">
+          <!-- Stripe Card Element (v-show keeps DOM alive for Stripe mounting) -->
+          <div v-show="form.payment_method === 'stripe'" class="card-fields">
             <div class="card-field-group">
               <label class="card-label">{{ t('checkout.card_number') }}</label>
               <div id="sub-stripe-card-element" class="card-input" style="min-height:44px;padding-top:12px"></div>
             </div>
+            <p v-if="stripeNotConfigured" class="card-error">⚠️ Stripe non configuré. Ajoutez vos clés dans l'admin.</p>
             <p v-if="stripeError" class="card-error">{{ stripeError }}</p>
             <p class="card-secure">🔒 {{ t('checkout.ssl_note') }}</p>
           </div>
 
-          <!-- PayPal Button -->
-          <div v-if="form.payment_method === 'paypal'" class="card-fields">
+          <!-- PayPal Button (v-show keeps DOM alive) -->
+          <div v-show="form.payment_method === 'paypal'" class="card-fields">
             <div id="sub-paypal-button-container" style="min-height:48px"></div>
             <p v-if="paypalError" class="card-error">{{ paypalError }}</p>
           </div>
@@ -115,8 +116,8 @@
           <template v-else>
             <!-- Submit button — hidden when PayPal selected (PayPal has its own button) -->
             <button v-if="form.payment_method !== 'paypal'" class="sub-btn-primary"
-              @click="subscribe" :disabled="form.processing || stripeLoading || !selectedPlan">
-              <span v-if="form.processing || stripeLoading">⌛ {{ stripeLoading ? 'Chargement Stripe…' : t('subscribe.subscribing') }}</span>
+              @click="subscribe" :disabled="isSubmitting || stripeLoading || stripeNotConfigured || !selectedPlan">
+              <span v-if="isSubmitting || stripeLoading">⌛ {{ stripeLoading ? 'Chargement Stripe…' : t('subscribe.subscribing') }}</span>
               <span v-else>🔒 {{ t('subscribe.subscribe_btn') }} — €{{ selectedPlanData?.price }}/{{ selectedPlan === 'monthly' ? t('cart.monthly') : t('cart.annual') }}</span>
             </button>
             <p v-if="form.errors.payment" class="card-error" style="text-align:center">{{ form.errors.payment }}</p>
@@ -182,19 +183,22 @@ async function loadScript(src) {
 }
 
 // ── Stripe ────────────────────────────────────────────────────────────
-const stripeInstance = ref(null)
-const stripeCardEl   = ref(null)
-const stripeError    = ref('')
-const stripeLoading  = ref(false)
+const stripeInstance      = ref(null)
+const stripeCardEl        = ref(null)
+const stripeError         = ref('')
+const stripeLoading       = ref(false)
+const stripeNotConfigured = ref(false)
+const isSubmitting        = ref(false)
 
 async function initStripe() {
   if (!props.paymentConfig?.stripe_enabled) return
   stripeLoading.value = true
+  stripeNotConfigured.value = false
   try {
     await loadScript('https://js.stripe.com/v3/')
     const res = await fetch('/payment/stripe/public-key')
     const { public_key } = await res.json()
-    if (!public_key) { stripeLoading.value = false; return }
+    if (!public_key) { stripeNotConfigured.value = true; stripeLoading.value = false; return }
     stripeInstance.value = window.Stripe(public_key)
     await nextTick()
     mountStripeCard()
@@ -294,7 +298,7 @@ async function subscribe() {
       stripeError.value = 'Stripe non initialisé. Rechargez la page.'
       return
     }
-    form.processing = true
+    isSubmitting.value = true
     const amount = selectedPlanData.value?.price ?? 29
     const intentRes = await fetch('/payment/stripe/intent', {
       method: 'POST',
@@ -302,15 +306,15 @@ async function subscribe() {
       body: JSON.stringify({ amount }),
     })
     const intentData = await intentRes.json()
-    if (!intentRes.ok) { stripeError.value = intentData.error || 'Erreur Stripe'; form.processing = false; return }
+    if (!intentRes.ok) { stripeError.value = intentData.error || 'Erreur Stripe'; isSubmitting.value = false; return }
     const { error, paymentIntent } = await stripeInstance.value.confirmCardPayment(
       intentData.client_secret,
       { payment_method: { card: stripeCardEl.value } }
     )
-    if (error) { stripeError.value = error.message; form.processing = false; return }
+    if (error) { stripeError.value = error.message; isSubmitting.value = false; return }
     form.payment_intent_id = paymentIntent.id
     form.plan = selectedPlan.value
-    form.post(route('subscribe.store'))
+    form.post(route('subscribe.store'), { onFinish: () => { isSubmitting.value = false } })
   }
 }
 </script>

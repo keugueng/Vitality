@@ -11,59 +11,59 @@
           <div class="aside-logo-emblem">V</div>
           <div>
             <p class="aside-logo-title">Vitality<em>Inside</em></p>
-            <p class="aside-logo-sub">Espace Pro</p>
+            <p class="aside-logo-sub">{{ t('pro.aside_space') }}</p>
           </div>
         </div>
 
         <nav class="aside-nav">
-          <span class="aside-section-label">Principal</span>
+          <span class="aside-section-label">{{ t('pro.aside_section_main') }}</span>
           <button :class="{ active: tab === 'dashboard' }" @click="setTab('dashboard')">
             <svg class="aside-svg" viewBox="0 0 20 20" fill="currentColor"><path d="M2 10a8 8 0 1116 0A8 8 0 012 10zm8-4a1 1 0 00-1 1v3H7a1 1 0 000 2h3v3a1 1 0 002 0v-3h3a1 1 0 000-2h-3V7a1 1 0 00-1-1z" clip-rule="evenodd" fill-rule="evenodd"/></svg>
-            Tableau de bord
+            {{ t('pro.tab_dashboard') }}
           </button>
           <button :class="{ active: tab === 'programs' }" @click="setTab('programs')">
             <svg class="aside-svg" viewBox="0 0 20 20" fill="currentColor"><path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"/></svg>
-            Mes Programmes
+            {{ t('pro.tab_programs') }}
             <span v-if="myPrograms.length" class="aside-count">{{ myPrograms.length }}</span>
           </button>
           <button :class="{ active: tab === 'orders' }" @click="setTab('orders')">
             <svg class="aside-svg" viewBox="0 0 20 20" fill="currentColor"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"/></svg>
-            Mes Commandes
+            {{ t('pro.tab_orders') }}
             <span v-if="myOrders.length" class="aside-count">{{ myOrders.length }}</span>
           </button>
           <button :class="{ active: tab === 'consultations' }" @click="setTab('consultations')">
             <svg class="aside-svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
-            Consultations
+            {{ t('pro.tab_consultations') }}
           </button>
           <button :class="{ active: tab === 'subscription' }" @click="setTab('subscription')">
             <svg class="aside-svg" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
-            Abonnement
-            <span v-if="subscription" class="aside-badge-active">Actif</span>
+            {{ t('pro.tab_subscription') }}
+            <span v-if="subscription" class="aside-badge-active">{{ t('pro.sub_badge_active') }}</span>
           </button>
 
-          <span class="aside-section-label" style="margin-top:12px">Compte</span>
+          <span class="aside-section-label" style="margin-top:12px">{{ t('pro.aside_section_account') }}</span>
           <button :class="{ active: tab === 'profile' }" @click="setTab('profile')">
             <svg class="aside-svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
-            Mon Profil
+            {{ t('pro.tab_profile') }}
           </button>
           <button :class="{ active: tab === 'cart' }" @click="setTab('cart')">
             <svg class="aside-svg" viewBox="0 0 20 20" fill="currentColor"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z"/><path d="M16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></svg>
-            Panier
+            {{ t('pro.tab_cart') }}
             <span v-if="cartCount" class="aside-badge">{{ cartCount }}</span>
           </button>
 
           <div class="aside-divider"></div>
           <Link :href="route('shop')" class="aside-ext-link">
             <svg class="aside-svg" viewBox="0 0 20 20" fill="currentColor"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z"/></svg>
-            Boutique
+            {{ t('pro.nav_shop') }}
           </Link>
           <Link :href="route('consultation')" class="aside-ext-link">
             <svg class="aside-svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/></svg>
-            Consultation
+            {{ t('pro.nav_consult') }}
           </Link>
           <button v-if="user?.is_pro" :class="{ active: tab === 'praticien' }" @click="setTab('praticien')" style="color:#c8a96e">
             <svg class="aside-svg" viewBox="0 0 20 20" fill="currentColor"><path d="M13 6a3 3 0 11-6 0 3 3 0 016 0zM18 8a2 2 0 11-4 0 2 2 0 014 0zM14 15a4 4 0 00-8 0v3h8v-3zM6 8a2 2 0 11-4 0 2 2 0 014 0zM16 18v-3a5.972 5.972 0 00-.75-2.906A3.005 3.005 0 0119 15v3h-3zM4.75 12.094A5.973 5.973 0 004 15v3H1v-3a3 3 0 013.75-2.906z"/></svg>
-            Espace Praticien
+            {{ t('pro.tab_praticien') }}
             <span v-if="proStats?.patients_count" class="aside-count">{{ proStats.patients_count }}</span>
           </button>
         </nav>
@@ -74,12 +74,12 @@
           <div class="aside-user-avatar">{{ userInitial }}</div>
           <div class="aside-user-info">
             <p class="aside-user-name">{{ user.name }}</p>
-            <p class="aside-user-role">{{ user.is_pro ? 'Praticien PRO' : 'Membre' }}</p>
+            <p class="aside-user-role">{{ user.is_pro ? t('pro.role_pro') : t('pro.role_member') }}</p>
           </div>
         </div>
         <Link v-if="user" :href="route('logout')" method="post" as="button" class="aside-logout">
           <svg class="aside-svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/></svg>
-          Déconnexion
+          {{ t('pro.logout') }}
         </Link>
       </aside>
 
@@ -100,8 +100,8 @@
             </div>
           </div>
           <div class="topbar-right">
-            <Link :href="route('home')" class="topbar-link">← Retour au site</Link>
-            <Link :href="route('shop')" class="topbar-btn-cyan">Boutique</Link>
+            <Link :href="route('home')" class="topbar-link">{{ t('pro.back_site') }}</Link>
+            <Link :href="route('shop')" class="topbar-btn-cyan">{{ t('pro.nav_shop') }}</Link>
           </div>
         </header>
 
@@ -115,26 +115,26 @@
         <div v-if="!user" class="unauth-wrap">
           <div class="unauth-card">
             <div class="unauth-emblem">VI</div>
-            <h2 class="unauth-title">Vitality Inside <em>Pro</em></h2>
-            <p class="unauth-sub">Connectez-vous pour accéder à votre espace personnel — programmes, commandes, consultations et abonnement.</p>
+            <h2 class="unauth-title">{{ t('pro.not_auth_title') }} <em>Pro</em></h2>
+            <p class="unauth-sub">{{ t('pro.not_auth_sub') }}</p>
             <form @submit.prevent="submitLogin" class="unauth-form">
               <div v-if="loginForm.errors.email" class="field-error">{{ loginForm.errors.email }}</div>
               <div class="field-group">
-                <label>Adresse email</label>
+                <label>{{ t('pro.not_auth_email') }}</label>
                 <input v-model="loginForm.email" type="email" required placeholder="vous@exemple.com" autocomplete="email" />
               </div>
               <div class="field-group">
-                <label>Mot de passe</label>
+                <label>{{ t('pro.not_auth_pass') }}</label>
                 <input v-model="loginForm.password" type="password" required placeholder="••••••••" autocomplete="current-password" />
               </div>
               <button type="submit" class="unauth-btn" :disabled="loginForm.processing">
-                {{ loginForm.processing ? 'Connexion…' : 'Se connecter' }}
+                {{ loginForm.processing ? t('pro.not_auth_connecting') : t('pro.not_auth_connect') }}
               </button>
             </form>
             <div class="unauth-links">
-              <Link :href="route('password.request')" class="unauth-link">Mot de passe oublié ?</Link>
+              <Link :href="route('password.request')" class="unauth-link">{{ t('pro.not_auth_forgot') }}</Link>
               <span class="sep">·</span>
-              <Link :href="route('register')" class="unauth-link">Créer un compte</Link>
+              <Link :href="route('register')" class="unauth-link">{{ t('pro.not_auth_register') }}</Link>
             </div>
           </div>
           <!-- Feature previews -->
@@ -150,10 +150,10 @@
         <div v-else-if="tab === 'dashboard'" class="tab-content">
           <div class="welcome-row">
             <div>
-              <h1 class="welcome-h1">Bonjour, <em class="gold-em">{{ firstName }}</em> 👋</h1>
+              <h1 class="welcome-h1">{{ t('pro.welcome') }} <em class="gold-em">{{ firstName }}</em> 👋</h1>
               <p class="welcome-p">{{ fmtDate(new Date()) }} · Vitality Inside Pro</p>
             </div>
-            <Link :href="route('shop')" class="btn-teal">Explorer les programmes →</Link>
+            <Link :href="route('shop')" class="btn-teal">{{ t('pro.explore_btn') }}</Link>
           </div>
 
           <div class="kpi-row">
@@ -161,27 +161,27 @@
               <div class="kpi-icon" style="background:rgba(20,168,160,.15);color:#14a8a0">
                 <svg viewBox="0 0 20 20" fill="currentColor"><path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"/></svg>
               </div>
-              <div><p class="kpi-val">{{ myPrograms.length }}</p><p class="kpi-lbl">Programmes</p></div>
+              <div><p class="kpi-val">{{ myPrograms.length }}</p><p class="kpi-lbl">{{ t('pro.kpi_programs') }}</p></div>
             </div>
             <div class="kpi-card" @click="tab='orders'" style="cursor:pointer">
               <div class="kpi-icon" style="background:rgba(200,169,110,.12);color:#c8a96e">
                 <svg viewBox="0 0 20 20" fill="currentColor"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"/></svg>
               </div>
-              <div><p class="kpi-val">{{ myOrders.length }}</p><p class="kpi-lbl">Commandes</p></div>
+              <div><p class="kpi-val">{{ myOrders.length }}</p><p class="kpi-lbl">{{ t('pro.kpi_orders') }}</p></div>
             </div>
             <div class="kpi-card" @click="tab='consultations'" style="cursor:pointer">
               <div class="kpi-icon" style="background:rgba(125,211,252,.1);color:#7dd3fc">
                 <svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
               </div>
-              <div><p class="kpi-val">{{ myConsultations.length }}</p><p class="kpi-lbl">Consultations</p></div>
+              <div><p class="kpi-val">{{ myConsultations.length }}</p><p class="kpi-lbl">{{ t('pro.kpi_consultations') }}</p></div>
             </div>
             <div class="kpi-card" :class="{ 'kpi-card--active': subscription }" @click="tab='subscription'" style="cursor:pointer">
               <div class="kpi-icon" :style="subscription ? 'background:rgba(134,239,172,.1);color:#86efac' : 'background:rgba(255,255,255,.05);color:rgba(255,255,255,.3)'">
                 <svg viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
               </div>
               <div>
-                <p class="kpi-val">{{ subscription ? subscription.type === 'monthly' ? 'Mensuel' : 'Annuel' : '—' }}</p>
-                <p class="kpi-lbl">Abonnement</p>
+                <p class="kpi-val">{{ subscription ? (subscription.type === 'monthly' ? t('pro.sub_monthly') : t('pro.sub_annual')) : '—' }}</p>
+                <p class="kpi-lbl">{{ t('pro.kpi_subscription') }}</p>
               </div>
             </div>
           </div>
@@ -191,8 +191,8 @@
             <!-- Recent programs -->
             <div class="dash-panel">
               <div class="panel-head">
-                <h3 class="panel-title">Mes derniers programmes</h3>
-                <button class="panel-link" @click="tab='programs'">Voir tout →</button>
+                <h3 class="panel-title">{{ t('pro.recent_programs') }}</h3>
+                <button class="panel-link" @click="tab='programs'">{{ t('pro.see_all') }}</button>
               </div>
               <div v-if="myPrograms.length" class="prog-list">
                 <div v-for="up in myPrograms.slice(0,4)" :key="up.id" class="prog-item">
@@ -205,16 +205,16 @@
                 </div>
               </div>
               <div v-else class="panel-empty">
-                <p>Aucun programme acheté.</p>
-                <Link :href="route('shop')" class="panel-cta">Explorer la boutique →</Link>
+                <p>{{ t('pro.no_programs_bought') }}</p>
+                <Link :href="route('shop')" class="panel-cta">{{ t('pro.explore_shop') }}</Link>
               </div>
             </div>
 
             <!-- Recent orders -->
             <div class="dash-panel">
               <div class="panel-head">
-                <h3 class="panel-title">Commandes récentes</h3>
-                <button class="panel-link" @click="tab='orders'">Voir tout →</button>
+                <h3 class="panel-title">{{ t('pro.recent_orders') }}</h3>
+                <button class="panel-link" @click="tab='orders'">{{ t('pro.see_all') }}</button>
               </div>
               <div v-if="myOrders.length">
                 <div v-for="o in myOrders.slice(0,4)" :key="o.id" class="order-item-sm">
@@ -224,15 +224,15 @@
                   </div>
                   <div class="ois-right">
                     <span class="ois-status" :class="o.status === 'completed' ? 'ok' : 'pending'">
-                      {{ o.status === 'completed' ? 'Complétée' : 'En cours' }}
+                      {{ o.status === 'completed' ? t('pro.order_completed') : t('pro.order_pending') }}
                     </span>
                     <span class="ois-total">€{{ o.total }}</span>
                   </div>
                 </div>
               </div>
               <div v-else class="panel-empty">
-                <p>Aucune commande.</p>
-                <Link :href="route('shop')" class="panel-cta">Découvrir les programmes →</Link>
+                <p>{{ t('pro.no_orders') }}</p>
+                <Link :href="route('shop')" class="panel-cta">{{ t('pro.discover_programs') }}</Link>
               </div>
             </div>
           </div>
@@ -240,19 +240,19 @@
           <!-- Subscription CTA if no sub -->
           <div v-if="!subscription" class="sub-cta-banner">
             <div class="scb-left">
-              <p class="scb-label">Abonnement Premium</p>
-              <h3 class="scb-title">Accès illimité à 37+ protocoles</h3>
-              <p class="scb-sub">À partir de €29/mois · Sans engagement · Annulation en un clic</p>
+              <p class="scb-label">{{ t('pro.premium_label') }}</p>
+              <h3 class="scb-title">{{ t('pro.premium_title') }}</h3>
+              <p class="scb-sub">{{ t('pro.premium_sub') }}</p>
             </div>
-            <Link :href="route('subscribe')" class="scb-btn">S'abonner maintenant →</Link>
+            <Link :href="route('subscribe')" class="scb-btn">{{ t('pro.subscribe_now') }}</Link>
           </div>
         </div>
 
         <!-- ══ PROGRAMS ══ -->
         <div v-else-if="tab === 'programs'" class="tab-content">
           <div class="tab-header">
-            <h2 class="tab-h2">Mes Programmes</h2>
-            <Link :href="route('shop')" class="btn-teal-sm">+ Ajouter un programme</Link>
+            <h2 class="tab-h2">{{ t('pro.programs_title') }}</h2>
+            <Link :href="route('shop')" class="btn-teal-sm">{{ t('pro.add_program') }}</Link>
           </div>
           <div v-if="myPrograms.length" class="progs-grid">
             <div v-for="up in myPrograms" :key="up.id" class="prog-card">
@@ -265,42 +265,42 @@
                 <span>⏱ {{ up.program?.session_duration || '30 min' }}</span>
                 <span>🔄 {{ up.program?.cure_duration || '21 jours' }}</span>
               </div>
-              <a v-if="up.access_link" :href="up.access_link" class="pc-btn">🎧 Écouter</a>
-              <button v-else class="pc-btn pc-btn--muted">🎧 Écouter</button>
+              <a v-if="up.access_link" :href="up.access_link" class="pc-btn">{{ t('pro.listen_btn') }}</a>
+              <button v-else class="pc-btn pc-btn--muted">{{ t('pro.listen_btn') }}</button>
             </div>
           </div>
           <div v-else class="empty-box">
             <div class="empty-icon">🎧</div>
-            <h3>Aucun programme pour l'instant</h3>
-            <p>Parcourez notre catalogue de 37+ protocoles audio et commencez votre cure.</p>
-            <Link :href="route('shop')" class="btn-teal">Explorer la boutique</Link>
+            <h3>{{ t('pro.no_programs_title') }}</h3>
+            <p>{{ t('pro.no_programs_desc') }}</p>
+            <Link :href="route('shop')" class="btn-teal">{{ t('pro.explore_store') }}</Link>
           </div>
         </div>
 
         <!-- ══ ORDERS ══ -->
         <div v-else-if="tab === 'orders'" class="tab-content">
           <div class="tab-header">
-            <h2 class="tab-h2">Mes Commandes</h2>
+            <h2 class="tab-h2">{{ t('pro.orders_title') }}</h2>
           </div>
           <div v-if="myOrders.length" class="orders-table-wrap">
             <table class="orders-table">
-              <thead><tr><th>Commande</th><th>Date</th><th>Programmes</th><th>Total</th><th>Statut</th></tr></thead>
+              <thead><tr><th>{{ t('pro.col_order') }}</th><th>{{ t('pro.col_date') }}</th><th>{{ t('pro.col_programs') }}</th><th>{{ t('pro.col_total') }}</th><th>{{ t('pro.col_status') }}</th></tr></thead>
               <tbody>
                 <tr v-for="o in myOrders" :key="o.id">
                   <td class="ord-num">{{ o.order_number }}</td>
                   <td class="ord-muted">{{ fmtDate(o.created_at) }}</td>
                   <td class="ord-muted">{{ o.items?.map(i => i.program_title || i.program?.title).join(', ') || '—' }}</td>
                   <td class="ord-price">€{{ o.total }}</td>
-                  <td><span class="ord-badge" :class="o.status === 'completed' ? 'ok' : 'pending'">{{ o.status === 'completed' ? 'Complétée' : 'En cours' }}</span></td>
+                  <td><span class="ord-badge" :class="o.status === 'completed' ? 'ok' : 'pending'">{{ o.status === 'completed' ? t('pro.order_completed') : t('pro.order_pending') }}</span></td>
                 </tr>
               </tbody>
             </table>
           </div>
           <div v-else class="empty-box">
             <div class="empty-icon">📦</div>
-            <h3>Aucune commande</h3>
-            <p>Vous n'avez pas encore passé de commande.</p>
-            <Link :href="route('shop')" class="btn-teal">Découvrir les programmes</Link>
+            <h3>{{ t('pro.no_orders_title') }}</h3>
+            <p>{{ t('pro.no_orders_desc') }}</p>
+            <Link :href="route('shop')" class="btn-teal">{{ t('pro.discover_link') }}</Link>
           </div>
         </div>
 
@@ -349,25 +349,25 @@
         <!-- ══ PRATICIEN ══ -->
         <div v-else-if="tab === 'praticien'" class="tab-content">
           <div class="tab-header">
-            <h2 class="tab-h2" style="color:#c8a96e">Espace Praticien</h2>
+            <h2 class="tab-h2" style="color:#c8a96e">{{ t('pro.praticien_title') }}</h2>
           </div>
 
           <!-- Stats row -->
           <div class="kpi-row" v-if="proStats" style="margin-bottom:28px">
             <div class="kpi-card">
-              <p class="kpi-label">Patients suivis</p>
+              <p class="kpi-label">{{ t('pro.patients_followed') }}</p>
               <p class="kpi-value">{{ proStats.patients_count }}</p>
             </div>
             <div class="kpi-card">
-              <p class="kpi-label">Protocoles actifs</p>
+              <p class="kpi-label">{{ t('pro.protocols_active') }}</p>
               <p class="kpi-value">{{ proStats.protocols_active }}</p>
             </div>
             <div class="kpi-card">
-              <p class="kpi-label">Commission totale</p>
+              <p class="kpi-label">{{ t('pro.commission_total') }}</p>
               <p class="kpi-value">€{{ proStats.commission_total }}</p>
             </div>
             <div class="kpi-card">
-              <p class="kpi-label">Taux commission</p>
+              <p class="kpi-label">{{ t('pro.commission_rate') }}</p>
               <p class="kpi-value">{{ proStats.commission_rate }}%</p>
             </div>
           </div>
@@ -375,63 +375,63 @@
           <div class="prat-grid">
             <!-- Add patient form -->
             <div class="cc-card">
-              <h3 class="cc-title">Ajouter un patient</h3>
+              <h3 class="cc-title">{{ t('pro.add_patient_title') }}</h3>
               <form @submit.prevent="submitPatient" class="cc-form">
                 <div class="field-group">
-                  <label>Nom complet *</label>
+                  <label>{{ t('pro.patient_name_label') }}</label>
                   <input v-model="patientForm.name" required placeholder="Jean Dupont" />
                   <p v-if="patientForm.errors.name" class="field-error">{{ patientForm.errors.name }}</p>
                 </div>
                 <div class="field-group">
-                  <label>Email</label>
+                  <label>{{ t('pro.patient_email_label') }}</label>
                   <input v-model="patientForm.email" type="email" placeholder="jean@exemple.com" />
                 </div>
                 <div class="prat-grid-2">
                   <div class="field-group">
-                    <label>Téléphone</label>
+                    <label>{{ t('pro.patient_phone_label') }}</label>
                     <input v-model="patientForm.phone" placeholder="+33 6 00 00 00 00" />
                   </div>
                   <div class="field-group">
-                    <label>Âge</label>
+                    <label>{{ t('pro.patient_age_label') }}</label>
                     <input v-model="patientForm.age" type="number" min="1" max="120" placeholder="45" />
                   </div>
                 </div>
                 <div class="field-group">
-                  <label>Antécédents médicaux</label>
-                  <textarea v-model="patientForm.medical_history" rows="2" placeholder="Maladies chroniques, traitements en cours…"></textarea>
+                  <label>{{ t('pro.patient_history_label') }}</label>
+                  <textarea v-model="patientForm.medical_history" rows="2" :placeholder="t('pro.patient_history_ph')"></textarea>
                 </div>
                 <button type="submit" class="btn-teal" :disabled="patientForm.processing">
-                  {{ patientForm.processing ? 'Ajout…' : '+ Ajouter le patient' }}
+                  {{ patientForm.processing ? t('pro.adding') : t('pro.add_patient_btn') }}
                 </button>
               </form>
             </div>
 
             <!-- Assign protocol form -->
             <div class="cc-card">
-              <h3 class="cc-title">Assigner un protocole</h3>
+              <h3 class="cc-title">{{ t('pro.assign_title') }}</h3>
               <form @submit.prevent="submitProtocol" class="cc-form">
                 <div class="field-group">
-                  <label>Patient *</label>
+                  <label>{{ t('pro.patient_label') }}</label>
                   <select v-model="protocolForm.patient_id" required>
-                    <option value="" disabled>Sélectionner un patient…</option>
+                    <option value="" disabled>{{ t('pro.select_patient') }}</option>
                     <option v-for="p in proPatients" :key="p.id" :value="p.id">{{ p.name }}</option>
                   </select>
                   <p v-if="protocolForm.errors.patient_id" class="field-error">{{ protocolForm.errors.patient_id }}</p>
                 </div>
                 <div class="field-group">
-                  <label>Programme *</label>
+                  <label>{{ t('pro.program_label') }}</label>
                   <select v-model="protocolForm.program_id" required>
-                    <option value="" disabled>Sélectionner un programme…</option>
+                    <option value="" disabled>{{ t('pro.select_program') }}</option>
                     <option v-for="prog in proPrograms" :key="prog.id" :value="prog.id">{{ prog.title }}</option>
                   </select>
                   <p v-if="protocolForm.errors.program_id" class="field-error">{{ protocolForm.errors.program_id }}</p>
                 </div>
                 <div class="field-group">
-                  <label>Notes cliniques</label>
-                  <textarea v-model="protocolForm.notes" rows="2" placeholder="Fréquence d'utilisation, recommandations…"></textarea>
+                  <label>{{ t('pro.clinical_notes') }}</label>
+                  <textarea v-model="protocolForm.notes" rows="2" :placeholder="t('pro.clinical_notes_ph')"></textarea>
                 </div>
                 <button type="submit" class="btn-teal" :disabled="protocolForm.processing">
-                  {{ protocolForm.processing ? 'Assignation…' : 'Assigner le protocole' }}
+                  {{ protocolForm.processing ? t('pro.assigning') : t('pro.assign_btn') }}
                 </button>
               </form>
             </div>
@@ -439,7 +439,7 @@
 
           <!-- Patients list -->
           <div class="cc-card" style="margin-top:24px">
-            <h3 class="cc-title">Mes Patients ({{ proPatients.length }})</h3>
+            <h3 class="cc-title">{{ t('pro.my_patients') }} ({{ proPatients.length }})</h3>
             <div v-if="proPatients.length" class="patients-list">
               <div v-for="patient in proPatients" :key="patient.id" class="patient-row">
                 <div class="patient-avatar">{{ patient.name.charAt(0).toUpperCase() }}</div>
@@ -452,14 +452,14 @@
                     :class="proto.status === 'completed' ? 'proto-done' : proto.status === 'assigned' ? 'proto-active' : ''">
                     {{ proto.program?.title || '—' }}
                   </span>
-                  <span v-if="!patient.protocols?.length" class="proto-badge proto-none">Aucun protocole</span>
+                  <span v-if="!patient.protocols?.length" class="proto-badge proto-none">{{ t('pro.no_protocols') }}</span>
                 </div>
               </div>
             </div>
             <div v-else class="empty-box">
               <div class="empty-icon">👥</div>
-              <h3>Aucun patient pour l'instant</h3>
-              <p>Ajoutez votre premier patient via le formulaire ci-dessus.</p>
+              <h3>{{ t('pro.no_patients_title') }}</h3>
+              <p>{{ t('pro.no_patients_desc') }}</p>
             </div>
           </div>
         </div>
@@ -467,52 +467,52 @@
         <!-- ══ SUBSCRIPTION ══ -->
         <div v-else-if="tab === 'subscription'" class="tab-content">
           <div class="tab-header">
-            <h2 class="tab-h2">Mon Abonnement</h2>
+            <h2 class="tab-h2">{{ t('pro.subscription_title') }}</h2>
           </div>
           <!-- Active -->
           <div v-if="subscription" class="sub-active-card">
-            <div class="sac-badge">✓ Abonnement actif</div>
+            <div class="sac-badge">{{ t('pro.active_badge') }}</div>
             <div class="sac-body">
               <div class="sac-info">
-                <p class="sac-type">Plan {{ subscription.type === 'monthly' ? 'Mensuel' : 'Annuel' }}</p>
-                <p class="sac-price">€{{ subscription.price }}<span>/{{ subscription.type === 'monthly' ? 'mois' : 'an' }}</span></p>
+                <p class="sac-type">{{ t('pro.plan_label') }} {{ subscription.type === 'monthly' ? t('pro.plan_monthly') : t('pro.plan_annual') }}</p>
+                <p class="sac-price">€{{ subscription.price }}<span>/{{ subscription.type === 'monthly' ? t('pro.per_month') : t('pro.per_year') }}</span></p>
               </div>
               <div class="sac-dates">
-                <div class="sac-date-item"><span>Début</span><strong>{{ fmtDate(subscription.starts_at) }}</strong></div>
-                <div class="sac-date-item"><span>Expire</span><strong>{{ fmtDate(subscription.ends_at) }}</strong></div>
+                <div class="sac-date-item"><span>{{ t('pro.date_start') }}</span><strong>{{ fmtDate(subscription.starts_at) }}</strong></div>
+                <div class="sac-date-item"><span>{{ t('pro.date_expire') }}</span><strong>{{ fmtDate(subscription.ends_at) }}</strong></div>
               </div>
             </div>
             <div class="sac-perks">
-              <div class="sac-perk"><span>✓</span> Accès illimité à 37+ protocoles audio</div>
-              <div class="sac-perk"><span>✓</span> Nouveaux programmes chaque mois</div>
-              <div class="sac-perk"><span>✓</span> Support prioritaire</div>
-              <div class="sac-perk"><span>✓</span> Téléchargement offline</div>
+              <div class="sac-perk"><span>✓</span> {{ t('pro.perk1') }}</div>
+              <div class="sac-perk"><span>✓</span> {{ t('pro.perk2') }}</div>
+              <div class="sac-perk"><span>✓</span> {{ t('pro.perk3') }}</div>
+              <div class="sac-perk"><span>✓</span> {{ t('pro.perk4') }}</div>
             </div>
             <form @submit.prevent="cancelSubForm.post(route('subscribe.cancel'))" class="sac-cancel">
               <button type="submit" class="sac-cancel-btn" :disabled="cancelSubForm.processing">
-                {{ cancelSubForm.processing ? 'Annulation…' : 'Annuler l\'abonnement' }}
+                {{ cancelSubForm.processing ? t('pro.cancelling_sub') : t('pro.cancel_sub') }}
               </button>
             </form>
           </div>
           <!-- No sub -->
           <div v-else class="sub-upsell">
             <div class="supsell-hero">
-              <p class="supsell-label">Premium</p>
-              <h3 class="supsell-title">Passez à l'abonnement <em>illimité</em></h3>
-              <p class="supsell-sub">Accédez à l'intégralité de notre bibliothèque de 37+ protocoles audio thérapeutiques, conçus par le Dr. Éric Rosati.</p>
+              <p class="supsell-label">{{ t('pro.upsell_label') }}</p>
+              <h3 class="supsell-title">{{ t('pro.upsell_title') }} <em>{{ t('pro.upsell_title_em') }}</em></h3>
+              <p class="supsell-sub">{{ t('pro.upsell_sub') }}</p>
             </div>
             <div class="supsell-plans">
               <div class="sp-card">
-                <p class="sp-name">Mensuel</p>
-                <p class="sp-price">€29 <span>/mois</span></p>
-                <Link :href="route('subscribe')" class="sp-btn">Choisir</Link>
+                <p class="sp-name">{{ t('pro.upsell_plan_monthly') }}</p>
+                <p class="sp-price">{{ t('pro.upsell_price_monthly') }} <span>{{ t('pro.upsell_per_month') }}</span></p>
+                <Link :href="route('subscribe')" class="sp-btn">{{ t('pro.upsell_choose') }}</Link>
               </div>
               <div class="sp-card sp-card--featured">
-                <div class="sp-featured-badge">Meilleur choix</div>
-                <p class="sp-name">Annuel</p>
-                <p class="sp-price">€199 <span>/an</span></p>
-                <p class="sp-save">Économisez 40%</p>
-                <Link :href="route('subscribe')" class="sp-btn sp-btn--gold">Choisir</Link>
+                <div class="sp-featured-badge">{{ t('pro.upsell_best') }}</div>
+                <p class="sp-name">{{ t('pro.upsell_plan_annual') }}</p>
+                <p class="sp-price">{{ t('pro.upsell_price_annual') }} <span>{{ t('pro.upsell_per_year') }}</span></p>
+                <p class="sp-save">{{ t('pro.upsell_save') }}</p>
+                <Link :href="route('subscribe')" class="sp-btn sp-btn--gold">{{ t('pro.upsell_choose') }}</Link>
               </div>
             </div>
           </div>
@@ -521,45 +521,45 @@
         <!-- ══ PROFILE ══ -->
         <div v-else-if="tab === 'profile'" class="tab-content">
           <div class="tab-header">
-            <h2 class="tab-h2">Mon Profil</h2>
+            <h2 class="tab-h2">{{ t('pro.profile_title') }}</h2>
           </div>
           <div class="profile-layout">
             <div class="profile-left">
               <div class="profile-avatar-xl">{{ userInitial }}</div>
               <p class="profile-name">{{ user?.name }}</p>
               <p class="profile-email">{{ user?.email }}</p>
-              <span class="profile-role-badge">{{ user?.is_pro ? '★ Praticien PRO' : 'Membre' }}</span>
-              <p class="profile-since">Membre depuis<br><strong>{{ fmtMonthYear(user?.created_at) }}</strong></p>
+              <span class="profile-role-badge">{{ user?.is_pro ? t('pro.badge_pro') : t('pro.role_member') }}</span>
+              <p class="profile-since">{{ t('pro.member_since') }}<br><strong>{{ fmtMonthYear(user?.created_at) }}</strong></p>
             </div>
             <div class="profile-right">
               <div class="profile-section">
-                <h3 class="ps-title">Informations personnelles</h3>
+                <h3 class="ps-title">{{ t('pro.personal_info') }}</h3>
                 <form @submit.prevent="submitProfile" class="pform">
                   <div class="pform-row">
                     <div class="pform-group">
-                      <label>Nom complet</label>
+                      <label>{{ t('pro.field_name') }}</label>
                       <input v-model="profileForm.name" type="text" required />
                     </div>
                     <div class="pform-group">
-                      <label>Email</label>
+                      <label>{{ t('pro.field_email') }}</label>
                       <input :value="user?.email" type="email" disabled class="pf-disabled" />
                     </div>
                   </div>
                   <div class="pform-group">
-                    <label>Téléphone</label>
+                    <label>{{ t('pro.field_phone') }}</label>
                     <input v-model="profileForm.phone" type="tel" placeholder="+33 6 00 00 00 00" />
                   </div>
                   <button type="submit" class="btn-teal" :disabled="profileForm.processing">
-                    {{ profileForm.processing ? 'Sauvegarde…' : 'Sauvegarder' }}
+                    {{ profileForm.processing ? t('pro.saving') : t('pro.save_btn') }}
                   </button>
                 </form>
               </div>
               <div class="profile-section profile-security">
-                <h3 class="ps-title">Sécurité & Confidentialité</h3>
+                <h3 class="ps-title">{{ t('pro.security_title') }}</h3>
                 <div class="sec-grid">
-                  <div class="sec-item"><div class="sec-icon">🔒</div><div><p class="sec-t">AES-256</p><p class="sec-s">Données chiffrées</p></div></div>
-                  <div class="sec-item"><div class="sec-icon">🇪🇺</div><div><p class="sec-t">RGPD</p><p class="sec-s">Données en Europe</p></div></div>
-                  <div class="sec-item"><div class="sec-icon">💳</div><div><p class="sec-t">Stripe / PayPal</p><p class="sec-s">Paiements sécurisés</p></div></div>
+                  <div class="sec-item"><div class="sec-icon">🔒</div><div><p class="sec-t">AES-256</p><p class="sec-s">{{ t('pro.sec_encrypted') }}</p></div></div>
+                  <div class="sec-item"><div class="sec-icon">🇪🇺</div><div><p class="sec-t">RGPD</p><p class="sec-s">{{ t('pro.sec_gdpr') }}</p></div></div>
+                  <div class="sec-item"><div class="sec-icon">💳</div><div><p class="sec-t">Stripe / PayPal</p><p class="sec-s">{{ t('pro.sec_payments') }}</p></div></div>
                 </div>
               </div>
             </div>
@@ -569,34 +569,34 @@
         <!-- ══ CART ══ -->
         <div v-else-if="tab === 'cart'" class="tab-content">
           <div class="tab-header">
-            <h2 class="tab-h2">Mon Panier</h2>
+            <h2 class="tab-h2">{{ t('pro.cart_tab_title') }}</h2>
           </div>
           <div v-if="cartItems.length" class="cart-layout">
             <div class="cart-items-col">
-              <div v-for="item in cartItems" :key="item.program.id" class="cart-row">
-                <div class="cr-emoji">{{ item.program.emoji || '🎧' }}</div>
+              <div v-for="item in cartItems" :key="item.key ?? String(item.program?.id)" class="cart-row">
+                <div class="cr-emoji">{{ item.program?.emoji || '🎧' }}</div>
                 <div class="cr-info">
-                  <p class="cr-name">{{ item.program.title }}</p>
-                  <p class="cr-meta">{{ item.program.session_duration }} · {{ item.program.cure_duration }}</p>
+                  <p class="cr-name">{{ item.program?.title }}</p>
+                  <p class="cr-meta">{{ item.program?.session_duration }} · {{ item.program?.cure_duration }}</p>
                 </div>
-                <p class="cr-price">€{{ item.program.price }}</p>
-                <Link :href="route('cart.remove')" method="post" as="button" :data="{ program_id: item.program.id }" class="cr-remove">✕</Link>
+                <p class="cr-price">€{{ item.program?.price }}</p>
+                <Link :href="route('cart.remove')" method="post" as="button" :data="{ cart_key: item.key ?? String(item.program?.id) }" class="cr-remove">✕</Link>
               </div>
             </div>
             <div class="cart-summary-col">
-              <h4 class="cs-title">Récapitulatif</h4>
-              <div class="cs-row"><span>Sous-total</span><span>€{{ cartTotal }}</span></div>
-              <div class="cs-row cs-row--free"><span>Livraison</span><span class="cs-free">Gratuite</span></div>
-              <div class="cs-row cs-row--total"><span>Total</span><span class="cs-big">€{{ cartTotal }}</span></div>
-              <Link :href="route('checkout')" class="btn-teal cs-checkout">Passer à la caisse</Link>
-              <Link :href="route('shop')" class="btn-outline-sm cs-more">Continuer les achats</Link>
+              <h4 class="cs-title">{{ t('pro.cart_summary') }}</h4>
+              <div class="cs-row"><span>{{ t('pro.cart_subtotal') }}</span><span>€{{ cartTotal }}</span></div>
+              <div class="cs-row cs-row--free"><span>{{ t('pro.cart_delivery') }}</span><span class="cs-free">{{ t('pro.cart_free') }}</span></div>
+              <div class="cs-row cs-row--total"><span>{{ t('pro.cart_total') }}</span><span class="cs-big">€{{ cartTotal }}</span></div>
+              <Link :href="route('checkout')" class="btn-teal cs-checkout">{{ t('pro.cart_checkout') }}</Link>
+              <Link :href="route('shop')" class="btn-outline-sm cs-more">{{ t('pro.cart_more') }}</Link>
             </div>
           </div>
           <div v-else class="empty-box">
             <div class="empty-icon">🛒</div>
-            <h3>Panier vide</h3>
-            <p>Explorez nos programmes de bio-résonance thérapeutique.</p>
-            <Link :href="route('shop')" class="btn-teal">Découvrir les programmes</Link>
+            <h3>{{ t('pro.cart_empty_title') }}</h3>
+            <p>{{ t('pro.cart_empty_desc') }}</p>
+            <Link :href="route('shop')" class="btn-teal">{{ t('pro.discover_link') }}</Link>
           </div>
         </div>
 
@@ -621,16 +621,16 @@ const tab = ref('dashboard')
 const mobileMenuOpen = ref(false)
 function setTab(v) { tab.value = v; mobileMenuOpen.value = false }
 
-const tabTitles = {
-  dashboard:     'Tableau de bord',
-  programs:      'Mes Programmes',
-  orders:        'Mes Commandes',
-  consultations: 'Consultations',
-  subscription:  'Mon Abonnement',
-  profile:       'Mon Profil',
-  cart:          'Mon Panier',
-  praticien:     'Espace Praticien',
-}
+const tabTitles = computed(() => ({
+  dashboard:     t('pro.tab_dashboard'),
+  programs:      t('pro.tab_programs'),
+  orders:        t('pro.tab_orders'),
+  consultations: t('pro.tab_consultations'),
+  subscription:  t('pro.tab_subscription'),
+  profile:       t('pro.tab_profile'),
+  cart:          t('pro.tab_cart'),
+  praticien:     t('pro.tab_praticien'),
+}))
 
 const props = defineProps({
   programs:      { type: Array,          default: () => [] },
