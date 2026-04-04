@@ -221,27 +221,40 @@
             Osteopath · Doctor of Quantum Medicine · Founder of Vitality Inside
           </p>
           <p class="text-[#9DAAC0] leading-relaxed max-w-2xl mx-auto mb-8">
-            With over 25 years of clinical practice and more than a decade of research in frequency medicine, Dr. Rosati founded Vitality Inside around a single conviction: the body's deepest intelligence speaks in energetic frequencies.
+            With over 25 years of clinical practice and more than a decade of research in frequency medicine, Dr. Rosati founded Vitality Inside around a single conviction: the body's deepest intelligence speaks in energetic frequencies. Every protocol in the Vitality library is the product of his personal clinical experience and scientific rigor.
           </p>
-          <div class="flex items-center justify-center gap-10 mb-10">
-            <div>
-              <p class="font-serif font-light" style="color: #D5B67A; font-size: 2rem;">25+</p>
-              <p class="text-[#9DAAC0] text-xs uppercase tracking-widest">Years of practice</p>
-            </div>
-            <div class="w-px h-10 bg-white/10"></div>
-            <div>
-              <p class="font-serif font-light" style="color: #D5B67A; font-size: 2rem;">60+</p>
-              <p class="text-[#9DAAC0] text-xs uppercase tracking-widest">Protocols created</p>
-            </div>
-            <div class="w-px h-10 bg-white/10"></div>
-            <div>
-              <p class="font-serif font-light" style="color: #D5B67A; font-size: 2rem;">21k+</p>
-              <p class="text-[#9DAAC0] text-xs uppercase tracking-widest">Users worldwide</p>
-            </div>
+          <p class="text-xs uppercase tracking-[0.15em] mb-6" style="color: rgba(157,170,192,0.5);">People using our programs regularly to feel better</p>
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a href="mailto:rosati.eric@gmail.com?subject=Rejoindre la Communaute Vitality Inside"
+              class="bg-[#11C7C9] hover:bg-[#0db5b7] text-[#03142A] font-bold text-sm tracking-wide uppercase px-8 py-3.5 rounded transition-all">
+              Join the Community
+            </a>
+            <Link :href="route('consultation')"
+              class="border border-white/30 text-white hover:border-white/60 text-sm font-semibold px-8 py-3.5 rounded transition-all">
+              Book a Consultation
+            </Link>
           </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══ FINAL CTA ═══ -->
+    <section class="py-24 px-6" style="background: linear-gradient(135deg, #041B33 0%, #051A2E 100%);">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="font-serif font-light text-white mb-6" style="font-size: clamp(2rem, 4vw, 3rem); line-height: 1.15;">
+          A better life starts with<br><em style="color: #D5B67A; font-style: italic;">one frequency.</em>
+        </h2>
+        <p class="text-[#9DAAC0] text-base mb-10 max-w-xl mx-auto leading-relaxed">
+          Browse our programs, subscribe for unlimited access, or book a personalized consultation with Dr. Éric Rosati.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <Link :href="route('shop')"
+            class="bg-[#11C7C9] hover:bg-[#0db5b7] text-[#03142A] font-bold text-sm tracking-wide uppercase px-8 py-3.5 rounded transition-all">
+            Explore All Programs
+          </Link>
           <Link :href="route('consultation')"
-            class="inline-flex border border-white/30 text-white hover:border-white/60 text-sm font-semibold px-8 py-3 rounded transition-all">
-            Book a Consultation
+            class="border border-white/30 text-white hover:border-white/60 text-sm font-semibold px-8 py-3.5 rounded transition-all">
+            Book a Consultation — €58
           </Link>
         </div>
       </div>
@@ -286,8 +299,8 @@ const steps = [
 const areas = [
   { icon: '🦴', name: 'Locomotor',      examples: 'Lumbago · Osteoarthritis · Tendinitis · Joint pain' },
   { icon: '🌿', name: 'Digestive',      examples: 'Constipation · Gastric acidity · Liver drainage' },
-  { icon: '�', name: 'Emotional',      examples: 'Anxiety · Burn-out · Self-confidence · Depression' },
-  { icon: '�', name: 'ENT & Immunity', examples: 'Sleep apnea · Immune defence · Allergy · Tinnitus' },
+  { icon: '💚', name: 'Emotional',      examples: 'Anxiety · Burn-out · Self-confidence · Depression' },
+  { icon: '🛡️', name: 'ENT & Immunity', examples: 'Sleep apnea · Immune defence · Allergy · Tinnitus' },
   { icon: '🌸', name: 'Hormonal',       examples: 'Menstrual cycles · Menopause · Libido · Weight' },
   { icon: '🧠', name: 'Neurological',   examples: 'Memory · Concentration · Migraine · Sleep' },
 ]
