@@ -175,19 +175,22 @@
                   class="flex items-start gap-3 pb-4 border-b border-white/5 last:border-0 last:pb-0">
                   <div class="w-10 h-10 rounded-xl flex items-center justify-center text-xl flex-shrink-0"
                     style="background: rgba(17,199,201,0.1);">
-                    {{ item.type === 'consultation' ? '🩺' : (item.program?.emoji || '✨') }}
+                    {{ item.type === 'consultation' ? '🩺' : (item.type === 'subscription' ? '🔄' : (item.program?.emoji || '✨')) }}
                   </div>
                   <div class="flex-1 min-w-0">
                     <p class="text-white text-sm font-medium leading-snug">
-                      {{ item.type === 'consultation' ? item.consult.name : item.program.title }}
+                      <template v-if="item.type === 'consultation'">{{ item.consult.name }}</template>
+                      <template v-else-if="item.type === 'subscription'">{{ item.sub.name }}</template>
+                      <template v-else>{{ item.program.title }}</template>
                     </p>
                     <p class="text-vitality-text text-xs mt-0.5">
                       <template v-if="item.type === 'consultation'">{{ item.consult.sessions }} séance{{ item.consult.sessions > 1 ? 's' : '' }}</template>
+                      <template v-else-if="item.type === 'subscription'">Accès illimité · {{ item.sub.period === 'month' ? 'mensuel' : 'annuel' }}</template>
                       <template v-else>{{ item.program.session_duration }} · {{ item.program.cure_duration }}</template>
                     </p>
                   </div>
                   <span class="text-vitality-gold text-sm font-bold flex-shrink-0">
-                    €{{ item.type === 'consultation' ? item.consult.price : item.program.price }}
+                    €{{ item.type === 'consultation' ? item.consult.price : (item.type === 'subscription' ? item.sub.price : item.program.price) }}
                   </span>
                 </div>
               </div>

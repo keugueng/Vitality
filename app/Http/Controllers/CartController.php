@@ -26,6 +26,16 @@ class CartController extends Controller
                 $total += $item['price'];
                 continue;
             }
+            if (str_starts_with($id, 'sub_')) {
+                $items[] = [
+                    'type'    => 'subscription',
+                    'key'     => $id,
+                    'sub'     => $item,
+                    'quantity' => 1,
+                ];
+                $total += $item['price'];
+                continue;
+            }
             $program = Program::find($id);
             if ($program) {
                 $items[] = ['type' => 'program', 'program' => $program, 'quantity' => $item['quantity']];
@@ -38,21 +48,32 @@ class CartController extends Controller
 
     public function addConsultation(Request $request)
     {
-        $packages = [
-            'single'    => ['name' => 'Consultation Essentielle',    'sessions' => 1, 'price' => 58],
-            'progress'  => ['name' => 'Consultation Évolution',      'sessions' => 3, 'price' => 149],
-            'transform' => ['name' => 'Consultation Transformation', 'sessions' => 5, 'price' => 239],
-        ];
-
-        $pkgId = $request->input('package_type', 'single');
-        $pkg   = $packages[$pkgId] ?? $packages['single'];
-
+        $request->validate(['package_type' => 'required|in:single,progress,transform']);
+        $pkg = [
+            'single'  => ['name' => 'Consultation unique', 'sessions' => 1, 'price' => 55],
+            'progress' => ['name' => 'Consultation progression (3 séances)', 'sessions' => 3, 'price' => 145],
+            'transform' => ['name' => 'Consultation transformation (5 séances)', 'sessions' => 5, 'price' => 225],
+        ][$request->package_type];
         $cart = session('cart', []);
-        $key  = 'consult_' . $pkgId;
-        $cart[$key] = array_merge($pkg, ['package_type' => $pkgId]);
+        $cart["consult_{$request->package_type}"] = $pkg;
         session(['cart' => $cart]);
+        return back()->with('success', 'Consultation ajoutée au panier.');
+    }
 
-        return redirect()->route('cart.index')->with('success', "«{$pkg['name']}» ajouté au panier.");
+    public function addSubscription(Request $request)
+    {
+        $request->validate(['plan' => 'required|in:monthly,annual']);
+        $plans = [
+            'monthly' => ['name' => 'Abonnement Mensuel Illimité', 'price' => 29.90, 'period' => 'month'],
+            'annual'  => ['name' => 'Abonnement Annuel Illimité', 'price' => 249, 'period' => 'year'],
+        ];
+        $plan = $plans[$request->plan];
+        $cart = session('cart', []);
+        // Only one subscription at a time
+        $cart = array_filter($cart, fn($k) => !str_starts_with($k, 'sub_'), ARRAY_FILTER_USE_KEY);
+        $cart["sub_{$request->plan}"] = $plan;
+        session(['cart' => $cart]);
+        return back()->with('success', 'Abonnement ajouté au panier.');
     }
 
     public function add(Request $request)

@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Program;
 use App\Models\Setting;
+use App\Models\Subscription;
 use App\Models\UserProgram;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
@@ -29,6 +30,16 @@ class CheckoutController extends Controller
                     'type'    => 'consultation',
                     'key'     => $id,
                     'consult' => $item,
+                    'quantity' => 1,
+                ];
+                $total += $item['price'];
+                continue;
+            }
+            if (str_starts_with($id, 'sub_')) {
+                $items[] = [
+                    'type'    => 'subscription',
+                    'key'     => $id,
+                    'sub'     => $item,
                     'quantity' => 1,
                 ];
                 $total += $item['price'];
@@ -72,6 +83,11 @@ class CheckoutController extends Controller
                 $subtotal += $item['price'];
                 continue;
             }
+            if (str_starts_with($id, 'sub_')) {
+                $cartItems[] = ['type' => 'subscription', 'key' => $id, 'sub' => $item];
+                $subtotal += $item['price'];
+                continue;
+            }
             $program = Program::find($id);
             if ($program) {
                 $cartItems[] = ['type' => 'program', 'program' => $program, 'quantity' => $item['quantity']];
@@ -111,6 +127,21 @@ class CheckoutController extends Controller
                     'status'         => 'pending',
                     'payment_status' => 'paid',
                     'payment_intent' => 'order-' . $order->order_number,
+                ]);
+                continue;
+            }
+            if ($cartItem['type'] === 'subscription') {
+                $s = $cartItem['sub'];
+                $plan = str_replace('sub_', '', $cartItem['key']);
+                $endsAt = $plan === 'monthly' ? now()->addMonth() : now()->addYear();
+                Subscription::create([
+                    'user_id'        => auth()->id(),
+                    'type'           => $plan,
+                    'price'          => $s['price'],
+                    'status'         => 'active',
+                    'payment_intent' => 'order-' . $order->order_number,
+                    'starts_at'      => now(),
+                    'ends_at'        => $endsAt,
                 ]);
                 continue;
             }

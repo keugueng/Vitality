@@ -145,61 +145,7 @@
       </div>
     </section>
 
-    <!-- ─── FORMULAIRE ─── -->
-    <section class="form-section" id="booking">
-      <div class="form-card">
-        <h2 class="form-title">{{ t('consultation.book_title') }}</h2>
-        <p class="form-sub">{{ t('consultation.book_sub') }}</p>
-
-        <div v-if="$page.props.flash?.success" class="flash-success">
-          ✓ {{ $page.props.flash.success }}
-        </div>
-
-        <form @submit.prevent="submit" class="c-form">
-          <div class="form-row">
-            <div class="form-group">
-              <label>Nom complet *</label>
-              <input v-model="form.name" type="text" required placeholder="Votre nom" />
-              <p v-if="form.errors.name" class="form-error">{{ form.errors.name }}</p>
-            </div>
-            <div class="form-group">
-              <label>Email *</label>
-              <input v-model="form.email" type="email" required placeholder="votre@email.com" />
-              <p v-if="form.errors.email" class="form-error">{{ form.errors.email }}</p>
-            </div>
-          </div>
-          <div class="form-group">
-            <label>Téléphone</label>
-            <input v-model="form.phone" type="tel" placeholder="+33 6 00 00 00 00" />
-          </div>
-          <div class="form-group">
-            <label>Vos symptômes &amp; objectifs de santé *</label>
-            <textarea v-model="form.symptoms" required rows="4"
-              placeholder="Décrivez vos principales préoccupations de santé, symptômes, durée et ce que vous avez déjà essayé…"></textarea>
-            <p v-if="form.errors.symptoms" class="form-error">{{ form.errors.symptoms }}</p>
-          </div>
-          <div class="form-group">
-            <label>Antécédents médicaux (optionnel)</label>
-            <textarea v-model="form.medical_history" rows="3"
-              placeholder="Diagnostics passés pertinents, médicaments, chirurgies…"></textarea>
-          </div>
-
-          <div class="form-summary">
-            <div>
-              <p class="summary-name">{{ selectedPkg.name }}</p>
-              <p class="summary-sub">{{ selectedPkg.sessions }} séance{{ selectedPkg.sessions > 1 ? 's' : '' }} · Protocole livré sous 8 heures</p>
-            </div>
-            <span class="summary-price">€{{ selectedPkg.price }}</span>
-          </div>
-
-          <button type="submit" :disabled="form.processing" class="submit-btn">
-            {{ form.processing ? 'Envoi en cours…' : `Réserver — €${selectedPkg.price}` }}
-          </button>
-          <p class="form-notice">🔒 Vos informations sont confidentielles et définitivement supprimées dans les 14 jours suivant la livraison.</p>
-        </form>
-      </div>
-    </section>
-
+    
     <!-- ─── TESTIMONIALS ─── -->
     <section class="reviews-section">
       <div style="text-align:center;margin-bottom:60px">
@@ -326,15 +272,6 @@ const faqs = [
   { q: 'Puis-je combiner une consultation avec des programmes en boutique ?', a: 'Absolument. De nombreux patients utilisent les programmes en boutique pour l\'entretien quotidien et réservent des consultations pour des interventions plus profondes et personnalisées. Les abonnés au plan Mensuel Illimité (€29.90/mois) ont accès à toute la bibliothèque et peuvent le combiner avec des protocoles personnalisés issus de consultation pour un effet maximal.' },
 ]
 
-const form = useForm({ name: '', email: '', phone: '', package_type: 'single', symptoms: '', medical_history: '' })
-const selectedPkg = computed(() => packages.find(p => p.id === form.package_type) || packages[0])
-const submit = () => {
-  if (!isAuthenticated.value) {
-    router.visit(route('login'))
-    return
-  }
-  form.post(route('consultation.store'))
-}
 </script>
 
 <style scoped>

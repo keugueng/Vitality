@@ -16,16 +16,21 @@
             class="cart-item">
             <div class="cart-item-icon">
               <template v-if="item.type === 'consultation'">🩺</template>
+              <template v-else-if="item.type === 'subscription'">🔄</template>
               <template v-else>{{ item.program.emoji || '✨' }}</template>
             </div>
             <div class="cart-item-info">
               <h3 class="cart-item-title">
                 <template v-if="item.type === 'consultation'">{{ item.consult.name }}</template>
+                <template v-else-if="item.type === 'subscription'">{{ item.sub.name }}</template>
                 <template v-else>{{ item.program.title }}</template>
               </h3>
               <p class="cart-item-sub">
                 <template v-if="item.type === 'consultation'">
                   {{ item.consult.sessions }} séance{{ item.consult.sessions > 1 ? 's' : '' }} · Protocole livré sous 8h
+                </template>
+                <template v-else-if="item.type === 'subscription'">
+                  Accès illimité · {{ item.sub.period === 'month' ? 'mensuel' : 'annuel' }}
                 </template>
                 <template v-else>
                   {{ item.program.session_duration ? item.program.session_duration + ' min/séance' : '' }}
@@ -35,10 +40,10 @@
             </div>
             <div class="cart-item-right">
               <span class="cart-item-price">
-                €{{ item.type === 'consultation' ? item.consult.price : item.program.price }}
+                €{{ item.type === 'consultation' ? item.consult.price : (item.type === 'subscription' ? item.sub.price : item.program.price) }}
               </span>
               <Link :href="route('cart.remove')" method="post" as="button"
-                :data="item.type === 'consultation' ? { cart_key: item.key } : { cart_key: item.program.id }"
+                :data="{ cart_key: item.key }"
                 class="cart-remove">✕</Link>
             </div>
           </div>

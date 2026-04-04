@@ -51,7 +51,7 @@
             <li><span class="check">✦</span>Support email prioritaire</li>
             <li><span class="check">✦</span>Annulez à tout moment</li>
           </ul>
-          <Link :href="route('shop')" class="plan-btn plan-btn-primary">À partir de €29.90 / mois</Link>
+          <Link :href="route('cart.add-subscription')" method="post" as="button" :data="{ plan: 'monthly' }" class="plan-btn plan-btn-primary">Ajouter au panier — €29.90 / mois</Link>
         </div>
         <div class="plan-card">
           <p class="plan-name">Annuel Illimité</p>
@@ -64,7 +64,7 @@
             <li><span class="check">✦</span>Accès anticipé aux nouveaux programmes</li>
             <li><span class="check">✦</span>Support email VIP</li>
           </ul>
-          <Link :href="route('shop')" class="plan-btn plan-btn-outline">Accès Annuel</Link>
+          <Link :href="route('cart.add-subscription')" method="post" as="button" :data="{ plan: 'annual' }" class="plan-btn plan-btn-outline">Ajouter au panier — €249 / an</Link>
         </div>
       </div>
     </section>
