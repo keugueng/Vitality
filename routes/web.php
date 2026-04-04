@@ -42,6 +42,7 @@ Route::get('/shop/{program:slug}', [ShopController::class, 'show'])->name('shop.
 Route::prefix('cart')->name('cart.')->group(function () {
     Route::get('/', [CartController::class, 'index'])->name('index');
     Route::post('/add', [CartController::class, 'add'])->name('add');
+    Route::post('/add-consultation', [CartController::class, 'addConsultation'])->name('add-consultation');
     Route::post('/remove', [CartController::class, 'remove'])->name('remove');
     Route::post('/update', [CartController::class, 'update'])->name('update');
     Route::post('/clear', [CartController::class, 'clear'])->name('clear');

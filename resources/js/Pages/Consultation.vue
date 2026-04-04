@@ -6,17 +6,17 @@
       <div class="hero-bg"></div>
       <div class="hero-glow"></div>
       <div class="hero-left">
-        <div class="hero-badge"><span class="hero-badge-dot"></span>Protocole Bio-Énergétique Personnalisé</div>
-        <h1>Votre santé,<br><em>précisément décodée.</em></h1>
-        <p class="hero-sub">Décrivez vos symptômes. Le Dr. Éric Rosati analyse votre profil bio-énergétique et vous remet un protocole de fréquences sur-mesure — directement dans votre boîte mail sous 8 heures.</p>
+        <div class="hero-badge"><span class="hero-badge-dot"></span>{{ t('consultation.badge') }}</div>
+        <h1>{{ t('consultation.hero_title') }}<br><em>{{ t('consultation.hero_title_em') }}</em></h1>
+        <p class="hero-sub">{{ t('consultation.hero_sub') }}</p>
         <div class="hero-price-block">
           <span class="hero-price">€58</span>
           <span class="hero-price-label">par consultation · protocole inclus</span>
         </div>
         <div class="hero-btns">
-          <a v-if="isAuthenticated" href="#booking" class="btn-primary">Réserver ma consultation</a>
-          <Link v-else :href="route('login')" class="btn-primary">Réserver ma consultation</Link>
-          <a href="#packages" class="btn-outline">Voir les formules →</a>
+          <button v-if="isAuthenticated" class="btn-primary" @click="handleReserve('single')">Réserver ma consultation</button>
+          <Link v-else :href="route('register')" class="btn-primary">Réserver ma consultation</Link>
+          <a href="#packages" class="btn-outline">{{ t('consultation.packages_label') }} →</a>
         </div>
       </div>
       <div class="hero-right">
@@ -44,8 +44,8 @@
     <!-- ─── HOW IT WORKS ─── -->
     <section class="how-section" id="how">
       <div style="text-align:center;margin-bottom:60px">
-        <p class="section-label">Le Processus</p>
-        <h2 class="section-title">De vos symptômes<br>à votre <span class="gold-em">protocole personnalisé</span></h2>
+        <p class="section-label">{{ t('consultation.how_label') }}</p>
+        <h2 class="section-title">{{ t('consultation.how_title') }}<br>à votre <span class="gold-em">{{ t('consultation.how_title_em') }}</span></h2>
       </div>
       <div class="how-grid">
         <div v-for="(step, i) in consultSteps" :key="i" class="how-step">
@@ -60,8 +60,8 @@
     <!-- ─── PACKAGES ─── -->
     <section class="packages-section" id="packages">
       <div style="text-align:center;margin-bottom:60px">
-        <p class="section-label">Formules</p>
-        <h2 class="section-title">Économisez avec nos<br><span class="gold-em">formules multi-séances</span></h2>
+        <p class="section-label">{{ t('consultation.packages_label') }}</p>
+        <h2 class="section-title">{{ t('consultation.packages_title') }}<br><span class="gold-em">{{ t('consultation.packages_title_em') }}</span></h2>
         <p class="body-text" style="max-width:500px;margin:0 auto">Les pathologies chroniques répondent mieux à plusieurs cycles de consultation. Nos formules vous offrent un suivi plus approfondi à moindre coût.</p>
       </div>
       <div class="packages-grid">
@@ -89,8 +89,8 @@
     <section class="included-section" id="book">
       <div class="included-grid">
         <div>
-          <p class="section-label">Ce qui est inclus</p>
-          <h2 class="section-title">Tout ce dont vous avez besoin<br>pour <span class="gold-em">guérir chez vous</span></h2>
+          <p class="section-label">{{ t('consultation.included2_label') }}</p>
+          <h2 class="section-title">{{ t('consultation.included2_title') }}<br>pour <span class="gold-em">{{ t('consultation.included2_title_em') }}</span></h2>
           <div class="features-list">
             <div class="feat-item">
               <div class="feat-icon">🧬</div>
@@ -148,8 +148,8 @@
     <!-- ─── FORMULAIRE ─── -->
     <section class="form-section" id="booking">
       <div class="form-card">
-        <h2 class="form-title">Réserver votre consultation</h2>
-        <p class="form-sub">Remplissez le formulaire ci-dessous. Votre protocole personnalisé sera livré sous 8 heures.</p>
+        <h2 class="form-title">{{ t('consultation.book_title') }}</h2>
+        <p class="form-sub">{{ t('consultation.book_sub') }}</p>
 
         <div v-if="$page.props.flash?.success" class="flash-success">
           ✓ {{ $page.props.flash.success }}
@@ -203,8 +203,8 @@
     <!-- ─── TESTIMONIALS ─── -->
     <section class="reviews-section">
       <div style="text-align:center;margin-bottom:60px">
-        <p class="section-label">Expériences Patients</p>
-        <h2 class="section-title">Ce que disent les patients de<br><span class="gold-em">leur consultation</span></h2>
+        <p class="section-label">{{ t('consultation.testimonials_label') }}</p>
+        <h2 class="section-title">{{ t('consultation.testimonials_title') }}<br><span class="gold-em">{{ t('consultation.testimonials_title_em') }}</span></h2>
       </div>
       <div class="reviews-grid">
         <div v-for="r in consultTestimonials" :key="r.name" class="review-card">
@@ -220,7 +220,7 @@
     <section class="faq-section">
       <div style="text-align:center;margin-bottom:60px">
         <p class="section-label">FAQ</p>
-        <h2 class="section-title">Questions <span class="gold-em">fréquentes</span></h2>
+        <h2 class="section-title">{{ t('consultation.faq_title') }} <span class="gold-em">{{ t('consultation.faq_title_em') }}</span></h2>
       </div>
       <div class="faq-list">
         <div v-for="q in faqs" :key="q.q" class="faq-item" :class="{ open: openFaq === q.q }">
@@ -243,13 +243,13 @@
 
     <!-- ─── CTA ─── -->
     <section class="cta-section">
-      <p class="section-label">Prêt à commencer ?</p>
-      <h2 class="section-title">Votre protocole est à<br><span class="gold-em">8 heures</span></h2>
-      <p class="cta-sub">Remplissez le formulaire, laissez le Dr. Éric Rosati décoder votre profil bio-énergétique et recevez un protocole de fréquences conçu exclusivement pour vous.</p>
+      <p class="section-label">{{ t('consultation.cta_label') }}</p>
+      <h2 class="section-title">{{ t('consultation.cta_title') }}<br><span class="gold-em">{{ t('consultation.cta_title_em') }}</span></h2>
+      <p class="cta-sub">{{ t('consultation.cta_sub') }}</p>
       <div class="cta-btns">
-        <a v-if="isAuthenticated" href="#booking" class="btn-primary">Réserver ma consultation — €58</a>
-        <Link v-else :href="route('login')" class="btn-primary">Réserver ma consultation — €58</Link>
-        <Link :href="route('shop')" class="btn-outline">Explorer les programmes</Link>
+        <button v-if="isAuthenticated" class="btn-primary" @click="handleReserve('single')">Réserver ma consultation — €58</button>
+        <Link v-else :href="route('register')" class="btn-primary">Réserver ma consultation — €58</Link>
+        <Link :href="route('shop')" class="btn-outline">{{ t('consultation.cta_btn2') }}</Link>
       </div>
     </section>
 
@@ -260,17 +260,18 @@
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { Link, useForm, usePage, router } from '@inertiajs/vue3'
 import { computed, ref } from 'vue'
+import { useI18n } from '@/composables/useI18n'
 
 const page = usePage()
 const isAuthenticated = computed(() => !!page.props.auth?.user)
+const { t } = useI18n()
 
 function handleReserve(pkgId) {
   if (!isAuthenticated.value) {
-    router.visit(route('login'))
+    router.visit(route('register'))
     return
   }
-  form.package_type = pkgId
-  document.getElementById('booking')?.scrollIntoView({ behavior: 'smooth' })
+  router.post(route('cart.add-consultation'), { package_type: pkgId })
 }
 
 const openFaq = ref(null)

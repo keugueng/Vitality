@@ -1,9 +1,12 @@
 <template>
-  <AppLayout>
+  <AppLayout :no-footer="true">
     <div class="pro-page">
 
+      <!-- ═══ MOBILE MENU OVERLAY ═══ -->
+      <div v-if="mobileMenuOpen" class="pro-mobile-overlay" @click="mobileMenuOpen=false"></div>
+
       <!-- ═══ SIDEBAR ═══ -->
-      <aside class="pro-aside">
+      <aside class="pro-aside" :class="{ 'mobile-open': mobileMenuOpen }">
         <div class="aside-logo">
           <div class="aside-logo-emblem">V</div>
           <div>
@@ -14,36 +17,36 @@
 
         <nav class="aside-nav">
           <span class="aside-section-label">Principal</span>
-          <button :class="{ active: tab === 'dashboard' }" @click="tab = 'dashboard'">
+          <button :class="{ active: tab === 'dashboard' }" @click="setTab('dashboard')">
             <svg class="aside-svg" viewBox="0 0 20 20" fill="currentColor"><path d="M2 10a8 8 0 1116 0A8 8 0 012 10zm8-4a1 1 0 00-1 1v3H7a1 1 0 000 2h3v3a1 1 0 002 0v-3h3a1 1 0 000-2h-3V7a1 1 0 00-1-1z" clip-rule="evenodd" fill-rule="evenodd"/></svg>
             Tableau de bord
           </button>
-          <button :class="{ active: tab === 'programs' }" @click="tab = 'programs'">
+          <button :class="{ active: tab === 'programs' }" @click="setTab('programs')">
             <svg class="aside-svg" viewBox="0 0 20 20" fill="currentColor"><path d="M18 3a1 1 0 00-1.196-.98l-10 2A1 1 0 006 5v9.114A4.369 4.369 0 005 14c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V7.82l8-1.6v5.894A4.37 4.37 0 0015 12c-1.657 0-3 .895-3 2s1.343 2 3 2 3-.895 3-2V3z"/></svg>
             Mes Programmes
             <span v-if="myPrograms.length" class="aside-count">{{ myPrograms.length }}</span>
           </button>
-          <button :class="{ active: tab === 'orders' }" @click="tab = 'orders'">
+          <button :class="{ active: tab === 'orders' }" @click="setTab('orders')">
             <svg class="aside-svg" viewBox="0 0 20 20" fill="currentColor"><path d="M4 4a2 2 0 00-2 2v1h16V6a2 2 0 00-2-2H4z"/><path fill-rule="evenodd" d="M18 9H2v5a2 2 0 002 2h12a2 2 0 002-2V9zM4 13a1 1 0 011-1h1a1 1 0 110 2H5a1 1 0 01-1-1zm5-1a1 1 0 100 2h1a1 1 0 100-2H9z" clip-rule="evenodd"/></svg>
             Mes Commandes
             <span v-if="myOrders.length" class="aside-count">{{ myOrders.length }}</span>
           </button>
-          <button :class="{ active: tab === 'consultations' }" @click="tab = 'consultations'">
+          <button :class="{ active: tab === 'consultations' }" @click="setTab('consultations')">
             <svg class="aside-svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>
             Consultations
           </button>
-          <button :class="{ active: tab === 'subscription' }" @click="tab = 'subscription'">
+          <button :class="{ active: tab === 'subscription' }" @click="setTab('subscription')">
             <svg class="aside-svg" viewBox="0 0 20 20" fill="currentColor"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
             Abonnement
             <span v-if="subscription" class="aside-badge-active">Actif</span>
           </button>
 
           <span class="aside-section-label" style="margin-top:12px">Compte</span>
-          <button :class="{ active: tab === 'profile' }" @click="tab = 'profile'">
+          <button :class="{ active: tab === 'profile' }" @click="setTab('profile')">
             <svg class="aside-svg" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/></svg>
             Mon Profil
           </button>
-          <button :class="{ active: tab === 'cart' }" @click="tab = 'cart'">
+          <button :class="{ active: tab === 'cart' }" @click="setTab('cart')">
             <svg class="aside-svg" viewBox="0 0 20 20" fill="currentColor"><path d="M3 1a1 1 0 000 2h1.22l.305 1.222a.997.997 0 00.01.042l1.358 5.43-.893.892C3.74 11.846 4.632 14 6.414 14H15a1 1 0 000-2H6.414l1-1H14a1 1 0 00.894-.553l3-6A1 1 0 0017 3H6.28l-.31-1.243A1 1 0 005 1H3z"/><path d="M16 16.5a1.5 1.5 0 11-3 0 1.5 1.5 0 013 0zM6.5 18a1.5 1.5 0 100-3 1.5 1.5 0 000 3z"/></svg>
             Panier
             <span v-if="cartCount" class="aside-badge">{{ cartCount }}</span>
@@ -84,6 +87,9 @@
 
         <!-- TOP BAR -->
         <header class="pro-topbar">
+          <button class="topbar-burger" @click="mobileMenuOpen=!mobileMenuOpen" aria-label="Menu">
+            <span></span><span></span><span></span>
+          </button>
           <div class="topbar-left">
             <h2 class="topbar-title">{{ tabTitles[tab] }}</h2>
             <div class="topbar-breadcrumb">
@@ -486,6 +492,8 @@ const userInitial = computed(() => user.value?.name?.charAt(0).toUpperCase() || 
 const firstName = computed(() => user.value?.name?.split(' ')[0] || 'Utilisateur')
 
 const tab = ref('dashboard')
+const mobileMenuOpen = ref(false)
+function setTab(t) { tab.value = t; mobileMenuOpen.value = false }
 
 const tabTitles = {
   dashboard:     'Tableau de bord',
@@ -846,6 +854,20 @@ const proFeatures = [
 .btn-outline-sm { display:inline-flex; align-items:center; padding:9px 18px; border-radius:9px; font-size:.8rem; font-weight:500; border:1px solid rgba(255,255,255,.1); color:rgba(200,220,255,.6); background:none; text-decoration:none; cursor:pointer; transition:all .2s; }
 .btn-outline-sm:hover { border-color:rgba(200,169,110,.3); color:#e8d5a3; }
 
+/* ══ MOBILE OVERLAY ══ */
+.pro-mobile-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,.6); z-index:199;
+  backdrop-filter:blur(2px);
+}
+
+/* ══ HAMBURGER ══ */
+.topbar-burger {
+  display:none; flex-direction:column; justify-content:center; align-items:center;
+  gap:5px; width:36px; height:36px; background:rgba(255,255,255,.06);
+  border:1px solid rgba(255,255,255,.1); border-radius:8px; cursor:pointer; flex-shrink:0;
+}
+.topbar-burger span { display:block; width:16px; height:2px; background:rgba(200,220,255,.7); border-radius:2px; transition:all .2s; }
+
 /* ══ RESPONSIVE ══ */
 @media (max-width:1024px) {
   .kpi-row { grid-template-columns:repeat(2,1fr); }
@@ -858,11 +880,22 @@ const proFeatures = [
   .cart-summary-col { position:static; }
 }
 @media (max-width:768px) {
-  .pro-aside { display:none; }
+  .pro-aside {
+    transform:translateX(-100%);
+    transition:transform .25s ease;
+  }
+  .pro-aside.mobile-open {
+    transform:translateX(0);
+    display:flex;
+  }
   .pro-main { margin-left:0; }
-  .tab-content { padding:18px; }
+  .tab-content { padding:16px; }
   .kpi-row { grid-template-columns:1fr 1fr; }
   .sac-body { flex-direction:column; gap:16px; }
   .unauth-features { grid-template-columns:1fr; }
+  .topbar-burger { display:flex; }
+  .topbar-title { font-size:1.1rem; }
+  .welcome-h1 { font-size:1.6rem; }
+  .dash-grid { gap:14px; }
 }
 </style>

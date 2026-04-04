@@ -4,17 +4,17 @@
     <!-- ═══ HERO ═══ -->
     <section class="shop-hero">
       <div class="hero-content">
-        <div class="hero-badge"><span class="badge-dot"></span>Thérapie par Fréquences Bio-Énergétiques</div>
-        <h1>Guérissez de l'intérieur.<br><em>Son après son.</em></h1>
-        <p class="hero-desc">Sélectionnez votre programme, écoutez avec des écouteurs, et laissez votre corps se recalibrer. Plus de 21 000 personnes utilisent nos protocoles de fréquences pour restaurer l'équilibre — naturellement.</p>
+        <div class="hero-badge"><span class="badge-dot"></span>{{ t('shop.hero_badge') }}</div>
+        <h1>{{ t('shop.hero_title') }}<br><em>{{ t('shop.hero_title_em') }}</em></h1>
+        <p class="hero-desc">{{ t('shop.hero_sub') }}</p>
         <div class="hero-prereqs">
-          <div class="prereq">🎧 Écouteurs à conduction osseuse requis</div>
-          <div class="prereq">⏱ 18–35 min par séance</div>
-          <div class="prereq">📱 Mobile et bureau</div>
+          <div class="prereq">🎧 {{ t('shop.hero_prereq1') }}</div>
+          <div class="prereq">⏱ {{ t('shop.hero_prereq2') }}</div>
+          <div class="prereq">📱 {{ t('shop.hero_prereq3') }}</div>
         </div>
         <div class="hero-btns">
-          <a href="#catalogue" class="btn-primary">Explorer les programmes</a>
-          <a href="#subscription" class="btn-outline">Accès Illimité →</a>
+          <a href="#catalogue" class="btn-primary">{{ t('shop.hero_cta1') }}</a>
+          <a href="#subscription" class="btn-outline">{{ t('shop.hero_cta2') }}</a>
         </div>
       </div>
     </section>
@@ -22,9 +22,9 @@
     <!-- ═══ PLANS D'ACCÈS ═══ -->
     <section class="sub-section" id="subscription">
       <div class="section-header" style="text-align:center">
-        <p class="section-label">Plans d'accès</p>
-        <h2 class="section-title">Choisissez votre <em class="gold-italic">expérience d'écoute</em></h2>
-        <p class="section-sub" style="margin:0 auto">D'un protocole ciblé à un accès illimité — trouvez la formule qui vous convient.</p>
+        <p class="section-label">{{ t('shop.plan_label') }}</p>
+        <h2 class="section-title">{{ t('shop.plan_title') }} <em class="gold-italic">{{ t('shop.plan_title_em') }}</em></h2>
+        <p class="section-sub" style="margin:0 auto">{{ t('shop.plan_sub') }}</p>
       </div>
       <div class="plans-grid">
         <div class="plan-card">
@@ -72,14 +72,14 @@
     <!-- ═══ CATALOGUE ═══ -->
     <section class="catalogue-section" id="catalogue">
       <div class="section-header">
-        <p class="section-label">Bibliothèque de Programmes</p>
-        <h2 class="section-title">Trouvez votre <em class="gold-italic">protocole</em></h2>
-        <p class="section-sub">Chaque programme est une séquence de fréquences calibrée. Cliquez sur une carte pour les détails complets.</p>
+        <p class="section-label">{{ t('shop.catalogue_label') }}</p>
+        <h2 class="section-title">{{ t('shop.catalogue_title') }} <em class="gold-italic">{{ t('shop.catalogue_title_em') }}</em></h2>
+        <p class="section-sub">{{ t('shop.catalogue_sub') }}</p>
       </div>
 
       <!-- Filtres -->
       <div class="filters">
-        <button class="filter-btn" :class="{ active: !activeCategory }" @click="activeCategory = null">Tous les programmes</button>
+        <button class="filter-btn" :class="{ active: !activeCategory }" @click="activeCategory = null">{{ t('shop.all_programs') }}</button>
         <button v-for="cat in displayCategories" :key="cat.slug"
           class="filter-btn" :class="{ active: activeCategory === cat.slug }"
           @click="activeCategory = activeCategory === cat.slug ? null : cat.slug">
@@ -107,13 +107,13 @@
               <div class="prog-footer">
                 <span class="prog-price">€{{ p.price ?? 11 }}</span>
                 <div class="prog-actions">
-                  <button class="prog-details" @click.stop="openDetail(p)">Détails</button>
+                  <button class="prog-details" @click.stop="openDetail(p)">{{ t('shop.details') }}</button>
                   <button class="prog-play" :class="{ playing: playingId === p.id && isPlaying }" @click.stop="playPreview(p, $event)">
                     <svg v-if="playingId === p.id && isPlaying" width="10" height="10" viewBox="0 0 12 12" fill="currentColor"><rect x="1" y="0" width="3.5" height="12"/><rect x="7.5" y="0" width="3.5" height="12"/></svg>
                     <svg v-else width="10" height="10" viewBox="0 0 12 12" fill="currentColor"><polygon points="2,0 12,6 2,12"/></svg>
-                    {{ playingId === p.id && isPlaying ? 'Pause' : 'Écouter' }}
+                    {{ playingId === p.id && isPlaying ? t('shop.pause') : t('shop.listen') }}
                   </button>
-                  <Link :href="route('cart.add')" method="post" as="button" :data="{ program_id: p.id }" class="prog-add" @click.stop>+ Panier</Link>
+                  <Link :href="route('cart.add')" method="post" as="button" :data="{ program_id: p.id }" class="prog-add" @click.stop>{{ t('shop.add_cart') }}</Link>
                 </div>
               </div>
             </div>
@@ -135,13 +135,13 @@
             <div class="prog-footer">
               <span class="prog-price">€{{ p.price ?? 11 }}</span>
               <div class="prog-actions">
-                <button class="prog-details" @click.stop="openDetail(p)">Détails</button>
+                <button class="prog-details" @click.stop="openDetail(p)">{{ t('shop.details') }}</button>
                 <button class="prog-play" :class="{ playing: playingId === p.id && isPlaying }" @click.stop="playPreview(p, $event)">
                   <svg v-if="playingId === p.id && isPlaying" width="10" height="10" viewBox="0 0 12 12" fill="currentColor"><rect x="1" y="0" width="3.5" height="12"/><rect x="7.5" y="0" width="3.5" height="12"/></svg>
                   <svg v-else width="10" height="10" viewBox="0 0 12 12" fill="currentColor"><polygon points="2,0 12,6 2,12"/></svg>
-                  {{ playingId === p.id && isPlaying ? 'Pause' : 'Écouter' }}
+                  {{ playingId === p.id && isPlaying ? t('shop.pause') : t('shop.listen') }}
                 </button>
-                <Link :href="route('cart.add')" method="post" as="button" :data="{ program_id: p.id }" class="prog-add" @click.stop>+ Panier</Link>
+                <Link :href="route('cart.add')" method="post" as="button" :data="{ program_id: p.id }" class="prog-add" @click.stop>{{ t('shop.add_cart') }}</Link>
               </div>
             </div>
           </div>
@@ -158,8 +158,8 @@
     <section class="how-section">
       <div class="section-inner">
         <div class="section-header" style="text-align:center">
-          <p class="section-label">Le Processus</p>
-          <h2 class="section-title">Comment ça <em class="gold-italic">fonctionne</em></h2>
+          <p class="section-label">{{ t('shop.how_label') }}</p>
+          <h2 class="section-title">{{ t('shop.how_title') }} <em class="gold-italic">{{ t('shop.how_title_em') }}</em></h2>
         </div>
         <div class="steps-grid">
           <div v-for="(step, i) in howSteps" :key="i" class="step">
@@ -175,8 +175,8 @@
     <section class="testimonials-section">
       <div class="section-inner">
         <div class="section-header" style="text-align:center">
-          <p class="section-label">Communauté</p>
-          <h2 class="section-title">Ce que dit notre <em class="gold-italic">communauté</em></h2>
+          <p class="section-label">{{ t('shop.community_label') }}</p>
+          <h2 class="section-title">{{ t('shop.community_title') }} <em class="gold-italic">{{ t('shop.community_title_em') }}</em></h2>
         </div>
         <div class="testimonials-grid">
           <div v-for="t in displayTestimonials" :key="t.id || t.name" class="testimonial">
@@ -190,8 +190,8 @@
 
     <!-- ═══ CTA ═══ -->
     <section class="cta-section">
-      <p class="section-label" style="text-align:center">Commencez maintenant</p>
-      <h2 class="section-title" style="text-align:center">Votre fréquence de guérison <em class="gold-italic">vous attend</em></h2>
+      <p class="section-label" style="text-align:center">{{ t('shop.cta_now') }}</p>
+      <h2 class="section-title" style="text-align:center">{{ t('shop.cta_freq_title') }} <em class="gold-italic">{{ t('shop.cta_freq_em') }}</em></h2>
       <p class="section-sub" style="text-align:center;margin:0 auto 40px">Parcourez nos programmes, abonnez-vous pour un accès illimité, ou réservez une consultation personnalisée avec le Dr. Éric Rosati.</p>
       <div class="cta-btns">
         <a href="#catalogue" class="btn-primary">Explorer tous les programmes</a>
@@ -555,7 +555,7 @@ const fallbackTestimonials = [
 }
 .prog-name { font-family: 'Cormorant Garamond', serif; font-size: 1.2rem; font-weight: 400; margin-bottom: 6px; color: #fff; }
 .prog-desc { font-size: .78rem; color: rgba(255,255,255,.45); line-height: 1.5; margin-bottom: 16px; }
-.prog-meta { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+.prog-meta { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: nowrap; overflow: hidden; }
 .prog-meta-item {
   font-size: .7rem; background: rgba(13,115,119,.15); border: 1px solid rgba(13,115,119,.2);
   color: #14a8a0; padding: 3px 10px; border-radius: 100px;

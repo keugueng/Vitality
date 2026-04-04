@@ -8,7 +8,7 @@
     <main class="relative z-10">
       <slot />
     </main>
-    <AppFooter />
+    <AppFooter v-if="!noFooter" />
 
     <!-- Flash messages -->
     <transition name="fade">
@@ -30,5 +30,6 @@ import { computed } from 'vue'
 import AppHeader from '@/Components/AppHeader.vue'
 import AppFooter from '@/Components/AppFooter.vue'
 
+defineProps({ noFooter: { type: Boolean, default: false } })
 const flash = computed(() => usePage().props.flash)
 </script>
