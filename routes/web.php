@@ -57,6 +57,9 @@ Route::post('/payment/stripe/intent', [PaymentController::class, 'stripeIntent']
 Route::post('/payment/paypal/create-order', [PaymentController::class, 'paypalCreateOrder'])->name('payment.paypal.create');
 Route::post('/payment/paypal/capture-order', [PaymentController::class, 'paypalCaptureOrder'])->name('payment.paypal.capture');
 
+// Debug endpoint for payment configuration
+Route::get('/payment/config-status', [PaymentController::class, 'paymentConfigStatus'])->name('payment.config-status');
+
 /* ─── Checkout ─── */
 Route::get('/checkout', [CheckoutController::class, 'index'])->name('checkout');
 Route::post('/checkout', [CheckoutController::class, 'process'])->name('checkout.process');
