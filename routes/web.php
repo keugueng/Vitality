@@ -74,6 +74,7 @@ Route::middleware(['auth'])->prefix('pro')->name('pro.')->group(function () {
 /* ─── Admin Panel ─── */
 Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/analytics', [AdminController::class, 'analytics'])->name('analytics');
 
     Route::get('/programs', [AdminController::class, 'programs'])->name('programs');
     Route::post('/programs', [AdminController::class, 'storeProgram'])->name('programs.store');
@@ -98,7 +99,18 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('/testimonials', [AdminController::class, 'storeTestimonial'])->name('testimonials.store');
     Route::delete('/testimonials/{testimonial}', [AdminController::class, 'destroyTestimonial'])->name('testimonials.destroy');
 
+    Route::get('/notifications', [AdminController::class, 'notifications'])->name('notifications');
+    Route::get('/subscriptions', [AdminController::class, 'subscriptions'])->name('subscriptions');
+
+    Route::get('/audio', [AdminController::class, 'audioFiles'])->name('audio');
+    Route::post('/audio', [AdminController::class, 'storeAudioFile'])->name('audio.store');
+    Route::put('/audio/{audioFile}', [AdminController::class, 'updateAudioFile'])->name('audio.update');
+    Route::delete('/audio/{audioFile}', [AdminController::class, 'destroyAudioFile'])->name('audio.destroy');
+
     Route::get('/users', [AdminController::class, 'users'])->name('users');
+    Route::get('/symptom-stats', [AdminController::class, 'symptomStats'])->name('symptom-stats');
+    Route::get('/admins', [AdminController::class, 'admins'])->name('admins');
+    Route::get('/pricing', [AdminController::class, 'pricing'])->name('pricing');
     Route::get('/settings', [AdminController::class, 'settings'])->name('settings');
     Route::post('/settings', [AdminController::class, 'updateSettings'])->name('settings.update');
 });
