@@ -11,30 +11,30 @@
         <p class="hero-sub">{{ t('consultation.hero_sub') }}</p>
         <div class="hero-price-block">
           <span class="hero-price">€58</span>
-          <span class="hero-price-label">par consultation · protocole inclus</span>
+          <span class="hero-price-label">{{ t('consultation.hero_price_label') }}</span>
         </div>
         <div class="hero-btns">
-          <button v-if="isAuthenticated" class="btn-primary" @click="handleReserve('single')">Réserver ma consultation</button>
-          <Link v-else :href="route('register')" class="btn-primary">Réserver ma consultation</Link>
+          <button v-if="isAuthenticated" class="btn-primary" @click="handleReserve('single')">{{ t('consultation.hero_reserve_btn') }}</button>
+          <Link v-else :href="route('register')" class="btn-primary">{{ t('consultation.hero_reserve_btn') }}</Link>
           <a href="#packages" class="btn-outline">{{ t('consultation.packages_label') }} →</a>
         </div>
       </div>
       <div class="hero-right">
         <div class="consult-visual">
           <div class="consult-card">
-            <p class="consult-card-label">Ce que vous recevez</p>
-            <h3 class="consult-card-title">Votre Protocole Personnel</h3>
-            <p class="consult-card-sub">Livré dans les 8 heures suivant votre soumission</p>
+            <p class="consult-card-label">{{ t('consultation.hero_card_label') }}</p>
+            <h3 class="consult-card-title">{{ t('consultation.hero_card_title') }}</h3>
+            <p class="consult-card-sub">{{ t('consultation.hero_card_sub') }}</p>
             <div class="consult-steps-mini">
-              <div class="csm"><div class="csm-dot">1</div><span class="csm-text">Vous remplissez un questionnaire de santé détaillé</span></div>
-              <div class="csm"><div class="csm-dot">2</div><span class="csm-text">Le Dr. Rosati analyse votre profil bio-énergétique</span></div>
-              <div class="csm"><div class="csm-dot">3</div><span class="csm-text">Votre programme de fréquences personnalisé est assemblé</span></div>
-              <div class="csm"><div class="csm-dot">4</div><span class="csm-text">Lien sécurisé livré dans votre boîte mail</span></div>
+              <div class="csm"><div class="csm-dot">1</div><span class="csm-text">{{ t('consultation.hero_card_step1') }}</span></div>
+              <div class="csm"><div class="csm-dot">2</div><span class="csm-text">{{ t('consultation.hero_card_step2') }}</span></div>
+              <div class="csm"><div class="csm-dot">3</div><span class="csm-text">{{ t('consultation.hero_card_step3') }}</span></div>
+              <div class="csm"><div class="csm-dot">4</div><span class="csm-text">{{ t('consultation.hero_card_step4') }}</span></div>
             </div>
             <div class="consult-card-price">
               <span class="ccp-amount">€58</span>
-              <span class="ccp-label">consultation unique</span>
-              <span class="ccp-badge">⚡ Réponse &lt; 8h</span>
+              <span class="ccp-label">{{ t('consultation.hero_card_price_label') }}</span>
+              <span class="ccp-badge">{{ t('consultation.hero_card_badge') }}</span>
             </div>
           </div>
         </div>
@@ -45,7 +45,7 @@
     <section class="how-section" id="how">
       <div style="text-align:center;margin-bottom:60px">
         <p class="section-label">{{ t('consultation.how_label') }}</p>
-        <h2 class="section-title">{{ t('consultation.how_title') }}<br>à votre <span class="gold-em">{{ t('consultation.how_title_em') }}</span></h2>
+        <h2 class="section-title">{{ t('consultation.how_title') }}<br><span class="gold-em">{{ t('consultation.how_title_em') }}</span></h2>
       </div>
       <div class="how-grid">
         <div v-for="(step, i) in consultSteps" :key="i" class="how-step">
@@ -62,18 +62,18 @@
       <div style="text-align:center;margin-bottom:60px">
         <p class="section-label">{{ t('consultation.packages_label') }}</p>
         <h2 class="section-title">{{ t('consultation.packages_title') }}<br><span class="gold-em">{{ t('consultation.packages_title_em') }}</span></h2>
-        <p class="body-text" style="max-width:500px;margin:0 auto">Les pathologies chroniques répondent mieux à plusieurs cycles de consultation. Nos formules vous offrent un suivi plus approfondi à moindre coût.</p>
+        <p class="body-text" style="max-width:500px;margin:0 auto">{{ t('consultation.packages_desc') }}</p>
       </div>
       <div class="packages-grid">
         <div v-for="pkg in packages" :key="pkg.id"
           class="pkg-card" :class="{ featured: pkg.featured, selected: selectedPackageType === pkg.id }"
           @click="selectedPackageType = pkg.id">
-          <div v-if="pkg.featured" class="pkg-featured-badge">Plus populaire</div>
+          <div v-if="pkg.featured" class="pkg-featured-badge">{{ t('consultation.pkg_most_popular') }}</div>
           <p class="pkg-sessions">{{ pkg.sessionsLabel }}</p>
           <h3 class="pkg-name">{{ pkg.name }}</h3>
           <p class="pkg-desc">{{ pkg.tagline }}</p>
           <div class="pkg-price"><span class="pkg-currency">€</span><span class="pkg-amount">{{ pkg.amount }}</span></div>
-          <p class="pkg-saving" :style="!pkg.saving ? 'color:rgba(200,220,255,0.35)' : ''">{{ pkg.saving || 'Tarif standard' }}</p>
+          <p class="pkg-saving" :style="!pkg.saving ? 'color:rgba(200,220,255,0.35)' : ''">{{ pkg.saving || t('consultation.pkg_standard_price') }}</p>
           <ul class="pkg-features">
             <li v-for="f in pkg.features" :key="f"><span class="pkg-check">✦</span>{{ f }}</li>
           </ul>
@@ -95,50 +95,50 @@
             <div class="feat-item">
               <div class="feat-icon">🧬</div>
               <div>
-                <h4 class="feat-title">Bilan bio-énergétique personnel</h4>
-                <p class="feat-text">Le Dr. Rosati examine personnellement vos symptômes et antécédents pour identifier les perturbations énergétiques précises à l'origine de votre condition.</p>
+                <h4 class="feat-title">{{ t('consultation.feat1_title') }}</h4>
+                <p class="feat-text">{{ t('consultation.feat1_text') }}</p>
               </div>
             </div>
             <div class="feat-item">
               <div class="feat-icon">🎧</div>
               <div>
-                <h4 class="feat-title">Protocole de fréquences sur-mesure</h4>
-                <p class="feat-text">Une séquence de fréquences de bio-résonance assemblée spécifiquement pour votre profil — pas un programme générique du catalogue.</p>
+                <h4 class="feat-title">{{ t('consultation.feat2_title') }}</h4>
+                <p class="feat-text">{{ t('consultation.feat2_text') }}</p>
               </div>
             </div>
             <div class="feat-item">
               <div class="feat-icon">📩</div>
               <div>
-                <h4 class="feat-title">Livraison sécurisée sous 8 heures</h4>
-                <p class="feat-text">Votre programme arrive par email avec un lien d'accès sécurisé et privé — accessible sur tout appareil, à tout moment.</p>
+                <h4 class="feat-title">{{ t('consultation.feat3_title') }}</h4>
+                <p class="feat-text">{{ t('consultation.feat3_text') }}</p>
               </div>
             </div>
             <div class="feat-item">
               <div class="feat-icon">📋</div>
               <div>
-                <h4 class="feat-title">Suivi &amp; monitoring des symptômes</h4>
-                <p class="feat-text">Le protocole inclut des directives de séance et un suivi des symptômes. Les formules multi-séances incluent un ajustement périodique du protocole.</p>
+                <h4 class="feat-title">{{ t('consultation.feat4_title') }}</h4>
+                <p class="feat-text">{{ t('consultation.feat4_text') }}</p>
               </div>
             </div>
           </div>
         </div>
         <div>
           <div class="included-visual">
-            <h3 class="iv-title">Consentements &amp; Confidentialité</h3>
-            <p class="iv-sub">Vos informations sont traitées avec la plus haute discrétion</p>
+            <h3 class="iv-title">{{ t('consultation.privacy_title') }}</h3>
+            <p class="iv-sub">{{ t('consultation.privacy_sub') }}</p>
             <div class="consent-block">
-              <p class="consent-title">Votre consentement</p>
-              <p class="consent-text">En réservant une consultation, vous acceptez que vos informations personnelles et de santé soient utilisées exclusivement pour préparer un programme personnalisé d'amélioration cellulaire Bio Energy. Vos données ne sont jamais partagées avec des tiers.</p>
+              <p class="consent-title">{{ t('consultation.consent1_title') }}</p>
+              <p class="consent-text">{{ t('consultation.consent1_text') }}</p>
             </div>
             <div class="consent-block">
-              <p class="consent-title">Conservation des données</p>
-              <p class="consent-text">Toutes les données personnelles et médicales sont définitivement supprimées dans les 14 jours suivant la livraison de votre programme. Vous conservez un accès complet à votre programme de fréquences via votre lien sécurisé personnel.</p>
+              <p class="consent-title">{{ t('consultation.consent2_title') }}</p>
+              <p class="consent-text">{{ t('consultation.consent2_text') }}</p>
             </div>
             <div class="data-pills">
-              <span class="data-pill">🔒 Transmission chiffrée</span>
-              <span class="data-pill">🗑 Supprimé sous 14 jours</span>
-              <span class="data-pill">🚫 Jamais vendu ni partagé</span>
-              <span class="data-pill">✅ Conforme RGPD</span>
+              <span class="data-pill">{{ t('consultation.pill1') }}</span>
+              <span class="data-pill">{{ t('consultation.pill2') }}</span>
+              <span class="data-pill">{{ t('consultation.pill3') }}</span>
+              <span class="data-pill">{{ t('consultation.pill4') }}</span>
             </div>
           </div>
         </div>
@@ -182,8 +182,8 @@
     <!-- ─── DISCLAIMER ─── -->
     <section class="disclaimer-section">
       <div class="disclaimer-box">
-        <p class="disclaimer-title">Information importante</p>
-        <p class="disclaimer-text">Les programmes Cellular Bio Energy visent à promouvoir le bien-être par l'harmonisation du champ bio-énergétique. Ils ne constituent pas des applications médicales et ne doivent pas remplacer un avis médical professionnel, un diagnostic ou un traitement. Un tel avis doit toujours être demandé à un professionnel de santé qualifié. Toutes les données personnelles et médicales soumises lors d'une consultation sont utilisées exclusivement pour préparer un programme personnalisé et sont définitivement supprimées dans les 14 jours suivant la livraison.</p>
+        <p class="disclaimer-title">{{ t('consultation.disclaimer_title') }}</p>
+        <p class="disclaimer-text">{{ t('consultation.disclaimer_text') }}</p>
       </div>
     </section>
 
@@ -193,8 +193,8 @@
       <h2 class="section-title">{{ t('consultation.cta_title') }}<br><span class="gold-em">{{ t('consultation.cta_title_em') }}</span></h2>
       <p class="cta-sub">{{ t('consultation.cta_sub') }}</p>
       <div class="cta-btns">
-        <button v-if="isAuthenticated" class="btn-primary" @click="handleReserve('single')">Réserver ma consultation — €58</button>
-        <Link v-else :href="route('register')" class="btn-primary">Réserver ma consultation — €58</Link>
+        <button v-if="isAuthenticated" class="btn-primary" @click="handleReserve('single')">{{ t('consultation.cta_reserve_btn') }}</button>
+        <Link v-else :href="route('register')" class="btn-primary">{{ t('consultation.cta_reserve_btn') }}</Link>
         <Link :href="route('shop')" class="btn-outline">{{ t('consultation.cta_btn2') }}</Link>
       </div>
     </section>
@@ -227,34 +227,37 @@ function toggleFaq(q) {
   openFaq.value = openFaq.value === q ? null : q
 }
 
-const packages = [
+const packages = computed(() => [
   {
-    id: 'single', name: 'Essentiel', price: 58, amount: '58', sessions: 1, sessionsLabel: 'Séance unique',
-    label: 'Réserver — €58', tagline: 'Idéal pour un problème de santé ciblé', saving: null,
-    features: ['1 consultation personnalisée', 'Protocole de fréquences sur-mesure', 'Livré sous 8 heures', 'Lien d\'accès sécurisé'],
+    id: 'single', name: t('consultation.pkg1_name'), price: 58, amount: '58', sessions: 1,
+    sessionsLabel: t('consultation.pkg1_sessions_label'),
+    label: t('consultation.pkg1_label'), tagline: t('consultation.pkg1_tagline'), saving: null,
+    features: [t('consultation.pkg1_feat1'), t('consultation.pkg1_feat2'), t('consultation.pkg1_feat3'), t('consultation.pkg1_feat4')],
   },
   {
-    id: 'progress', name: 'Évolution', price: 149, amount: '149', sessions: 3, sessionsLabel: '3 séances',
-    featured: true, label: 'Réserver 3 séances — €149',
-    tagline: 'Pour les pathologies chroniques nécessitant un traitement par phases',
-    saving: 'Économisez €25 vs séances individuelles',
-    features: ['3 consultations personnalisées', 'Protocole mis à jour à chaque séance', 'Suivi des progrès entre les séances', 'Réponse prioritaire sous 8h', 'Recommandé pour les cas complexes'],
+    id: 'progress', name: t('consultation.pkg2_name'), price: 149, amount: '149', sessions: 3,
+    sessionsLabel: t('consultation.pkg2_sessions_label'),
+    featured: true, label: t('consultation.pkg2_label'),
+    tagline: t('consultation.pkg2_tagline'),
+    saving: t('consultation.pkg2_saving'),
+    features: [t('consultation.pkg2_feat1'), t('consultation.pkg2_feat2'), t('consultation.pkg2_feat3'), t('consultation.pkg2_feat4'), t('consultation.pkg2_feat5')],
   },
   {
-    id: 'transform', name: 'Transformation', price: 239, amount: '239', sessions: 5, sessionsLabel: '5 séances',
-    label: 'Réserver 5 séances — €239',
-    tagline: 'Programme de transformation complet avec suivi intégral',
-    saving: 'Économisez €51 vs séances individuelles',
-    features: ['5 consultations personnalisées', 'Cartographie bio-énergétique complète', 'Suivi complet de l\'évolution des symptômes', 'Réponse VIP prioritaire', 'Idéal pour les pathologies multi-systèmes'],
+    id: 'transform', name: t('consultation.pkg3_name'), price: 239, amount: '239', sessions: 5,
+    sessionsLabel: t('consultation.pkg3_sessions_label'),
+    label: t('consultation.pkg3_label'),
+    tagline: t('consultation.pkg3_tagline'),
+    saving: t('consultation.pkg3_saving'),
+    features: [t('consultation.pkg3_feat1'), t('consultation.pkg3_feat2'), t('consultation.pkg3_feat3'), t('consultation.pkg3_feat4'), t('consultation.pkg3_feat5')],
   },
-]
+])
 
-const consultSteps = [
-  { title: 'Remplissez le formulaire', desc: 'Complétez le questionnaire de santé détaillé aussi précisément que possible — symptômes, durée, antécédents médicaux et contexte de vie.', badge: '⏱ ~10 minutes' },
-  { title: 'Analyse experte', desc: 'Le Dr. Éric Rosati — Ostéopathe & Docteur en Médecine Quantique — examine votre profil et identifie les déséquilibres énergétiques précis à traiter.', badge: '🔬 Analyse personnelle' },
-  { title: 'Protocole livré', desc: 'Votre programme de bio-énergie personnalisé est assemblé et envoyé via un lien sécurisé — dans les 8 heures suivant la soumission.', badge: '📩 Sous 8 heures' },
-  { title: 'Écoutez & récupérez', desc: 'Suivez votre protocole chez vous avec des écouteurs. Séances de 18–35 minutes, sur une durée de cure personnalisée. Suivi inclus.', badge: '🎧 Chez vous' },
-]
+const consultSteps = computed(() => [
+  { title: t('consultation.step1_title'), desc: t('consultation.step1_desc'), badge: t('consultation.step1_badge') },
+  { title: t('consultation.step2_title'), desc: t('consultation.step2_desc'), badge: t('consultation.step2_badge') },
+  { title: t('consultation.step3_title'), desc: t('consultation.step3_desc'), badge: t('consultation.step3_badge') },
+  { title: t('consultation.step4_title'), desc: t('consultation.step4_desc'), badge: t('consultation.step4_badge') },
+])
 
 const consultTestimonials = [
   { content: 'J\'ai décrit mes symptômes de burn-out dans le formulaire et reçu un protocole incroyablement précis en 6 heures. Après 3 semaines je me sentais à nouveau moi-même — ce qu\'aucun médecin n\'avait réussi en 2 ans.', name: 'Marie-Hélène C.', program: 'Protocole Burn-Out' },
@@ -265,14 +268,14 @@ const consultTestimonials = [
   { content: 'J\'ai effectué 5 consultations sur 8 mois pour mes symptômes de ménopause. L\'évolution de chaque protocole montre un vrai suivi et une compréhension de mon cas. Bouffées de chaleur réduites de 90%.', name: 'Françoise D.', program: 'Ménopause — formule Transformation' },
 ]
 
-const faqs = [
-  { q: 'Combien de temps dure le processus de consultation ?', a: 'Le questionnaire prend environ 10 minutes à remplir. Une fois soumis, le Dr. Rosati examine votre profil personnellement et votre protocole sur-mesure est livré dans les 8 heures — souvent bien plus tôt.' },
-  { q: 'Une consultation est-elle différente d\'un programme en boutique ?', a: 'Oui, significativement. Les programmes en boutique sont des protocoles pré-construits pour des conditions courantes. Une consultation produit un protocole entièrement personnalisé, assemblé spécifiquement pour votre combinaison unique de symptômes, antécédents et profil bio-énergétique. C\'est considérablement plus précis et efficace pour les conditions complexes ou multi-systèmes.' },
-  { q: 'De quel équipement ai-je besoin pour suivre mon protocole ?', a: 'Vous avez besoin d\'écouteurs à conduction osseuse — les écouteurs audio standard ne suffisent pas car la Vitality wave n\'est pas un son audible. Votre programme est accessible sur tout appareil connecté à internet (mobile ou ordinateur). Nous recommandons les navigateurs Chrome ou Firefox.' },
-  { q: 'À quelle vitesse verrai-je des résultats ?', a: 'Les résultats varient selon la condition et l\'individu. La plupart des patients remarquent un premier changement dans les 7 à 14 jours d\'écoute quotidienne. Les conditions chroniques ou complexes montrent généralement une amélioration significative après un cycle complet de 21 à 30 jours. Les formules multi-séances sont recommandées pour les problèmes de santé de longue date.' },
-  { q: 'Que deviennent mes données personnelles et de santé ?', a: 'Vos données personnelles et de santé sont utilisées exclusivement pour préparer votre protocole. Elles ne sont jamais partagées avec des tiers et sont définitivement supprimées dans les 14 jours suivant la livraison de votre programme. Votre lien sécurisé de programme reste accessible indépendamment.' },
-  { q: 'Puis-je combiner une consultation avec des programmes en boutique ?', a: 'Absolument. De nombreux patients utilisent les programmes en boutique pour l\'entretien quotidien et réservent des consultations pour des interventions plus profondes et personnalisées. Les abonnés au plan Mensuel Illimité (€29.90/mois) ont accès à toute la bibliothèque et peuvent le combiner avec des protocoles personnalisés issus de consultation pour un effet maximal.' },
-]
+const faqs = computed(() => [
+  { q: t('consultation.faq1_q'), a: t('consultation.faq1_a') },
+  { q: t('consultation.faq2_q'), a: t('consultation.faq2_a') },
+  { q: t('consultation.faq3_q'), a: t('consultation.faq3_a') },
+  { q: t('consultation.faq4_q'), a: t('consultation.faq4_a') },
+  { q: t('consultation.faq5_q'), a: t('consultation.faq5_a') },
+  { q: t('consultation.faq6_q'), a: t('consultation.faq6_a') },
+])
 
 </script>
 

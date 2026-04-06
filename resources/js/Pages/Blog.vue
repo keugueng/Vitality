@@ -29,7 +29,7 @@
             <div class="card-body">
               <div class="card-meta">
                 <span>{{ formatDate(post.published_at) }}</span>
-                <span>{{ post.read_time ? post.read_time + ' min de lecture' : '' }}</span>
+                <span>{{ post.read_time ? post.read_time + ' ' + t('blog.read_time_suffix') : '' }}</span>
               </div>
               <div class="card-title">{{ post.title }}</div>
               <div class="card-excerpt">{{ post.excerpt }}</div>
@@ -85,8 +85,8 @@
           </div>
           <div class="modal-body" v-html="activeArticle.content"></div>
           <div class="mcta">
-            <p>Trouvez votre protocole personnalisé</p>
-            <a :href="route('shop')">Explorer les programmes →</a>
+            <p>{{ t('blog.modal_cta_text') }}</p>
+            <a :href="route('shop')">{{ t('blog.modal_cta_link') }}</a>
           </div>
         </div>
       </div>
@@ -109,14 +109,14 @@ const activeArticle = ref(null)
 const nlEmail = ref('')
 const nlDone = ref(false)
 
-const filters = [
-  { key: 'all',      label: 'Tous les articles' },
-  { key: 'science',  label: 'Science' },
-  { key: 'stress',   label: 'Stress et Burn-out' },
-  { key: 'hormonal', label: 'Hormonal' },
-  { key: 'sommeil',  label: 'Sommeil' },
-  { key: 'douleur',  label: 'Douleur' },
-]
+const filters = computed(() => [
+  { key: 'all',      label: t('blog.filter_all') },
+  { key: 'science',  label: t('blog.filter_science') },
+  { key: 'stress',   label: t('blog.filter_stress') },
+  { key: 'hormonal', label: t('blog.filter_hormonal') },
+  { key: 'sommeil',  label: t('blog.filter_sleep') },
+  { key: 'douleur',  label: t('blog.filter_pain') },
+])
 
 const staticArticles = [
   {
@@ -225,7 +225,7 @@ function openBackendPost(post) {
     cat: post.category || 'Blog',
     title: post.title,
     date: formatDate(post.published_at),
-    readTime: post.read_time ? post.read_time + ' min de lecture' : '',
+    readTime: post.read_time ? post.read_time + ' ' + t('blog.read_time_suffix') : '',
     content: post.content || post.excerpt || '',
   }
   modalOpen.value = true

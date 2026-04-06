@@ -60,7 +60,7 @@ const auth = computed(() => usePage().props.auth)
 
 const dashNav = [
   { icon: '📊', label: 'Dashboard',   route: 'dashboard'         },
-  { icon: '📦', label: 'My Orders',   route: 'dashboard.orders'  },
+  { icon: '�', label: 'My Orders',   route: 'dashboard.orders'  },
   { icon: '👤', label: 'Profile',     route: 'dashboard.profile' },
   { icon: '🛒', label: 'Shop',        route: 'shop'              },
 ]

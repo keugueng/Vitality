@@ -29,12 +29,12 @@
         <p>{{ t('about.founder_p2') }}</p>
         <p>{{ t('about.founder_p3') }}</p>
         <div class="creds">
-          <span class="cred">Osteopathy</span>
-          <span class="cred">Chinese Medicine</span>
-          <span class="cred">Energy Medicine</span>
-          <span class="cred">Homeopathy</span>
-          <span class="cred">Isoposturale Method</span>
-          <span class="cred">Quantum Biophysics</span>
+          <span class="cred">{{ t('about.cred1') }}</span>
+          <span class="cred">{{ t('about.cred2') }}</span>
+          <span class="cred">{{ t('about.cred3') }}</span>
+          <span class="cred">{{ t('about.cred4') }}</span>
+          <span class="cred">{{ t('about.cred5') }}</span>
+          <span class="cred">{{ t('about.cred6') }}</span>
         </div>
       </div>
     </section>
@@ -87,35 +87,24 @@
 </template>
 
 <script setup>
+import { computed } from 'vue'
 import AppLayout from '@/Layouts/AppLayout.vue'
 import { Link } from '@inertiajs/vue3'
 import { useI18n } from '@/composables/useI18n'
 const { t } = useI18n()
 
-const pillars = [
-  {
-    icon: '⚡',
-    title: 'Bio-Electric Communication',
-    desc: 'Every cell in your body maintains a precise electrical potential. Disease disrupts these bioelectric signals. Our frequencies restore cellular coherence at the most fundamental level.',
-  },
-  {
-    icon: '🌋',
-    title: 'Quantum Resonance',
-    desc: 'Matter vibrates at specific frequencies. Through resonance, external frequencies can modulate biological systems, influencing everything from neural firing patterns to hormonal secretion.',
-  },
-  {
-    icon: '🧠',
-    title: 'Neuroplasticity Activation',
-    desc: 'Specific frequency ranges (alpha, theta, delta, gamma) entrain brainwave states associated with healing, recovery and neuroplastic change — measurable on EEG.',
-  },
-]
+const pillars = computed(() => [
+  { icon: t('about.pillar1_icon'), title: t('about.pillar1_title'), desc: t('about.pillar1_desc') },
+  { icon: t('about.pillar2_icon'), title: t('about.pillar2_title'), desc: t('about.pillar2_desc') },
+  { icon: t('about.pillar3_icon'), title: t('about.pillar3_title'), desc: t('about.pillar3_desc') },
+])
 
-const stats = [
-  { val: '21K+', lbl: 'People healed worldwide' },
-  { val: '37',   lbl: 'Precision protocols' },
-  { val: '25+',  lbl: 'Years of research' },
-  { val: '98%',  lbl: 'Report improvement' },
-]
+const stats = computed(() => [
+  { val: t('about.stat1_val'), lbl: t('about.stat1_lbl') },
+  { val: t('about.stat2_val'), lbl: t('about.stat2_lbl') },
+  { val: t('about.stat3_val'), lbl: t('about.stat3_lbl') },
+  { val: t('about.stat4_val'), lbl: t('about.stat4_lbl') },
+])
 </script>
 
 <style scoped>

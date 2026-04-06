@@ -30,7 +30,7 @@
         <div class="plan-card">
           <p class="plan-name">{{ t('shop.plan1_name') }}</p>
           <p class="plan-desc">{{ t('shop.plan1_desc') }}</p>
-          <div class="plan-price"><span class="plan-currency">€</span><span class="plan-amount">11</span><span class="plan-period">/ programme</span></div>
+          <div class="plan-price"><span class="plan-currency">€</span><span class="plan-amount">11</span><span class="plan-period">{{ t('shop.period_unit') }}</span></div>
           <ul class="plan-features">
             <li><span class="check">✦</span>{{ t('shop.plan1_feat1') }}</li>
             <li><span class="check">✦</span>{{ t('shop.plan1_feat2') }}</li>
@@ -43,7 +43,7 @@
           <div class="plan-badge">{{ t('shop.plan2_badge') }}</div>
           <p class="plan-name">{{ t('shop.plan2_name') }}</p>
           <p class="plan-desc">{{ t('shop.plan2_desc') }}</p>
-          <div class="plan-price"><span class="plan-currency">€</span><span class="plan-amount">29.90</span><span class="plan-period">/ mois</span></div>
+          <div class="plan-price"><span class="plan-currency">€</span><span class="plan-amount">29.90</span><span class="plan-period">{{ t('shop.period_month') }}</span></div>
           <ul class="plan-features">
             <li><span class="check">✦</span>{{ t('shop.plan2_feat1') }}</li>
             <li><span class="check">✦</span>{{ t('shop.plan2_feat2') }}</li>
@@ -56,7 +56,7 @@
         <div class="plan-card">
           <p class="plan-name">{{ t('shop.plan3_name') }}</p>
           <p class="plan-desc">{{ t('shop.plan3_desc') }}</p>
-          <div class="plan-price"><span class="plan-currency">€</span><span class="plan-amount">249</span><span class="plan-period">/ an</span></div>
+          <div class="plan-price"><span class="plan-currency">€</span><span class="plan-amount">249</span><span class="plan-period">{{ t('shop.period_year') }}</span></div>
           <ul class="plan-features">
             <li><span class="check">✦</span>{{ t('shop.plan3_feat1') }}</li>
             <li><span class="check">✦</span>{{ t('shop.plan3_feat2') }}</li>
@@ -93,7 +93,7 @@
           <div class="category-header">
             <span class="category-icon">{{ cat.emoji }}</span>
             <span class="category-name">{{ cat.name }}</span>
-            <span class="category-count">{{ cat.programs.length }} programme{{ cat.programs.length > 1 ? 's' : '' }}</span>
+            <span class="category-count">{{ cat.programs.length }} {{ cat.programs.length > 1 ? t('shop.programs_plural') : t('shop.program_singular') }}</span>
           </div>
           <div class="programmes-grid">
             <div v-for="p in cat.programs" :key="p.id" class="program-card" @click="openDetail(p)">
@@ -101,8 +101,8 @@
               <p class="prog-name">{{ p.title }}</p>
               <p class="prog-desc">{{ p.short_desc }}</p>
               <div class="prog-meta">
-                <span v-if="p.session_duration || p.duration" class="prog-meta-item">⏱ {{ p.session_duration || p.duration }} min/séance</span>
-                <span v-if="p.cure_duration || p.cure_days" class="prog-meta-item">🔄 {{ p.cure_duration || p.cure_days }}-jours de cure</span>
+                <span v-if="p.session_duration || p.duration" class="prog-meta-item">⏱ {{ p.session_duration || p.duration }} {{ t('shop.min_session') }}</span>
+                <span v-if="p.cure_duration || p.cure_days" class="prog-meta-item">🔄 {{ p.cure_duration || p.cure_days }}-{{ t('shop.days_cure') }}</span>
               </div>
               <div class="prog-footer">
                 <span class="prog-price">€{{ p.price ?? 11 }}</span>
@@ -129,8 +129,8 @@
             <p class="prog-name">{{ p.title }}</p>
             <p class="prog-desc">{{ p.short_desc }}</p>
             <div class="prog-meta">
-              <span v-if="p.session_duration || p.duration" class="prog-meta-item">⏱ {{ p.session_duration || p.duration }} min/séance</span>
-              <span v-if="p.cure_duration || p.cure_days" class="prog-meta-item">🔄 {{ p.cure_duration || p.cure_days }}-jours de cure</span>
+              <span v-if="p.session_duration || p.duration" class="prog-meta-item">⏱ {{ p.session_duration || p.duration }} {{ t('shop.min_session') }}</span>
+              <span v-if="p.cure_duration || p.cure_days" class="prog-meta-item">🔄 {{ p.cure_duration || p.cure_days }}-{{ t('shop.days_cure') }}</span>
             </div>
             <div class="prog-footer">
               <span class="prog-price">€{{ p.price ?? 11 }}</span>
@@ -242,13 +242,13 @@
 
         <div class="detail-body">
           <div class="detail-desc-block">
-            <p class="detail-block-label">📋 Description</p>
+            <p class="detail-block-label">📋 {{ t('shop.detail_description') }}</p>
             <div v-if="selectedProgram.long_desc" v-html="selectedProgram.long_desc" class="detail-desc-text"></div>
             <p v-else class="detail-desc-text">{{ selectedProgram.short_desc || selectedProgram.short_desc_fr }}</p>
           </div>
 
           <div class="detail-proto-block">
-            <p class="detail-block-label">🧬 Protocole</p>
+            <p class="detail-block-label">🧬 {{ t('shop.detail_protocol') }}</p>
             <div class="proto-steps">
               <div class="proto-step"><div class="proto-dot"></div><p><strong>{{ t('shop.detail_daily') }}</strong> — {{ t('shop.detail_daily_desc') }}</p></div>
               <div class="proto-step"><div class="proto-dot"></div><p><strong>{{ t('shop.detail_cure') }}</strong> — {{ selectedProgram.cure_duration || selectedProgram.cure_days || '21' }} {{ t('shop.days_cure') }}.</p></div>
@@ -257,7 +257,7 @@
           </div>
 
           <div v-if="selectedProgram.benefits?.length" class="detail-benefits">
-            <p class="detail-block-label">✦ Bénéfices</p>
+            <p class="detail-block-label">✦ {{ t('shop.detail_benefits') }}</p>
             <div class="benefits-list">
               <span v-for="(b, i) in selectedProgram.benefits" :key="i" class="benefit-tag">✓ {{ b }}</span>
             </div>
@@ -267,7 +267,7 @@
         <div class="detail-footer">
           <div class="detail-price-row">
             <span class="detail-price">€{{ selectedProgram.price ?? 11 }}</span>
-            <span class="detail-price-note">/ programme · Accès permanent</span>
+            <span class="detail-price-note">{{ t('shop.detail_permanent') }}</span>
           </div>
           <div class="detail-actions">
             <Link :href="route('cart.add')" method="post" as="button"
@@ -379,12 +379,12 @@ function formatTime(s) {
 
 onUnmounted(stopAudio)
 
-const howSteps = [
-  { title: 'Choisissez votre programme', desc: 'Parcourez notre bibliothèque et sélectionnez le protocole adapté à votre situation.' },
-  { title: 'Écoutez avec des écouteurs', desc: 'Utilisez des écouteurs à conduction osseuse pour une transmission optimale des fréquences.' },
-  { title: 'Laissez votre corps se recalibrer', desc: 'Suivez votre cure de 14 à 30 jours, 18–35 minutes par séance, à votre rythme.' },
-  { title: 'Suivez vos progrès', desc: 'Constatez les changements progressifs et ajustez avec une consultation si besoin.' },
-]
+const howSteps = computed(() => [
+  { title: t('shop.how_step1_title'), desc: t('shop.how_step1_desc') },
+  { title: t('shop.how_step2_title'), desc: t('shop.how_step2_desc') },
+  { title: t('shop.how_step3_title'), desc: t('shop.how_step3_desc') },
+  { title: t('shop.how_step4_title'), desc: t('shop.how_step4_desc') },
+])
 
 const fallbackCategories = [
   { slug: 'stress-emotions', name: 'Stress et Émotions', emoji: '🧘' },
